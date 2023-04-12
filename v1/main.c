@@ -6,7 +6,7 @@
 int main() {
     // Lecture du fichier JSON
     int n; // Nombre de stations de recharge
-    struct ChargingStation* stations = readJSON("data.json", &n);
+    struct ChargingStation* stations = readJSON("../data/data_mod.json", &n);
 
     // Affichage du nombre de stations de recharge
     printf("Nombre de stations de recharge : %d\n", n);
@@ -37,6 +37,7 @@ int main() {
 
     // Affichage des stations de recharge
     // printStations(stations, n);
+
     
     // Création du graphe pondéré
     struct Graph* graph = createGraphFromStations(stations, n);
@@ -51,9 +52,12 @@ int main() {
     // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
     // dijkstra(graph, src, dest);
 
+    // Print graph
+    printGraph(graph);
+
     // Libération de la mémoire
     freeGraph(graph);
-    for (int i = 0; i < n-2; ++i) {
+    for (int i = 0; i < n; ++i) {
         free(stations[i].name);
     }
     free(stations);

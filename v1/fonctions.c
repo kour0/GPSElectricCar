@@ -8,32 +8,38 @@
 #include "cJSON.h"
 #include "fonctions.h"
 
-// Fonction pour initialiser un graphe pondéré
-struct Graph* createGraph(int V) {
-    struct Graph* graph = malloc(sizeof(struct Graph));
+// Fonction pour initialiser un graphe pondéré à l'aide d'une liste contigue à une dimension
+Graph* createGraph(int V) {
+
+    long V_double = (long) V;
+
+    // Allocation de la mémoire pour le graphe
+    printf("Allocation de la mémoire pour le graphe de taille : %ld\n", ((V_double * (V_double+1))/2-V_double));
+
+    Graph* graph = malloc(sizeof(Graph));
     graph->V = V;
-    graph->adjMat = malloc(V * sizeof(double*));
-    for (int i = 0; i < V; ++i) {
-        graph->adjMat[i] = calloc(V, sizeof(double));
-    }
+    graph->adjMat = calloc(((V_double * (V_double+1))/2-V_double), sizeof(int));
     return graph;
 }
 
-// Fonction pour calculer la distance entre deux coordonnées géographiques
-double distance(struct Coordinate coord1, struct Coordinate coord2) {
+// Fonction pour calculer la distance entre deux coordonnées géographiques en km
+int distance(Coordinate coord1, Coordinate coord2) {
+    // Conversion des coordonnées en radians
     double lat1 = coord1.latitude * M_PI / 180;
-    double lat2 = coord2.latitude * M_PI / 180;
     double lon1 = coord1.longitude * M_PI / 180;
+    double lat2 = coord2.latitude * M_PI / 180;
     double lon2 = coord2.longitude * M_PI / 180;
-    double dLat = lat2 - lat1;
-    double dLon = lon2 - lon1;
-    double a = sin(dLat / 2) * sin(dLat / 2) + cos(lat1) * cos(lat2) * sin(dLon / 2) * sin(dLon / 2);
+
+    // Calcul de la distance
+    double dlon = lon2 - lon1;
+    double dlat = lat2 - lat1;
+    double a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return 6371 * c;
+    return (int) (6371 * c);
 }
 
 // Fonction pour lire le fichier JSON
-struct ChargingStation* readJSON(char* filename, int* n) {
+ChargingStation* readJSON(char* filename, int* n) {
     // Ouverture du fichier
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
@@ -82,7 +88,7 @@ struct ChargingStation* readJSON(char* filename, int* n) {
     *n = cJSON_GetArraySize(features);
 
     // Allocation du tableau de stations
-    struct ChargingStation* stations = malloc(*n * sizeof(struct ChargingStation));
+    ChargingStation* stations = malloc(*n * sizeof(ChargingStation));
 
     // Récupération des stations
     for (int i = 0; i < *n; ++i) {
@@ -104,101 +110,39 @@ struct ChargingStation* readJSON(char* filename, int* n) {
     return stations;
 }
 
-// Fonction pour afficher les stations de recharge
-void printStations(struct ChargingStation* stations, int n) {
-    for (int i = 0; i < n; ++i) {
-        printf("%s (%lf, %lf)\n", stations[i].name, stations[i].coord.latitude, stations[i].coord.longitude);
-    }
-}
-
-// Fonction pour afficher la matrice d'adjacence
-void printAdjMat(double** adjMat, int n) {
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            printf("%lf ", adjMat[i][j]);
-        }
-        printf("\n");
-    }
-}
-
 // Fonction pour créer le graphe pondéré
-struct Graph* createGraphFromStations(struct ChargingStation* stations, int n) {
-    struct Graph* graph = createGraph(n);
-    for (int i = 0; i < n; ++i) {
-        for (int j = 0; j < n; ++j) {
-            graph->adjMat[i][j] = distance(stations[i].coord, stations[j].coord);
+Graph* createGraphFromStations(ChargingStation* stations, int n) {
+    Graph* graph = createGraph(n);
+
+    // Calcul des distances entre les stations
+    for (int i = 0; i < n-1; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            graph->adjMat[i*(n-1)-((i-1)*i)/2+j-(i+1)] = distance(stations[i].coord, stations[j].coord);
         }
+        printf("Calcul des distances entre les stations : %d/%d\n", i+1, n-1);
     }
+
     return graph;
 }
 
 // Fonction pour libérer la mémoire
-void freeGraph(struct Graph* graph) {
-    for (int i = 0; i < graph->V; ++i) {
-        free(graph->adjMat[i]);
-    }
+void freeGraph(Graph* graph) {
     free(graph->adjMat);
     free(graph);
 }
 
-// Fonction pour trouver l'indice du sommet avec la distance minimale dans l'ensemble des sommets non encore inclus dans le chemin le plus court
-int minDistance(double* dist, bool* sptSet, int V) {
-    double min = DBL_MAX;
-    int minIndex = -1;
-    for (int v = 0; v < V; ++v) {
-        if (sptSet[v] == false && dist[v] <= min) {
-            min = dist[v];
-            minIndex = v;
-        }
-    }
-    return minIndex;
-}
-
-// Fonction pour implémenter l'algorithme de Dijkstra pour trouver le chemin le plus court entre deux sommets d'un graphe pondéré
-void dijkstra(struct Graph* graph, int src, int dest) {
-    int V = graph->V;
-    double* dist = malloc(V * sizeof(double)); // Tableau pour stocker les distances minimales
-    int* parent = malloc(V * sizeof(int)); // Tableau pour stocker les parents des sommets dans le chemin le plus court
-
-    bool* sptSet = malloc(V * sizeof(bool)); // Tableau pour stocker les sommets inclus dans le chemin le plus court
-
-    // Initialiser toutes les distances à l'infini et marquer tous les sommets comme non inclus dans le chemin le plus court
-    for (int i = 0; i < V; ++i) {
-        dist[i] = DBL_MAX;
-        sptSet[i] = false;
-    }
-
-    // La distance du sommet source à lui-même est toujours 0
-    dist[src] = 0;
-    parent[src] = -1; // Le sommet source n'a pas de parent
-
-    // Trouver le chemin le plus court pour tous les sommets
-    for (int count = 0; count < V - 1; ++count) {
-        int u = minDistance(dist, sptSet, V); // Choisir le sommet avec la distance minimale non encore inclus dans le chemin le plus court
-        sptSet[u] = true; // Marquer le sommet comme inclus dans le chemin le plus court
-
-        // Mettre à jour les distances des sommets adjacents du sommet choisi
-        for (int v = 0; v < V; ++v) {
-            if (!sptSet[v] && graph->adjMat[u][v] && dist[u] != DBL_MAX && dist[u] + graph->adjMat[u][v] < dist[v]) {
-                dist[v] = dist[u] + graph->adjMat[u][v];
-                parent[v] = u;
+// Fonction pour afficher le graphe
+void printGraph(Graph* graph) {
+    for (int i = 0; i < graph->V; ++i) {
+        for (int j = 0; j < graph->V; ++j) {
+            if (i == j) {
+                printf("0 ");
+            } else if (i < j) {
+                printf("%d ", graph->adjMat[i*(graph->V-1) - ((i-1)*i)/2 + j - (i+1)]);
+            } else {
+                printf("%d ", graph->adjMat[j*(graph->V-1) - ((j-1)*j)/2 + i - (j+1)]);
             }
         }
+        printf("\n");
     }
-
-    // Afficher le chemin le plus court et sa distance
-    printf("Chemin le plus court de la station %d à la station %d : \n", src, dest);
-    int currentNode = dest;
-    printf("%d ", currentNode);
-    while (parent[currentNode] != -1) {
-        printf("<- %d ", parent[currentNode]);
-        currentNode = parent[currentNode];
-    }
-    printf("\n");
-    printf("Distance : %lf km\n", dist[dest]);
-
-    // Libérer la mémoire
-    free(dist);
-    free(parent);
-    free(sptSet);
 }

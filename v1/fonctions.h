@@ -4,29 +4,26 @@
 #define M_PI 3.14159265358979323846 // Valeur de pi
 
 // Structure pour stocker les coordonnées géographiques
-struct Coordinate {
+typedef struct Coordinate {
     double latitude; // Latitude
     double longitude; // Longitude
-};
+} Coordinate;
 
 // Structure pour stocker une station de recharge
-struct ChargingStation {
+typedef struct ChargingStation {
     char* name; // Nom de la station
-    struct Coordinate coord; // Coordonnées géographiques
-};
+    Coordinate coord; // Coordonnées géographiques
+} ChargingStation;
 
 // Structure de graphe pondéré
-struct Graph {
+typedef struct Graph {
     int V; // Nombre de sommets
-    double** adjMat; // Matrice d'adjacence
-};
+    int* adjMat; // Matrice d'adjacence de taille V*(V+1)/2-V et de dimension 1
+} Graph; // Structure de graphe pondéré à l'aide d'une liste contigue à une dimension
 
-struct Graph* createGraph(int V);
-double distance(struct Coordinate coord1, struct Coordinate coord2);
-struct ChargingStation* readJSON(char* filename, int* n);
-void printStations(struct ChargingStation* stations, int n);
-void printAdjMat(double** adjMat, int n);
-struct Graph* createGraphFromStations(struct ChargingStation* stations, int n);
-void freeGraph(struct Graph* graph);
-int minDistance(double* dist, bool* sptSet, int V);
-void dijkstra(struct Graph* graph, int src, int dest);
+Graph* createGraph(int V);
+int distance(Coordinate coord1, Coordinate coord2);
+ChargingStation* readJSON(char* filename, int* n);
+Graph* createGraphFromStations(ChargingStation* stations, int n);
+void freeGraph(Graph* graph);
+void printGraph(Graph* graph);
