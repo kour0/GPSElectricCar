@@ -17,6 +17,13 @@ typedef struct ChargingStation {
     Coordinate coord; // Coordonnées géographiques
 } ChargingStation;
 
+// Structure pour stocker les véhicules
+typedef struct Vehicle {
+    char* name; // Nom du véhicule
+    int fastCharge; // Capacité de charge rapide
+    int range; // Autonomie
+} Vehicle;
+
 // Structure de graphe pondéré
 typedef struct Graph {
     int V; // Nombre de sommets
@@ -25,7 +32,8 @@ typedef struct Graph {
 
 Graph* createGraph(int V);
 int distance(Coordinate coord1, Coordinate coord2);
-ChargingStation* readJSON(char* filename, int* n);
+ChargingStation* readJSONstations(char* filename, int* n);
+Vehicle* readJSONvehicles(char* filename, int* n);
 Graph* createGraphFromStations(ChargingStation* stations, int n);
 void freeGraph(Graph* graph);
 void printGraph(Graph* graph);
