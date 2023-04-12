@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include <float.h>
 #include <stdbool.h>
 
 #include "cJSON.h"
@@ -35,7 +34,7 @@ int distance(Coordinate coord1, Coordinate coord2) {
     double dlat = lat2 - lat1;
     double a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return (int) (6371 * c);
+    return (int) (EARTH_RADIUS * c);
 }
 
 // Fonction pour lire le fichier JSON
@@ -143,4 +142,86 @@ void printGraph(Graph* graph) {
         }
         printf("\n");
     }
+}
+
+// Algorithme de Dijkstra pour trouver le plus court chemin entre deux stations
+int* dijkstra(Graph* graph, int src, int dest, int* n) {
+    // Initialisation des tableaux
+    int* dist = malloc(graph->V * sizeof(int));
+    int* prev = malloc(graph->V * sizeof(int));
+    bool* visited = calloc(graph->V, sizeof(bool));
+
+    // Initialisation des distances
+    for (int i = 0; i < graph->V; ++i) {
+        dist[i] = INT_MAX;
+        prev[i] = -1;
+    }
+    dist[src] = 0;
+
+    // Boucle principale
+    for (int i = 0; i < graph->V; ++i) {
+        // Recherche du sommet non visité le plus proche
+        int min = INT_MAX;
+        int u = -1;
+        for (int j = 0; j < graph->V; ++j) {
+            if (!visited[j] && dist[j] < min) {
+                min = dist[j];
+                u = j;
+            }
+        }
+
+        // Si on a pas trouvé de sommet, on arrête
+        if (u == -1) {
+            break;
+        }
+
+        // On marque le sommet comme visité
+        visited[u] = true;
+
+        // On met à jour les distances
+        for (int v = 0; v < graph->V; ++v) {
+            if (!visited[v]) {
+                int w = 0;
+                if (u < v) {
+                    w = graph->adjMat[u*(graph->V-1) - ((u-1)*u)/2 + v - (u+1)];
+                } else {
+                    w = graph->adjMat[v*(graph->V-1) - ((v-1)*v)/2 + u - (v+1)];
+                }
+                if (dist[u] + w < dist[v]) {
+                    dist[v] = dist[u] + w;
+                    prev[v] = u;
+                }
+            }
+        }
+    }
+
+    // On récupère le chemin
+    int* path = malloc(graph->V * sizeof(int));
+    int pathLength = 0;
+    int u = dest;
+    while (u != -1) {
+        path[pathLength++] = u;
+        u = prev[u];
+    }
+
+    // On libère la mémoire
+    free(dist);
+    free(prev);
+    free(visited);
+
+    // On retourne le chemin
+    int* result = malloc(pathLength * sizeof(int));
+    for (int i = 0; i < pathLength; ++i) {
+        result[i] = path[pathLength - i - 1];
+    }
+    free(path);
+    *n = pathLength;
+    return result;
+}
+
+void printPath(ChargingStation* stations, int* path, int n) {
+    for (int i = 0; i < n; ++i) {
+        printf("%s (%f, %f) -> ", stations[path[i]].name, stations[path[i]].coord.longitude, stations[path[i]].coord.latitude);
+    }
+    printf("FIN\n");
 }

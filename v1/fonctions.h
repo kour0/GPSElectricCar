@@ -2,11 +2,13 @@
 
 // Constantes
 #define M_PI 3.14159265358979323846 // Valeur de pi
+#define EARTH_RADIUS 6371 // Rayon de la Terre en km
+#define INT_MAX 2147483647 // Valeur maximale d'un entier
 
 // Structure pour stocker les coordonnées géographiques
 typedef struct Coordinate {
-    double latitude; // Latitude
-    double longitude; // Longitude
+    float latitude; // Latitude
+    float longitude; // Longitude
 } Coordinate;
 
 // Structure pour stocker une station de recharge
@@ -27,3 +29,5 @@ ChargingStation* readJSON(char* filename, int* n);
 Graph* createGraphFromStations(ChargingStation* stations, int n);
 void freeGraph(Graph* graph);
 void printGraph(Graph* graph);
+int* dijkstra(Graph* graph, int src, int dest, int* n);
+void printPath(ChargingStation* stations, int* path, int n);

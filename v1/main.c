@@ -46,16 +46,23 @@ int main() {
     // printAdjMat(graph->adjMat, n);
 
     // Sommet source et sommet destination pour le chemin le plus court
-    // int src = n-2;
-    // int dest = n-1;
+    int src = n-2;
+    int dest = n-1;
 
     // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
-    // dijkstra(graph, src, dest);
+    int* pathLength = malloc(sizeof(int));
+    int* res = dijkstra(graph, src, dest, pathLength);
+
+    // Affichage du chemin le plus court
+    printf("Chemin le plus court : ");
+    printPath(stations, res, *pathLength);
 
     // Print graph
     // printGraph(graph);
 
     // Libération de la mémoire
+    free(res);
+    free(pathLength);
     freeGraph(graph);
     for (int i = 0; i < n; ++i) {
         free(stations[i].name);

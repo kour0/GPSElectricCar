@@ -1,0 +1,2695 @@
+{
+    "Vehicles": [
+        {
+            "Name": "Tesla Model Y Long Range Dual Motor",
+            "Range": "435",
+            "Acceleration": "5.0",
+            "Top Speed": "217",
+            "Efficiency": "172",
+            "Fast Charge": "670",
+            "Brand": "Tesla"
+        },
+        {
+            "Name": "Tesla Model 3 ",
+            "Range": "380",
+            "Acceleration": "6.1",
+            "Top Speed": "225",
+            "Efficiency": "151",
+            "Fast Charge": "630",
+            "Brand": "Tesla"
+        },
+        {
+            "Name": "Tesla Model Y ",
+            "Range": "345",
+            "Acceleration": "6.9",
+            "Top Speed": "217",
+            "Efficiency": "167",
+            "Fast Charge": "580",
+            "Brand": "Tesla"
+        },
+        {
+            "Name": "Tesla Model 3 Long Range Dual Motor",
+            "Range": "485",
+            "Acceleration": "4.4",
+            "Top Speed": "233",
+            "Efficiency": "155",
+            "Fast Charge": "750",
+            "Brand": "Tesla"
+        },
+        {
+            "Name": "BYD ATTO 3 ",
+            "Range": "320",
+            "Acceleration": "7.3",
+            "Top Speed": "160",
+            "Efficiency": "188",
+            "Fast Charge": "300",
+            "Brand": "BYD"
+        },
+        {
+            "Name": "MG MG4 Electric 64 kWh",
+            "Range": "365",
+            "Acceleration": "7.9",
+            "Top Speed": "160",
+            "Efficiency": "169",
+            "Fast Charge": "450",
+            "Brand": "MG"
+        },
+        {
+            "Name": "Tesla Model S Plaid",
+            "Range": "550",
+            "Acceleration": "2.1",
+            "Top Speed": "282",
+            "Efficiency": "173",
+            "Fast Charge": "770",
+            "Brand": "Tesla"
+        },
+        {
+            "Name": "BMW i4 eDrive40",
+            "Range": "470",
+            "Acceleration": "5.7",
+            "Top Speed": "190",
+            "Efficiency": "172",
+            "Fast Charge": "730",
+            "Brand": "BMW"
+        },
+        {
+            "Name": "BMW iX xDrive40",
+            "Range": "360",
+            "Acceleration": "6.1",
+            "Top Speed": "200",
+            "Efficiency": "197",
+            "Fast Charge": "480",
+            "Brand": "BMW"
+        },
+        {
+            "Name": "Tesla Model Y Performance",
+            "Range": "415",
+            "Acceleration": "3.7",
+            "Top Speed": "250",
+            "Efficiency": "181",
+            "Fast Charge": "640",
+            "Brand": "Tesla"
+        },
+        {
+            "Name": "Kia Niro EV ",
+            "Range": "380",
+            "Acceleration": "7.8",
+            "Top Speed": "167",
+            "Efficiency": "171",
+            "Fast Charge": "380",
+            "Brand": "Kia"
+        },
+        {
+            "Name": "BMW iX1 xDrive30",
+            "Range": "355",
+            "Acceleration": "5.6",
+            "Top Speed": "180",
+            "Efficiency": "182",
+            "Fast Charge": "510",
+            "Brand": "BMW"
+        },
+        {
+            "Name": "Mercedes EQS 450+",
+            "Range": "640",
+            "Acceleration": "6.2",
+            "Top Speed": "210",
+            "Efficiency": "168",
+            "Fast Charge": "960",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Mercedes EQE 350+",
+            "Range": "525",
+            "Acceleration": "6.4",
+            "Top Speed": "210",
+            "Efficiency": "173",
+            "Fast Charge": "780",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Hongqi E-HS9 99 kWh",
+            "Range": "355",
+            "Acceleration": "4.9",
+            "Top Speed": "200",
+            "Efficiency": "254",
+            "Fast Charge": "410",
+            "Brand": "Hongqi"
+        },
+        {
+            "Name": "BYD HAN ",
+            "Range": "465",
+            "Acceleration": "3.9",
+            "Top Speed": "180",
+            "Efficiency": "178",
+            "Fast Charge": "450",
+            "Brand": "BYD"
+        },
+        {
+            "Name": "Audi Q8 e-tron 55 quattro",
+            "Range": "495",
+            "Acceleration": "5.6",
+            "Top Speed": "200",
+            "Efficiency": "214",
+            "Fast Charge": "670",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Kia EV6 GT",
+            "Range": "370",
+            "Acceleration": "3.5",
+            "Top Speed": "260",
+            "Efficiency": "200",
+            "Fast Charge": "970",
+            "Brand": "Kia"
+        },
+        {
+            "Name": "Tesla Model S Dual Motor",
+            "Range": "570",
+            "Acceleration": "3.2",
+            "Top Speed": "250",
+            "Efficiency": "167",
+            "Fast Charge": "790",
+            "Brand": "Tesla"
+        },
+        {
+            "Name": "Lexus RZ 450e",
+            "Range": "310",
+            "Acceleration": "5.6",
+            "Top Speed": "160",
+            "Efficiency": "206",
+            "Fast Charge": "460",
+            "Brand": "Lexus"
+        },
+        {
+            "Name": "Skoda Enyaq iV 80",
+            "Range": "420",
+            "Acceleration": "8.6",
+            "Top Speed": "160",
+            "Efficiency": "183",
+            "Fast Charge": "530",
+            "Brand": "Skoda"
+        },
+        {
+            "Name": "BMW i7 xDrive60",
+            "Range": "510",
+            "Acceleration": "4.7",
+            "Top Speed": "240",
+            "Efficiency": "199",
+            "Fast Charge": "760",
+            "Brand": "BMW"
+        },
+        {
+            "Name": "Hyundai IONIQ 6 Long Range AWD",
+            "Range": "440",
+            "Acceleration": "5.1",
+            "Top Speed": "185",
+            "Efficiency": "168",
+            "Fast Charge": "1150",
+            "Brand": "Hyundai"
+        },
+        {
+            "Name": "Hyundai Kona Electric 64 kWh",
+            "Range": "395",
+            "Acceleration": "7.9",
+            "Top Speed": "167",
+            "Efficiency": "162",
+            "Fast Charge": "370",
+            "Brand": "Hyundai"
+        },
+        {
+            "Name": "Audi Q4 e-tron 40",
+            "Range": "405",
+            "Acceleration": "8.5",
+            "Top Speed": "160",
+            "Efficiency": "189",
+            "Fast Charge": "510",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Smart #1 ",
+            "Range": "350",
+            "Acceleration": "6.7",
+            "Top Speed": "180",
+            "Efficiency": "183",
+            "Fast Charge": "520",
+            "Brand": "Smart"
+        },
+        {
+            "Name": "Nissan Ariya 87kWh",
+            "Range": "445",
+            "Acceleration": "7.6",
+            "Top Speed": "160",
+            "Efficiency": "196",
+            "Fast Charge": "530",
+            "Brand": "Nissan"
+        },
+        {
+            "Name": "BMW iX xDrive50",
+            "Range": "505",
+            "Acceleration": "4.6",
+            "Top Speed": "200",
+            "Efficiency": "208",
+            "Fast Charge": "680",
+            "Brand": "BMW"
+        },
+        {
+            "Name": "Tesla Model 3 Performance",
+            "Range": "460",
+            "Acceleration": "3.3",
+            "Top Speed": "261",
+            "Efficiency": "163",
+            "Fast Charge": "710",
+            "Brand": "Tesla"
+        },
+        {
+            "Name": "Dacia Spring Electric 45",
+            "Range": "165",
+            "Acceleration": "19.1",
+            "Top Speed": "125",
+            "Efficiency": "152",
+            "Fast Charge": "180",
+            "Brand": "Dacia"
+        },
+        {
+            "Name": "BMW iX3 ",
+            "Range": "385",
+            "Acceleration": "6.8",
+            "Top Speed": "180",
+            "Efficiency": "192",
+            "Fast Charge": "520",
+            "Brand": "BMW"
+        },
+        {
+            "Name": "BMW i4 M50",
+            "Range": "435",
+            "Acceleration": "3.9",
+            "Top Speed": "225",
+            "Efficiency": "186",
+            "Fast Charge": "670",
+            "Brand": "BMW"
+        },
+        {
+            "Name": "Volkswagen ID. Buzz Pro",
+            "Range": "330",
+            "Acceleration": "10.2",
+            "Top Speed": "145",
+            "Efficiency": "233",
+            "Fast Charge": "460",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "BMW i4 eDrive35",
+            "Range": "400",
+            "Acceleration": "6.0",
+            "Top Speed": "190",
+            "Efficiency": "168",
+            "Fast Charge": "540",
+            "Brand": "BMW"
+        },
+        {
+            "Name": "Audi e-tron GT RS",
+            "Range": "405",
+            "Acceleration": "3.3",
+            "Top Speed": "250",
+            "Efficiency": "210",
+            "Fast Charge": "1000",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Renault Megane E-Tech EV60 220hp",
+            "Range": "360",
+            "Acceleration": "7.4",
+            "Top Speed": "160",
+            "Efficiency": "167",
+            "Fast Charge": "500",
+            "Brand": "Renault"
+        },
+        {
+            "Name": "MG ZS EV Long Range",
+            "Range": "365",
+            "Acceleration": "8.4",
+            "Top Speed": "175",
+            "Efficiency": "187",
+            "Fast Charge": "410",
+            "Brand": "MG"
+        },
+        {
+            "Name": "Fiat 500e Hatchback 42 kWh",
+            "Range": "235",
+            "Acceleration": "9.0",
+            "Top Speed": "150",
+            "Efficiency": "159",
+            "Fast Charge": "390",
+            "Brand": "Fiat"
+        },
+        {
+            "Name": "Mercedes EQC 400 4MATIC",
+            "Range": "370",
+            "Acceleration": "5.1",
+            "Top Speed": "180",
+            "Efficiency": "216",
+            "Fast Charge": "440",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "BYD TANG ",
+            "Range": "350",
+            "Acceleration": "4.6",
+            "Top Speed": "180",
+            "Efficiency": "240",
+            "Fast Charge": "330",
+            "Brand": "BYD"
+        },
+        {
+            "Name": "Renault Zoe ZE50 R110",
+            "Range": "315",
+            "Acceleration": "11.4",
+            "Top Speed": "135",
+            "Efficiency": "165",
+            "Fast Charge": "230",
+            "Brand": "Renault"
+        },
+        {
+            "Name": "Kia EV6 Long Range 2WD",
+            "Range": "410",
+            "Acceleration": "7.3",
+            "Top Speed": "185",
+            "Efficiency": "180",
+            "Fast Charge": "1070",
+            "Brand": "Kia"
+        },
+        {
+            "Name": "Volkswagen ID.4 Pro",
+            "Range": "410",
+            "Acceleration": "10.4",
+            "Top Speed": "160",
+            "Efficiency": "188",
+            "Fast Charge": "520",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "Mercedes EQS 580 4MATIC",
+            "Range": "605",
+            "Acceleration": "4.3",
+            "Top Speed": "210",
+            "Efficiency": "178",
+            "Fast Charge": "900",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Hyundai IONIQ 6 Long Range 2WD",
+            "Range": "475",
+            "Acceleration": "7.4",
+            "Top Speed": "185",
+            "Efficiency": "156",
+            "Fast Charge": "1240",
+            "Brand": "Hyundai"
+        },
+        {
+            "Name": "MG MG4 Electric 51 kWh",
+            "Range": "300",
+            "Acceleration": "7.7",
+            "Top Speed": "160",
+            "Efficiency": "169",
+            "Fast Charge": "340",
+            "Brand": "MG"
+        },
+        {
+            "Name": "Peugeot e-208 ",
+            "Range": "285",
+            "Acceleration": "8.1",
+            "Top Speed": "150",
+            "Efficiency": "158",
+            "Fast Charge": "460",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Toyota bZ4X FWD",
+            "Range": "335",
+            "Acceleration": "7.5",
+            "Top Speed": "160",
+            "Efficiency": "191",
+            "Fast Charge": "500",
+            "Brand": "Toyota"
+        },
+        {
+            "Name": "Volkswagen ID.4 Pro Performance",
+            "Range": "410",
+            "Acceleration": "8.5",
+            "Top Speed": "160",
+            "Efficiency": "188",
+            "Fast Charge": "520",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "Hyundai Kona Electric 65 kWh",
+            "Range": "400",
+            "Acceleration": "8.0",
+            "Top Speed": "167",
+            "Efficiency": "164",
+            "Fast Charge": "410",
+            "Brand": "Hyundai"
+        },
+        {
+            "Name": "Fisker Ocean One",
+            "Range": "510",
+            "Acceleration": "3.9",
+            "Top Speed": "200",
+            "Efficiency": "196",
+            "Fast Charge": "730",
+            "Brand": "Fisker"
+        },
+        {
+            "Name": "Lucid Air Dream Edition R",
+            "Range": "685",
+            "Acceleration": "2.9",
+            "Top Speed": "270",
+            "Efficiency": "172",
+            "Fast Charge": "870",
+            "Brand": "Lucid"
+        },
+        {
+            "Name": "MG MG5 Electric Long Range",
+            "Range": "335",
+            "Acceleration": "7.7",
+            "Top Speed": "185",
+            "Efficiency": "171",
+            "Fast Charge": "330",
+            "Brand": "MG"
+        },
+        {
+            "Name": "Hyundai IONIQ 5 Long Range 2WD",
+            "Range": "390",
+            "Acceleration": "7.3",
+            "Top Speed": "185",
+            "Efficiency": "190",
+            "Fast Charge": "1020",
+            "Brand": "Hyundai"
+        },
+        {
+            "Name": "Nissan Leaf ",
+            "Range": "235",
+            "Acceleration": "7.9",
+            "Top Speed": "144",
+            "Efficiency": "166",
+            "Fast Charge": "230",
+            "Brand": "Nissan"
+        },
+        {
+            "Name": "Opel Astra Electric",
+            "Range": "310",
+            "Acceleration": "8.5",
+            "Top Speed": "170",
+            "Efficiency": "164",
+            "Fast Charge": "500",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Volkswagen ID.4 Pure",
+            "Range": "285",
+            "Acceleration": "10.9",
+            "Top Speed": "160",
+            "Efficiency": "182",
+            "Fast Charge": "360",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "Tesla Model X Plaid",
+            "Range": "455",
+            "Acceleration": "2.6",
+            "Top Speed": "262",
+            "Efficiency": "209",
+            "Fast Charge": "630",
+            "Brand": "Tesla"
+        },
+        {
+            "Name": "Skoda Enyaq iV 60",
+            "Range": "325",
+            "Acceleration": "8.7",
+            "Top Speed": "160",
+            "Efficiency": "178",
+            "Fast Charge": "440",
+            "Brand": "Skoda"
+        },
+        {
+            "Name": "Mini Cooper SE ",
+            "Range": "180",
+            "Acceleration": "7.3",
+            "Top Speed": "150",
+            "Efficiency": "161",
+            "Fast Charge": "260",
+            "Brand": "Mini"
+        },
+        {
+            "Name": "Audi Q8 e-tron Sportback 55 quattro",
+            "Range": "525",
+            "Acceleration": "5.6",
+            "Top Speed": "200",
+            "Efficiency": "202",
+            "Fast Charge": "710",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Hyundai IONIQ 6 Standard Range 2WD",
+            "Range": "360",
+            "Acceleration": "8.8",
+            "Top Speed": "185",
+            "Efficiency": "150",
+            "Fast Charge": "880",
+            "Brand": "Hyundai"
+        },
+        {
+            "Name": "Kia EV6 Long Range AWD",
+            "Range": "400",
+            "Acceleration": "5.2",
+            "Top Speed": "185",
+            "Efficiency": "185",
+            "Fast Charge": "1050",
+            "Brand": "Kia"
+        },
+        {
+            "Name": "BMW iX M60",
+            "Range": "485",
+            "Acceleration": "3.8",
+            "Top Speed": "250",
+            "Efficiency": "217",
+            "Fast Charge": "650",
+            "Brand": "BMW"
+        },
+        {
+            "Name": "Volkswagen ID.3 Pro Performance",
+            "Range": "350",
+            "Acceleration": "7.3",
+            "Top Speed": "160",
+            "Efficiency": "166",
+            "Fast Charge": "470",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "CUPRA Born 150 kW - 58 kWh",
+            "Range": "350",
+            "Acceleration": "7.3",
+            "Top Speed": "160",
+            "Efficiency": "166",
+            "Fast Charge": "470",
+            "Brand": "CUPRA"
+        },
+        {
+            "Name": "Mercedes EQB 350 4MATIC",
+            "Range": "335",
+            "Acceleration": "6.2",
+            "Top Speed": "160",
+            "Efficiency": "199",
+            "Fast Charge": "480",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Jeep Avenger Electric 1st Edition",
+            "Range": "295",
+            "Acceleration": "9.0",
+            "Top Speed": "150",
+            "Efficiency": "172",
+            "Fast Charge": "470",
+            "Brand": "Jeep"
+        },
+        {
+            "Name": "Mazda MX-30 ",
+            "Range": "170",
+            "Acceleration": "9.7",
+            "Top Speed": "140",
+            "Efficiency": "176",
+            "Fast Charge": "210",
+            "Brand": "Mazda"
+        },
+        {
+            "Name": "Porsche Taycan Turbo S",
+            "Range": "400",
+            "Acceleration": "2.8",
+            "Top Speed": "260",
+            "Efficiency": "209",
+            "Fast Charge": "980",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "CUPRA Born 170 kW - 77 kWh",
+            "Range": "450",
+            "Acceleration": "7.0",
+            "Top Speed": "160",
+            "Efficiency": "171",
+            "Fast Charge": "570",
+            "Brand": "CUPRA"
+        },
+        {
+            "Name": "Jeep Avenger Electric ",
+            "Range": "300",
+            "Acceleration": "9.0",
+            "Top Speed": "150",
+            "Efficiency": "169",
+            "Fast Charge": "480",
+            "Brand": "Jeep"
+        },
+        {
+            "Name": "Rolls-Royce Spectre ",
+            "Range": "455",
+            "Acceleration": "4.5",
+            "Top Speed": "250",
+            "Efficiency": "220",
+            "Fast Charge": "540",
+            "Brand": "Rolls-Royce"
+        },
+        {
+            "Name": "Volvo XC40 Recharge Single Motor",
+            "Range": "345",
+            "Acceleration": "7.3",
+            "Top Speed": "180",
+            "Efficiency": "191",
+            "Fast Charge": "420",
+            "Brand": "Volvo"
+        },
+        {
+            "Name": "Tesla Model X Dual Motor",
+            "Range": "470",
+            "Acceleration": "3.9",
+            "Top Speed": "250",
+            "Efficiency": "202",
+            "Fast Charge": "650",
+            "Brand": "Tesla"
+        },
+        {
+            "Name": "Subaru Solterra AWD",
+            "Range": "320",
+            "Acceleration": "6.9",
+            "Top Speed": "160",
+            "Efficiency": "200",
+            "Fast Charge": "480",
+            "Brand": "Subaru"
+        },
+        {
+            "Name": "Polestar 2 Long Range Single Motor",
+            "Range": "440",
+            "Acceleration": "6.2",
+            "Top Speed": "205",
+            "Efficiency": "177",
+            "Fast Charge": "680",
+            "Brand": "Polestar"
+        },
+        {
+            "Name": "Renault Zoe ZE50 R135",
+            "Range": "310",
+            "Acceleration": "9.5",
+            "Top Speed": "140",
+            "Efficiency": "168",
+            "Fast Charge": "230",
+            "Brand": "Renault"
+        },
+        {
+            "Name": "Audi Q4 e-tron 35",
+            "Range": "285",
+            "Acceleration": "9.0",
+            "Top Speed": "160",
+            "Efficiency": "182",
+            "Fast Charge": "360",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Renault Twingo Electric",
+            "Range": "130",
+            "Acceleration": "12.6",
+            "Top Speed": "135",
+            "Efficiency": "164",
+            "Fast Charge": "-",
+            "Brand": "Renault"
+        },
+        {
+            "Name": "Mercedes EQE 300",
+            "Range": "515",
+            "Acceleration": "7.6",
+            "Top Speed": "210",
+            "Efficiency": "173",
+            "Fast Charge": "650",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Citroen e-C4 ",
+            "Range": "265",
+            "Acceleration": "9.7",
+            "Top Speed": "150",
+            "Efficiency": "170",
+            "Fast Charge": "420",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "Hyundai IONIQ 5 Standard Range 2WD",
+            "Range": "295",
+            "Acceleration": "8.5",
+            "Top Speed": "185",
+            "Efficiency": "183",
+            "Fast Charge": "720",
+            "Brand": "Hyundai"
+        },
+        {
+            "Name": "Mercedes EQB 250",
+            "Range": "345",
+            "Acceleration": "8.9",
+            "Top Speed": "160",
+            "Efficiency": "193",
+            "Fast Charge": "500",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Volkswagen ID.5 Pro",
+            "Range": "430",
+            "Acceleration": "10.4",
+            "Top Speed": "160",
+            "Efficiency": "179",
+            "Fast Charge": "540",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "MG Marvel R ",
+            "Range": "335",
+            "Acceleration": "7.9",
+            "Top Speed": "200",
+            "Efficiency": "194",
+            "Fast Charge": "400",
+            "Brand": "MG"
+        },
+        {
+            "Name": "Audi Q8 e-tron 50 quattro",
+            "Range": "415",
+            "Acceleration": "6.0",
+            "Top Speed": "200",
+            "Efficiency": "214",
+            "Fast Charge": "580",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Hyundai IONIQ 5 Long Range AWD",
+            "Range": "385",
+            "Acceleration": "5.1",
+            "Top Speed": "185",
+            "Efficiency": "192",
+            "Fast Charge": "1010",
+            "Brand": "Hyundai"
+        },
+        {
+            "Name": "Peugeot e-2008 SUV ",
+            "Range": "255",
+            "Acceleration": "8.5",
+            "Top Speed": "150",
+            "Efficiency": "176",
+            "Fast Charge": "410",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Citroen e-C4 X ",
+            "Range": "265",
+            "Acceleration": "9.7",
+            "Top Speed": "150",
+            "Efficiency": "170",
+            "Fast Charge": "420",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "Lotus Eletre ",
+            "Range": "520",
+            "Acceleration": "4.5",
+            "Top Speed": "250",
+            "Efficiency": "206",
+            "Fast Charge": "1090",
+            "Brand": "Lotus"
+        },
+        {
+            "Name": "Audi e-tron GT quattro",
+            "Range": "420",
+            "Acceleration": "4.1",
+            "Top Speed": "245",
+            "Efficiency": "202",
+            "Fast Charge": "1030",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Volvo XC40 Recharge Twin Motor",
+            "Range": "390",
+            "Acceleration": "4.8",
+            "Top Speed": "180",
+            "Efficiency": "203",
+            "Fast Charge": "580",
+            "Brand": "Volvo"
+        },
+        {
+            "Name": "Mercedes EQA 250+",
+            "Range": "375",
+            "Acceleration": "8.6",
+            "Top Speed": "160",
+            "Efficiency": "188",
+            "Fast Charge": "520",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Polestar 3 Long Range Dual motor",
+            "Range": "490",
+            "Acceleration": "5.0",
+            "Top Speed": "210",
+            "Efficiency": "218",
+            "Fast Charge": "640",
+            "Brand": "Polestar"
+        },
+        {
+            "Name": "Opel Mokka-e ",
+            "Range": "255",
+            "Acceleration": "9.2",
+            "Top Speed": "150",
+            "Efficiency": "176",
+            "Fast Charge": "410",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Dacia Spring Electric 65 Extreme",
+            "Range": "160",
+            "Acceleration": "13.7",
+            "Top Speed": "125",
+            "Efficiency": "156",
+            "Fast Charge": "170",
+            "Brand": "Dacia"
+        },
+        {
+            "Name": "Porsche Taycan ",
+            "Range": "410",
+            "Acceleration": "5.4",
+            "Top Speed": "230",
+            "Efficiency": "173",
+            "Fast Charge": "1010",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Mercedes EQE SUV 350+",
+            "Range": "470",
+            "Acceleration": "7.0",
+            "Top Speed": "210",
+            "Efficiency": "193",
+            "Fast Charge": "700",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Nissan Leaf e+",
+            "Range": "340",
+            "Acceleration": "6.9",
+            "Top Speed": "157",
+            "Efficiency": "174",
+            "Fast Charge": "240",
+            "Brand": "Nissan"
+        },
+        {
+            "Name": "Opel Corsa-e ",
+            "Range": "285",
+            "Acceleration": "8.1",
+            "Top Speed": "150",
+            "Efficiency": "158",
+            "Fast Charge": "460",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Volvo XC40 Recharge Single Motor ER",
+            "Range": "405",
+            "Acceleration": "7.3",
+            "Top Speed": "180",
+            "Efficiency": "195",
+            "Fast Charge": "600",
+            "Brand": "Volvo"
+        },
+        {
+            "Name": "Volkswagen ID.5 GTX",
+            "Range": "405",
+            "Acceleration": "6.3",
+            "Top Speed": "180",
+            "Efficiency": "190",
+            "Fast Charge": "560",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "NIO EL7 100 kWh",
+            "Range": "430",
+            "Acceleration": "3.9",
+            "Top Speed": "200",
+            "Efficiency": "209",
+            "Fast Charge": "450",
+            "Brand": "NIO"
+        },
+        {
+            "Name": "Volkswagen e-Up! ",
+            "Range": "205",
+            "Acceleration": "11.9",
+            "Top Speed": "130",
+            "Efficiency": "158",
+            "Fast Charge": "170",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "Skoda Enyaq Coupe iV 80",
+            "Range": "445",
+            "Acceleration": "8.7",
+            "Top Speed": "160",
+            "Efficiency": "173",
+            "Fast Charge": "560",
+            "Brand": "Skoda"
+        },
+        {
+            "Name": "Audi SQ8 e-tron ",
+            "Range": "445",
+            "Acceleration": "4.5",
+            "Top Speed": "210",
+            "Efficiency": "238",
+            "Fast Charge": "600",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Audi Q4 e-tron 50 quattro",
+            "Range": "385",
+            "Acceleration": "6.2",
+            "Top Speed": "180",
+            "Efficiency": "199",
+            "Fast Charge": "490",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Jaguar I-Pace EV400",
+            "Range": "380",
+            "Acceleration": "4.8",
+            "Top Speed": "200",
+            "Efficiency": "223",
+            "Fast Charge": "360",
+            "Brand": "Jaguar"
+        },
+        {
+            "Name": "Hyundai Kona Electric 39 kWh",
+            "Range": "250",
+            "Acceleration": "9.9",
+            "Top Speed": "155",
+            "Efficiency": "157",
+            "Fast Charge": "220",
+            "Brand": "Hyundai"
+        },
+        {
+            "Name": "Polestar 2 Standard Range Single Motor",
+            "Range": "385",
+            "Acceleration": "6.4",
+            "Top Speed": "205",
+            "Efficiency": "174",
+            "Fast Charge": "620",
+            "Brand": "Polestar"
+        },
+        {
+            "Name": "Skoda Enyaq Coupe iV RS",
+            "Range": "405",
+            "Acceleration": "6.5",
+            "Top Speed": "180",
+            "Efficiency": "190",
+            "Fast Charge": "560",
+            "Brand": "Skoda"
+        },
+        {
+            "Name": "Fisker Ocean Sport",
+            "Range": "380",
+            "Acceleration": "7.4",
+            "Top Speed": "160",
+            "Efficiency": "197",
+            "Fast Charge": "480",
+            "Brand": "Fisker"
+        },
+        {
+            "Name": "XPENG P7 RWD Long Range",
+            "Range": "500",
+            "Acceleration": "6.7",
+            "Top Speed": "200",
+            "Efficiency": "165",
+            "Fast Charge": "700",
+            "Brand": "XPENG"
+        },
+        {
+            "Name": "NIO ET7 75 kWh",
+            "Range": "400",
+            "Acceleration": "3.8",
+            "Top Speed": "200",
+            "Efficiency": "176",
+            "Fast Charge": "540",
+            "Brand": "NIO"
+        },
+        {
+            "Name": "Peugeot e-308 ",
+            "Range": "310",
+            "Acceleration": "9.0",
+            "Top Speed": "150",
+            "Efficiency": "165",
+            "Fast Charge": "460",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Fisker Ocean Ultra",
+            "Range": "505",
+            "Acceleration": "4.2",
+            "Top Speed": "200",
+            "Efficiency": "198",
+            "Fast Charge": "730",
+            "Brand": "Fisker"
+        },
+        {
+            "Name": "Mercedes EQS SUV 580 4MATIC",
+            "Range": "485",
+            "Acceleration": "4.6",
+            "Top Speed": "210",
+            "Efficiency": "224",
+            "Fast Charge": "630",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "NIO ET5 100 kWh",
+            "Range": "495",
+            "Acceleration": "4.0",
+            "Top Speed": "200",
+            "Efficiency": "182",
+            "Fast Charge": "520",
+            "Brand": "NIO"
+        },
+        {
+            "Name": "Smart EQ fortwo coupe",
+            "Range": "100",
+            "Acceleration": "11.6",
+            "Top Speed": "130",
+            "Efficiency": "167",
+            "Fast Charge": "-",
+            "Brand": "Smart"
+        },
+        {
+            "Name": "MG ZS EV Standard Range",
+            "Range": "270",
+            "Acceleration": "8.6",
+            "Top Speed": "175",
+            "Efficiency": "181",
+            "Fast Charge": "260",
+            "Brand": "MG"
+        },
+        {
+            "Name": "Lexus UX 300e",
+            "Range": "235",
+            "Acceleration": "7.5",
+            "Top Speed": "160",
+            "Efficiency": "191",
+            "Fast Charge": "150",
+            "Brand": "Lexus"
+        },
+        {
+            "Name": "MG Marvel R Performance",
+            "Range": "330",
+            "Acceleration": "4.9",
+            "Top Speed": "200",
+            "Efficiency": "197",
+            "Fast Charge": "390",
+            "Brand": "MG"
+        },
+        {
+            "Name": "Volkswagen ID.5 Pro Performance",
+            "Range": "430",
+            "Acceleration": "8.4",
+            "Top Speed": "160",
+            "Efficiency": "179",
+            "Fast Charge": "540",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "Volkswagen ID.3 Pro S - 4 Seats",
+            "Range": "450",
+            "Acceleration": "7.9",
+            "Top Speed": "160",
+            "Efficiency": "171",
+            "Fast Charge": "570",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "SsangYong Korando e-Motion",
+            "Range": "290",
+            "Acceleration": "8.5",
+            "Top Speed": "156",
+            "Efficiency": "193",
+            "Fast Charge": "330",
+            "Brand": "SsangYong"
+        },
+        {
+            "Name": "Volkswagen ID.4 GTX",
+            "Range": "400",
+            "Acceleration": "6.3",
+            "Top Speed": "180",
+            "Efficiency": "193",
+            "Fast Charge": "560",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "Lucid Air Grand Touring",
+            "Range": "665",
+            "Acceleration": "3.2",
+            "Top Speed": "270",
+            "Efficiency": "168",
+            "Fast Charge": "840",
+            "Brand": "Lucid"
+        },
+        {
+            "Name": "Honda e Advance",
+            "Range": "170",
+            "Acceleration": "8.3",
+            "Top Speed": "145",
+            "Efficiency": "168",
+            "Fast Charge": "180",
+            "Brand": "Honda"
+        },
+        {
+            "Name": "Mercedes EQV 300 Long",
+            "Range": "305",
+            "Acceleration": "12.1",
+            "Top Speed": "160",
+            "Efficiency": "295",
+            "Fast Charge": "310",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "VinFast VF 9 Extended Range",
+            "Range": "520",
+            "Acceleration": "6.5",
+            "Top Speed": "200",
+            "Efficiency": "237",
+            "Fast Charge": "520",
+            "Brand": "VinFast"
+        },
+        {
+            "Name": "Polestar 2 Long Range Dual Motor",
+            "Range": "420",
+            "Acceleration": "4.5",
+            "Top Speed": "205",
+            "Efficiency": "186",
+            "Fast Charge": "650",
+            "Brand": "Polestar"
+        },
+        {
+            "Name": "Nissan Ariya e-4ORCE 87kWh",
+            "Range": "420",
+            "Acceleration": "5.7",
+            "Top Speed": "200",
+            "Efficiency": "207",
+            "Fast Charge": "500",
+            "Brand": "Nissan"
+        },
+        {
+            "Name": "Abarth 500e Scorpionissima",
+            "Range": "225",
+            "Acceleration": "7.0",
+            "Top Speed": "155",
+            "Efficiency": "166",
+            "Fast Charge": "370",
+            "Brand": "Abarth"
+        },
+        {
+            "Name": "Smart #1 Brabus",
+            "Range": "335",
+            "Acceleration": "3.9",
+            "Top Speed": "180",
+            "Efficiency": "191",
+            "Fast Charge": "500",
+            "Brand": "Smart"
+        },
+        {
+            "Name": "Lucid Air Pure",
+            "Range": "560",
+            "Acceleration": "4.2",
+            "Top Speed": "200",
+            "Efficiency": "157",
+            "Fast Charge": "980",
+            "Brand": "Lucid"
+        },
+        {
+            "Name": "Volvo EX90 Twin Motor Performance",
+            "Range": "440",
+            "Acceleration": "4.9",
+            "Top Speed": "180",
+            "Efficiency": "243",
+            "Fast Charge": "570",
+            "Brand": "Volvo"
+        },
+        {
+            "Name": "Mercedes EQS AMG 53 4MATIC+",
+            "Range": "565",
+            "Acceleration": "3.4",
+            "Top Speed": "250",
+            "Efficiency": "191",
+            "Fast Charge": "840",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Maserati GranTurismo Folgore",
+            "Range": "425",
+            "Acceleration": "2.7",
+            "Top Speed": "320",
+            "Efficiency": "195",
+            "Fast Charge": "990",
+            "Brand": "Maserati"
+        },
+        {
+            "Name": "Mercedes EQB 300 4MATIC",
+            "Range": "335",
+            "Acceleration": "8.0",
+            "Top Speed": "160",
+            "Efficiency": "199",
+            "Fast Charge": "480",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Mercedes EQE AMG 43 4MATIC",
+            "Range": "485",
+            "Acceleration": "4.2",
+            "Top Speed": "210",
+            "Efficiency": "187",
+            "Fast Charge": "720",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Volvo C40 Recharge Twin Motor",
+            "Range": "400",
+            "Acceleration": "4.7",
+            "Top Speed": "180",
+            "Efficiency": "198",
+            "Fast Charge": "600",
+            "Brand": "Volvo"
+        },
+        {
+            "Name": "Genesis GV60 Premium",
+            "Range": "390",
+            "Acceleration": "7.8",
+            "Top Speed": "185",
+            "Efficiency": "190",
+            "Fast Charge": "1020",
+            "Brand": "Genesis"
+        },
+        {
+            "Name": "Ford Mustang Mach-E ER RWD",
+            "Range": "455",
+            "Acceleration": "7.0",
+            "Top Speed": "180",
+            "Efficiency": "200",
+            "Fast Charge": "400",
+            "Brand": "Ford"
+        },
+        {
+            "Name": "XPENG G9 RWD Long Range",
+            "Range": "470",
+            "Acceleration": "6.4",
+            "Top Speed": "200",
+            "Efficiency": "200",
+            "Fast Charge": "980",
+            "Brand": "XPENG"
+        },
+        {
+            "Name": "Volvo C40 Recharge Single Motor ER",
+            "Range": "420",
+            "Acceleration": "7.3",
+            "Top Speed": "180",
+            "Efficiency": "188",
+            "Fast Charge": "630",
+            "Brand": "Volvo"
+        },
+        {
+            "Name": "Volvo EX90 Twin Motor",
+            "Range": "455",
+            "Acceleration": "5.9",
+            "Top Speed": "180",
+            "Efficiency": "235",
+            "Fast Charge": "590",
+            "Brand": "Volvo"
+        },
+        {
+            "Name": "Renault Megane E-Tech EV60 130hp",
+            "Range": "365",
+            "Acceleration": "10.5",
+            "Top Speed": "150",
+            "Efficiency": "164",
+            "Fast Charge": "510",
+            "Brand": "Renault"
+        },
+        {
+            "Name": "Mercedes EQA 250",
+            "Range": "355",
+            "Acceleration": "8.6",
+            "Top Speed": "160",
+            "Efficiency": "187",
+            "Fast Charge": "510",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Toyota bZ4X AWD",
+            "Range": "330",
+            "Acceleration": "6.9",
+            "Top Speed": "160",
+            "Efficiency": "194",
+            "Fast Charge": "490",
+            "Brand": "Toyota"
+        },
+        {
+            "Name": "Porsche Taycan 4S",
+            "Range": "395",
+            "Acceleration": "4.0",
+            "Top Speed": "250",
+            "Efficiency": "180",
+            "Fast Charge": "970",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Skoda Enyaq iV 80x",
+            "Range": "400",
+            "Acceleration": "6.9",
+            "Top Speed": "160",
+            "Efficiency": "193",
+            "Fast Charge": "500",
+            "Brand": "Skoda"
+        },
+        {
+            "Name": "Hyundai Kona Electric 48 kWh",
+            "Range": "300",
+            "Acceleration": "10.0",
+            "Top Speed": "155",
+            "Efficiency": "161",
+            "Fast Charge": "290",
+            "Brand": "Hyundai"
+        },
+        {
+            "Name": "Nissan Ariya 63kWh",
+            "Range": "320",
+            "Acceleration": "7.5",
+            "Top Speed": "160",
+            "Efficiency": "197",
+            "Fast Charge": "430",
+            "Brand": "Nissan"
+        },
+        {
+            "Name": "ORA Funky Cat 48 kWh",
+            "Range": "260",
+            "Acceleration": "8.3",
+            "Top Speed": "160",
+            "Efficiency": "175",
+            "Fast Charge": "240",
+            "Brand": "ORA"
+        },
+        {
+            "Name": "Fisker Ocean Extreme",
+            "Range": "510",
+            "Acceleration": "3.9",
+            "Top Speed": "200",
+            "Efficiency": "196",
+            "Fast Charge": "730",
+            "Brand": "Fisker"
+        },
+        {
+            "Name": "Polestar 3 Long Range Performance",
+            "Range": "470",
+            "Acceleration": "4.7",
+            "Top Speed": "210",
+            "Efficiency": "228",
+            "Fast Charge": "610",
+            "Brand": "Polestar"
+        },
+        {
+            "Name": "Mercedes EQA 350 4MATIC",
+            "Range": "350",
+            "Acceleration": "6.0",
+            "Top Speed": "160",
+            "Efficiency": "190",
+            "Fast Charge": "500",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Mercedes EQE 500 4MATIC",
+            "Range": "500",
+            "Acceleration": "4.7",
+            "Top Speed": "210",
+            "Efficiency": "181",
+            "Fast Charge": "750",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Renault Megane E-Tech EV40 130hp",
+            "Range": "250",
+            "Acceleration": "10.0",
+            "Top Speed": "150",
+            "Efficiency": "160",
+            "Fast Charge": "360",
+            "Brand": "Renault"
+        },
+        {
+            "Name": "Porsche Taycan 4 Cross Turismo",
+            "Range": "425",
+            "Acceleration": "5.1",
+            "Top Speed": "220",
+            "Efficiency": "197",
+            "Fast Charge": "1050",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Aiways U5 ",
+            "Range": "315",
+            "Acceleration": "7.5",
+            "Top Speed": "150",
+            "Efficiency": "190",
+            "Fast Charge": "380",
+            "Brand": "Aiways"
+        },
+        {
+            "Name": "Opel Astra Sports Tourer Electric",
+            "Range": "300",
+            "Acceleration": "8.5",
+            "Top Speed": "170",
+            "Efficiency": "169",
+            "Fast Charge": "480",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "NIO ET7 100 kWh",
+            "Range": "505",
+            "Acceleration": "3.8",
+            "Top Speed": "200",
+            "Efficiency": "178",
+            "Fast Charge": "530",
+            "Brand": "NIO"
+        },
+        {
+            "Name": "XPENG P7 Wing Edition",
+            "Range": "465",
+            "Acceleration": "4.1",
+            "Top Speed": "200",
+            "Efficiency": "178",
+            "Fast Charge": "650",
+            "Brand": "XPENG"
+        },
+        {
+            "Name": "Mercedes EQE SUV 500 4MATIC",
+            "Range": "455",
+            "Acceleration": "5.0",
+            "Top Speed": "210",
+            "Efficiency": "199",
+            "Fast Charge": "680",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Peugeot e-308 SW ",
+            "Range": "300",
+            "Acceleration": "9.0",
+            "Top Speed": "150",
+            "Efficiency": "170",
+            "Fast Charge": "450",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "JAC iEV7s ",
+            "Range": "225",
+            "Acceleration": "12.0",
+            "Top Speed": "132",
+            "Efficiency": "173",
+            "Fast Charge": "160",
+            "Brand": "JAC"
+        },
+        {
+            "Name": "Mercedes EQS 500 4MATIC",
+            "Range": "605",
+            "Acceleration": "4.8",
+            "Top Speed": "210",
+            "Efficiency": "178",
+            "Fast Charge": "900",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Genesis GV70 Electrified Sport",
+            "Range": "350",
+            "Acceleration": "4.2",
+            "Top Speed": "235",
+            "Efficiency": "211",
+            "Fast Charge": "860",
+            "Brand": "Genesis"
+        },
+        {
+            "Name": "Mercedes EQS SUV 450+",
+            "Range": "495",
+            "Acceleration": "6.7",
+            "Top Speed": "210",
+            "Efficiency": "219",
+            "Fast Charge": "650",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Mercedes EQE AMG 53 4MATIC+",
+            "Range": "480",
+            "Acceleration": "3.5",
+            "Top Speed": "240",
+            "Efficiency": "189",
+            "Fast Charge": "720",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Kia EV6 Standard Range 2WD",
+            "Range": "305",
+            "Acceleration": "8.5",
+            "Top Speed": "185",
+            "Efficiency": "177",
+            "Fast Charge": "750",
+            "Brand": "Kia"
+        },
+        {
+            "Name": "Hongqi E-HS9 84 kWh",
+            "Range": "305",
+            "Acceleration": "6.5",
+            "Top Speed": "200",
+            "Efficiency": "251",
+            "Fast Charge": "420",
+            "Brand": "Hongqi"
+        },
+        {
+            "Name": "Mercedes EQA 300 4MATIC",
+            "Range": "350",
+            "Acceleration": "7.7",
+            "Top Speed": "160",
+            "Efficiency": "190",
+            "Fast Charge": "500",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Porsche Taycan Plus",
+            "Range": "475",
+            "Acceleration": "5.4",
+            "Top Speed": "230",
+            "Efficiency": "176",
+            "Fast Charge": "1170",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Renault Kangoo E-Tech Electric",
+            "Range": "215",
+            "Acceleration": "12.6",
+            "Top Speed": "132",
+            "Efficiency": "205",
+            "Fast Charge": "230",
+            "Brand": "Renault"
+        },
+        {
+            "Name": "Audi Q4 e-tron 45 quattro",
+            "Range": "385",
+            "Acceleration": "6.9",
+            "Top Speed": "180",
+            "Efficiency": "199",
+            "Fast Charge": "490",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Aiways U6 ",
+            "Range": "350",
+            "Acceleration": "7.0",
+            "Top Speed": "160",
+            "Efficiency": "171",
+            "Fast Charge": "430",
+            "Brand": "Aiways"
+        },
+        {
+            "Name": "Volvo C40 Recharge Single Motor",
+            "Range": "355",
+            "Acceleration": "7.3",
+            "Top Speed": "180",
+            "Efficiency": "186",
+            "Fast Charge": "430",
+            "Brand": "Volvo"
+        },
+        {
+            "Name": "Ford Mustang Mach-E ER AWD",
+            "Range": "440",
+            "Acceleration": "5.8",
+            "Top Speed": "180",
+            "Efficiency": "207",
+            "Fast Charge": "390",
+            "Brand": "Ford"
+        },
+        {
+            "Name": "Volkswagen ID.4 Pro 4MOTION",
+            "Range": "405",
+            "Acceleration": "6.9",
+            "Top Speed": "180",
+            "Efficiency": "190",
+            "Fast Charge": "510",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "Mercedes EQE 350 4MATIC",
+            "Range": "500",
+            "Acceleration": "6.3",
+            "Top Speed": "210",
+            "Efficiency": "181",
+            "Fast Charge": "750",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Audi Q4 Sportback e-tron 40",
+            "Range": "425",
+            "Acceleration": "8.5",
+            "Top Speed": "160",
+            "Efficiency": "180",
+            "Fast Charge": "540",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Fiat 500e Hatchback 24 kWh",
+            "Range": "135",
+            "Acceleration": "9.0",
+            "Top Speed": "135",
+            "Efficiency": "158",
+            "Fast Charge": "230",
+            "Brand": "Fiat"
+        },
+        {
+            "Name": "Fiat 500e 3+1 42 kWh",
+            "Range": "235",
+            "Acceleration": "9.0",
+            "Top Speed": "150",
+            "Efficiency": "159",
+            "Fast Charge": "390",
+            "Brand": "Fiat"
+        },
+        {
+            "Name": "DS 3 E-Tense",
+            "Range": "300",
+            "Acceleration": "9.0",
+            "Top Speed": "150",
+            "Efficiency": "169",
+            "Fast Charge": "480",
+            "Brand": "DS"
+        },
+        {
+            "Name": "Volkswagen ID.4 Pure Performance",
+            "Range": "285",
+            "Acceleration": "9.0",
+            "Top Speed": "160",
+            "Efficiency": "182",
+            "Fast Charge": "360",
+            "Brand": "Volkswagen"
+        },
+        {
+            "Name": "XPENG G9 AWD Long Range",
+            "Range": "440",
+            "Acceleration": "3.9",
+            "Top Speed": "200",
+            "Efficiency": "214",
+            "Fast Charge": "920",
+            "Brand": "XPENG"
+        },
+        {
+            "Name": "Ford Mustang Mach-E GT",
+            "Range": "425",
+            "Acceleration": "4.4",
+            "Top Speed": "200",
+            "Efficiency": "214",
+            "Fast Charge": "380",
+            "Brand": "Ford"
+        },
+        {
+            "Name": "Ford Mustang Mach-E SR RWD",
+            "Range": "355",
+            "Acceleration": "6.9",
+            "Top Speed": "180",
+            "Efficiency": "197",
+            "Fast Charge": "370",
+            "Brand": "Ford"
+        },
+        {
+            "Name": "Mercedes EQS SUV 450 4MATIC",
+            "Range": "485",
+            "Acceleration": "6.0",
+            "Top Speed": "210",
+            "Efficiency": "224",
+            "Fast Charge": "630",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "MG MG5 Electric Standard Range",
+            "Range": "265",
+            "Acceleration": "7.7",
+            "Top Speed": "185",
+            "Efficiency": "174",
+            "Fast Charge": "320",
+            "Brand": "MG"
+        },
+        {
+            "Name": "Porsche Taycan 4S Plus",
+            "Range": "460",
+            "Acceleration": "4.0",
+            "Top Speed": "250",
+            "Efficiency": "182",
+            "Fast Charge": "1130",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Genesis G80 Electrified Luxury",
+            "Range": "440",
+            "Acceleration": "4.9",
+            "Top Speed": "225",
+            "Efficiency": "188",
+            "Fast Charge": "880",
+            "Brand": "Genesis"
+        },
+        {
+            "Name": "Polestar 2 Long Range Performance",
+            "Range": "410",
+            "Acceleration": "4.2",
+            "Top Speed": "205",
+            "Efficiency": "190",
+            "Fast Charge": "630",
+            "Brand": "Polestar"
+        },
+        {
+            "Name": "Lucid Air Dream Edition P",
+            "Range": "645",
+            "Acceleration": "2.7",
+            "Top Speed": "270",
+            "Efficiency": "183",
+            "Fast Charge": "820",
+            "Brand": "Lucid"
+        },
+        {
+            "Name": "Kia e-Soul 64 kWh",
+            "Range": "370",
+            "Acceleration": "7.9",
+            "Top Speed": "167",
+            "Efficiency": "173",
+            "Fast Charge": "350",
+            "Brand": "Kia"
+        },
+        {
+            "Name": "CUPRA Born 110 kW - 45 kWh",
+            "Range": "275",
+            "Acceleration": "8.9",
+            "Top Speed": "160",
+            "Efficiency": "164",
+            "Fast Charge": "410",
+            "Brand": "CUPRA"
+        },
+        {
+            "Name": "Mercedes EQE SUV 350 4MATIC",
+            "Range": "455",
+            "Acceleration": "6.5",
+            "Top Speed": "210",
+            "Efficiency": "199",
+            "Fast Charge": "680",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Mercedes EQE SUV AMG 53 4MATIC+",
+            "Range": "425",
+            "Acceleration": "3.5",
+            "Top Speed": "240",
+            "Efficiency": "213",
+            "Fast Charge": "630",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "NIO ET5 75 kWh",
+            "Range": "395",
+            "Acceleration": "4.0",
+            "Top Speed": "200",
+            "Efficiency": "178",
+            "Fast Charge": "530",
+            "Brand": "NIO"
+        },
+        {
+            "Name": "Fiat 500e 3+1 24 kWh",
+            "Range": "135",
+            "Acceleration": "9.0",
+            "Top Speed": "135",
+            "Efficiency": "158",
+            "Fast Charge": "230",
+            "Brand": "Fiat"
+        },
+        {
+            "Name": "Lucid Air Touring",
+            "Range": "550",
+            "Acceleration": "3.4",
+            "Top Speed": "250",
+            "Efficiency": "160",
+            "Fast Charge": "960",
+            "Brand": "Lucid"
+        },
+        {
+            "Name": "Lotus Eletre R",
+            "Range": "450",
+            "Acceleration": "2.9",
+            "Top Speed": "260",
+            "Efficiency": "238",
+            "Fast Charge": "940",
+            "Brand": "Lotus"
+        },
+        {
+            "Name": "Porsche Taycan GTS",
+            "Range": "450",
+            "Acceleration": "3.7",
+            "Top Speed": "250",
+            "Efficiency": "186",
+            "Fast Charge": "1110",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Mercedes EQS 450 4MATIC",
+            "Range": "615",
+            "Acceleration": "5.6",
+            "Top Speed": "210",
+            "Efficiency": "175",
+            "Fast Charge": "920",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Audi Q4 Sportback e-tron 50 quattro",
+            "Range": "400",
+            "Acceleration": "6.2",
+            "Top Speed": "180",
+            "Efficiency": "192",
+            "Fast Charge": "500",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Audi Q8 e-tron Sportback 50 quattro",
+            "Range": "440",
+            "Acceleration": "6.0",
+            "Top Speed": "200",
+            "Efficiency": "202",
+            "Fast Charge": "610",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Porsche Taycan Turbo",
+            "Range": "415",
+            "Acceleration": "3.2",
+            "Top Speed": "260",
+            "Efficiency": "202",
+            "Fast Charge": "1020",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Citroen e-Berlingo M 50 kWh",
+            "Range": "200",
+            "Acceleration": "11.7",
+            "Top Speed": "135",
+            "Efficiency": "225",
+            "Fast Charge": "320",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "Smart EQ fortwo cabrio",
+            "Range": "95",
+            "Acceleration": "11.9",
+            "Top Speed": "130",
+            "Efficiency": "176",
+            "Fast Charge": "-",
+            "Brand": "Smart"
+        },
+        {
+            "Name": "Seres 3 ",
+            "Range": "260",
+            "Acceleration": "8.9",
+            "Top Speed": "155",
+            "Efficiency": "196",
+            "Fast Charge": "240",
+            "Brand": "Seres"
+        },
+        {
+            "Name": "CUPRA Born 170 kW - 58 kWh",
+            "Range": "345",
+            "Acceleration": "6.6",
+            "Top Speed": "160",
+            "Efficiency": "168",
+            "Fast Charge": "460",
+            "Brand": "CUPRA"
+        },
+        {
+            "Name": "Mercedes EQS SUV 500 4MATIC",
+            "Range": "485",
+            "Acceleration": "5.2",
+            "Top Speed": "210",
+            "Efficiency": "224",
+            "Fast Charge": "630",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Mini Cooper SE Convertible",
+            "Range": "170",
+            "Acceleration": "8.2",
+            "Top Speed": "150",
+            "Efficiency": "170",
+            "Fast Charge": "240",
+            "Brand": "Mini"
+        },
+        {
+            "Name": "Audi SQ8 e-tron Sportback ",
+            "Range": "470",
+            "Acceleration": "4.5",
+            "Top Speed": "210",
+            "Efficiency": "226",
+            "Fast Charge": "630",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Skoda Enyaq Coupe iV 60",
+            "Range": "335",
+            "Acceleration": "8.8",
+            "Top Speed": "160",
+            "Efficiency": "173",
+            "Fast Charge": "450",
+            "Brand": "Skoda"
+        },
+        {
+            "Name": "Peugeot e-Rifter Long 50 kWh",
+            "Range": "195",
+            "Acceleration": "11.7",
+            "Top Speed": "135",
+            "Efficiency": "231",
+            "Fast Charge": "310",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Skoda Enyaq Coupe iV 80x",
+            "Range": "430",
+            "Acceleration": "7.0",
+            "Top Speed": "160",
+            "Efficiency": "179",
+            "Fast Charge": "540",
+            "Brand": "Skoda"
+        },
+        {
+            "Name": "XPENG G9 RWD Standard Range",
+            "Range": "375",
+            "Acceleration": "6.4",
+            "Top Speed": "200",
+            "Efficiency": "200",
+            "Fast Charge": "780",
+            "Brand": "XPENG"
+        },
+        {
+            "Name": "XPENG P7 AWD Performance",
+            "Range": "470",
+            "Acceleration": "4.1",
+            "Top Speed": "200",
+            "Efficiency": "176",
+            "Fast Charge": "650",
+            "Brand": "XPENG"
+        },
+        {
+            "Name": "Mercedes EQE 350",
+            "Range": "515",
+            "Acceleration": "6.4",
+            "Top Speed": "210",
+            "Efficiency": "173",
+            "Fast Charge": "650",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Audi Q4 Sportback e-tron 35",
+            "Range": "295",
+            "Acceleration": "9.0",
+            "Top Speed": "160",
+            "Efficiency": "176",
+            "Fast Charge": "370",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Genesis GV60 Sport",
+            "Range": "380",
+            "Acceleration": "5.5",
+            "Top Speed": "200",
+            "Efficiency": "195",
+            "Fast Charge": "990",
+            "Brand": "Genesis"
+        },
+        {
+            "Name": "VinFast VF 8 Plus Standard Range",
+            "Range": "400",
+            "Acceleration": "5.5",
+            "Top Speed": "200",
+            "Efficiency": "205",
+            "Fast Charge": "560",
+            "Brand": "VinFast"
+        },
+        {
+            "Name": "VinFast VF 9 Standard Range",
+            "Range": "400",
+            "Acceleration": "6.5",
+            "Top Speed": "200",
+            "Efficiency": "230",
+            "Fast Charge": "540",
+            "Brand": "VinFast"
+        },
+        {
+            "Name": "Mercedes EQB 250+",
+            "Range": "365",
+            "Acceleration": "8.9",
+            "Top Speed": "160",
+            "Efficiency": "193",
+            "Fast Charge": "490",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Toyota PROACE Verso M 75 kWh",
+            "Range": "265",
+            "Acceleration": "13.1",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "290",
+            "Brand": "Toyota"
+        },
+        {
+            "Name": "Toyota Proace City Verso Electric L1 50 kWh",
+            "Range": "205",
+            "Acceleration": "11.2",
+            "Top Speed": "135",
+            "Efficiency": "220",
+            "Fast Charge": "330",
+            "Brand": "Toyota"
+        },
+        {
+            "Name": "Fiat 500e Cabrio 42 kWh",
+            "Range": "230",
+            "Acceleration": "9.0",
+            "Top Speed": "150",
+            "Efficiency": "162",
+            "Fast Charge": "380",
+            "Brand": "Fiat"
+        },
+        {
+            "Name": "ORA Funky Cat GT",
+            "Range": "330",
+            "Acceleration": "8.2",
+            "Top Speed": "160",
+            "Efficiency": "180",
+            "Fast Charge": "230",
+            "Brand": "ORA"
+        },
+        {
+            "Name": "Peugeot e-Expert Combi Standard 75 kWh",
+            "Range": "265",
+            "Acceleration": "14.3",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "290",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "ORA Funky Cat 63 kWh",
+            "Range": "340",
+            "Acceleration": "8.2",
+            "Top Speed": "160",
+            "Efficiency": "174",
+            "Fast Charge": "240",
+            "Brand": "ORA"
+        },
+        {
+            "Name": "Mercedes EQV 300 Extra-Long",
+            "Range": "305",
+            "Acceleration": "12.1",
+            "Top Speed": "160",
+            "Efficiency": "295",
+            "Fast Charge": "310",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Skoda Enyaq iV RS",
+            "Range": "390",
+            "Acceleration": "6.2",
+            "Top Speed": "180",
+            "Efficiency": "197",
+            "Fast Charge": "540",
+            "Brand": "Skoda"
+        },
+        {
+            "Name": "Ford Mustang Mach-E SR AWD",
+            "Range": "345",
+            "Acceleration": "6.3",
+            "Top Speed": "180",
+            "Efficiency": "203",
+            "Fast Charge": "360",
+            "Brand": "Ford"
+        },
+        {
+            "Name": "Porsche Taycan Sport Turismo",
+            "Range": "380",
+            "Acceleration": "5.4",
+            "Top Speed": "230",
+            "Efficiency": "187",
+            "Fast Charge": "930",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Kia e-Soul 39.2 kWh",
+            "Range": "230",
+            "Acceleration": "9.9",
+            "Top Speed": "157",
+            "Efficiency": "170",
+            "Fast Charge": "200",
+            "Brand": "Kia"
+        },
+        {
+            "Name": "Porsche Taycan 4S Cross Turismo",
+            "Range": "425",
+            "Acceleration": "4.1",
+            "Top Speed": "240",
+            "Efficiency": "197",
+            "Fast Charge": "1050",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Audi Q4 Sportback e-tron 45 quattro",
+            "Range": "400",
+            "Acceleration": "6.9",
+            "Top Speed": "180",
+            "Efficiency": "192",
+            "Fast Charge": "500",
+            "Brand": "Audi"
+        },
+        {
+            "Name": "Opel Zafira-e Life L 75 kWh",
+            "Range": "260",
+            "Acceleration": "13.3",
+            "Top Speed": "130",
+            "Efficiency": "262",
+            "Fast Charge": "280",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Mercedes eVito Tourer Long 90 kWh",
+            "Range": "310",
+            "Acceleration": "12.0",
+            "Top Speed": "160",
+            "Efficiency": "290",
+            "Fast Charge": "310",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Porsche Taycan Turbo S Sport Turismo",
+            "Range": "395",
+            "Acceleration": "2.8",
+            "Top Speed": "260",
+            "Efficiency": "212",
+            "Fast Charge": "970",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Opel Combo-e Life 50 kWh",
+            "Range": "200",
+            "Acceleration": "11.7",
+            "Top Speed": "135",
+            "Efficiency": "225",
+            "Fast Charge": "320",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Opel Vivaro-e Combi M 75 kWh",
+            "Range": "265",
+            "Acceleration": "13.3",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "290",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Toyota PROACE Verso L 75 kWh",
+            "Range": "260",
+            "Acceleration": "13.1",
+            "Top Speed": "130",
+            "Efficiency": "262",
+            "Fast Charge": "280",
+            "Brand": "Toyota"
+        },
+        {
+            "Name": "Peugeot e-Rifter Standard 50 kWh",
+            "Range": "200",
+            "Acceleration": "11.7",
+            "Top Speed": "135",
+            "Efficiency": "225",
+            "Fast Charge": "320",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Mercedes EQE SUV AMG 43 4MATIC",
+            "Range": "435",
+            "Acceleration": "4.3",
+            "Top Speed": "210",
+            "Efficiency": "208",
+            "Fast Charge": "650",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Peugeot e-Traveller Standard 50 kWh",
+            "Range": "180",
+            "Acceleration": "13.1",
+            "Top Speed": "130",
+            "Efficiency": "250",
+            "Fast Charge": "290",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Peugeot e-Expert Combi Long 75 kWh",
+            "Range": "260",
+            "Acceleration": "14.3",
+            "Top Speed": "130",
+            "Efficiency": "262",
+            "Fast Charge": "280",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Porsche Taycan Plus Sport Turismo",
+            "Range": "445",
+            "Acceleration": "5.4",
+            "Top Speed": "230",
+            "Efficiency": "188",
+            "Fast Charge": "1090",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Mercedes eVito Tourer Extra-Long 90 kWh",
+            "Range": "305",
+            "Acceleration": "12.0",
+            "Top Speed": "160",
+            "Efficiency": "295",
+            "Fast Charge": "310",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Porsche Taycan Turbo S Cross Turismo",
+            "Range": "385",
+            "Acceleration": "2.9",
+            "Top Speed": "250",
+            "Efficiency": "217",
+            "Fast Charge": "950",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Toyota Proace City Verso Electric L2 50 kWh",
+            "Range": "200",
+            "Acceleration": "11.2",
+            "Top Speed": "135",
+            "Efficiency": "225",
+            "Fast Charge": "320",
+            "Brand": "Toyota"
+        },
+        {
+            "Name": "Genesis GV60 Sport Plus",
+            "Range": "365",
+            "Acceleration": "4.0",
+            "Top Speed": "235",
+            "Efficiency": "203",
+            "Fast Charge": "950",
+            "Brand": "Genesis"
+        },
+        {
+            "Name": "Fiat 500e Cabrio 24 kWh",
+            "Range": "135",
+            "Acceleration": "9.0",
+            "Top Speed": "135",
+            "Efficiency": "158",
+            "Fast Charge": "230",
+            "Brand": "Fiat"
+        },
+        {
+            "Name": "Citroen e-Berlingo XL 50 kWh",
+            "Range": "195",
+            "Acceleration": "11.7",
+            "Top Speed": "135",
+            "Efficiency": "231",
+            "Fast Charge": "310",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "Fiat E-Ulysse L3 75 kWh",
+            "Range": "260",
+            "Acceleration": "13.3",
+            "Top Speed": "130",
+            "Efficiency": "262",
+            "Fast Charge": "280",
+            "Brand": "Fiat"
+        },
+        {
+            "Name": "Porsche Taycan GTS Sport Turismo",
+            "Range": "425",
+            "Acceleration": "3.7",
+            "Top Speed": "250",
+            "Efficiency": "197",
+            "Fast Charge": "1050",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "VinFast VF 8 Eco Standard Range",
+            "Range": "405",
+            "Acceleration": "5.9",
+            "Top Speed": "200",
+            "Efficiency": "202",
+            "Fast Charge": "560",
+            "Brand": "VinFast"
+        },
+        {
+            "Name": "NIO EL7 75 kWh",
+            "Range": "340",
+            "Acceleration": "3.9",
+            "Top Speed": "200",
+            "Efficiency": "207",
+            "Fast Charge": "460",
+            "Brand": "NIO"
+        },
+        {
+            "Name": "Citroen e-Jumpy Combi M 75 kWh",
+            "Range": "265",
+            "Acceleration": "13.3",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "290",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "Mercedes EQV 250 Long",
+            "Range": "205",
+            "Acceleration": "12.0",
+            "Top Speed": "160",
+            "Efficiency": "293",
+            "Fast Charge": "190",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Toyota PROACE Shuttle M 75 kWh",
+            "Range": "260",
+            "Acceleration": "13.1",
+            "Top Speed": "130",
+            "Efficiency": "262",
+            "Fast Charge": "280",
+            "Brand": "Toyota"
+        },
+        {
+            "Name": "VinFast VF 8 Eco Extended Range",
+            "Range": "425",
+            "Acceleration": "5.9",
+            "Top Speed": "200",
+            "Efficiency": "206",
+            "Fast Charge": "550",
+            "Brand": "VinFast"
+        },
+        {
+            "Name": "Porsche Taycan 4S Plus Sport Turismo",
+            "Range": "430",
+            "Acceleration": "4.0",
+            "Top Speed": "250",
+            "Efficiency": "195",
+            "Fast Charge": "1060",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Citroen e-SpaceTourer M 50 kWh",
+            "Range": "180",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "250",
+            "Fast Charge": "290",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "Porsche Taycan Turbo Cross Turismo",
+            "Range": "400",
+            "Acceleration": "3.3",
+            "Top Speed": "250",
+            "Efficiency": "209",
+            "Fast Charge": "980",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Peugeot e-Traveller Long 75 kWh",
+            "Range": "260",
+            "Acceleration": "14.3",
+            "Top Speed": "130",
+            "Efficiency": "262",
+            "Fast Charge": "280",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Citroen e-Jumpy Combi M 50 kWh",
+            "Range": "180",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "250",
+            "Fast Charge": "290",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "Porsche Taycan Turbo Sport Turismo",
+            "Range": "405",
+            "Acceleration": "3.2",
+            "Top Speed": "260",
+            "Efficiency": "207",
+            "Fast Charge": "1000",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Opel Combo-e Life XL 50 kWh",
+            "Range": "195",
+            "Acceleration": "11.7",
+            "Top Speed": "135",
+            "Efficiency": "231",
+            "Fast Charge": "310",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Fiat E-Ulysse L2 50 kWh",
+            "Range": "180",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "250",
+            "Fast Charge": "290",
+            "Brand": "Fiat"
+        },
+        {
+            "Name": "Porsche Taycan 4S Sport Turismo",
+            "Range": "370",
+            "Acceleration": "4.0",
+            "Top Speed": "250",
+            "Efficiency": "192",
+            "Fast Charge": "910",
+            "Brand": "Porsche"
+        },
+        {
+            "Name": "Citroen e-SpaceTourer M 75 kWh",
+            "Range": "265",
+            "Acceleration": "13.3",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "290",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "VinFast VF 8 Plus Extended Range",
+            "Range": "425",
+            "Acceleration": "5.5",
+            "Top Speed": "200",
+            "Efficiency": "206",
+            "Fast Charge": "550",
+            "Brand": "VinFast"
+        },
+        {
+            "Name": "Fiat E-Ulysse L2 75 kWh",
+            "Range": "265",
+            "Acceleration": "13.3",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "290",
+            "Brand": "Fiat"
+        },
+        {
+            "Name": "Toyota PROACE Shuttle L 50 kWh",
+            "Range": "175",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "280",
+            "Brand": "Toyota"
+        },
+        {
+            "Name": "Peugeot e-Expert Combi Long 50 kWh",
+            "Range": "175",
+            "Acceleration": "13.1",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "280",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Citroen e-Jumpy Combi XL 75 kWh",
+            "Range": "260",
+            "Acceleration": "13.3",
+            "Top Speed": "130",
+            "Efficiency": "262",
+            "Fast Charge": "280",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "Toyota PROACE Shuttle M 50 kWh",
+            "Range": "175",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "280",
+            "Brand": "Toyota"
+        },
+        {
+            "Name": "Peugeot e-Traveller Standard 75 kWh",
+            "Range": "265",
+            "Acceleration": "14.3",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "290",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Opel Zafira-e Life M 50 kWh",
+            "Range": "180",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "250",
+            "Fast Charge": "290",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Mercedes eVito Tourer Long 60 kWh",
+            "Range": "210",
+            "Acceleration": "12.0",
+            "Top Speed": "160",
+            "Efficiency": "286",
+            "Fast Charge": "310",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Toyota PROACE Shuttle L 75 kWh",
+            "Range": "260",
+            "Acceleration": "13.1",
+            "Top Speed": "130",
+            "Efficiency": "262",
+            "Fast Charge": "280",
+            "Brand": "Toyota"
+        },
+        {
+            "Name": "Opel Vivaro-e Combi L 75 kWh",
+            "Range": "260",
+            "Acceleration": "13.3",
+            "Top Speed": "130",
+            "Efficiency": "262",
+            "Fast Charge": "280",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Peugeot e-Traveller Long 50 kWh",
+            "Range": "175",
+            "Acceleration": "13.1",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "280",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Opel Vivaro-e Combi M 50 kWh",
+            "Range": "180",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "250",
+            "Fast Charge": "290",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Citroen e-SpaceTourer XL 75 kWh",
+            "Range": "260",
+            "Acceleration": "13.3",
+            "Top Speed": "130",
+            "Efficiency": "262",
+            "Fast Charge": "280",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "Opel Zafira-e Life M 75 kWh",
+            "Range": "265",
+            "Acceleration": "13.3",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "290",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Opel Zafira-e Life L 50 kWh",
+            "Range": "175",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "280",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Opel Vivaro-e Combi L 50 kWh",
+            "Range": "175",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "280",
+            "Brand": "Opel"
+        },
+        {
+            "Name": "Fiat E-Ulysse L3 50 kWh",
+            "Range": "175",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "280",
+            "Brand": "Fiat"
+        },
+        {
+            "Name": "Mercedes EQV 250 Extra-Long",
+            "Range": "205",
+            "Acceleration": "12.0",
+            "Top Speed": "160",
+            "Efficiency": "293",
+            "Fast Charge": "190",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Peugeot e-Expert Combi Standard 50 kWh",
+            "Range": "180",
+            "Acceleration": "13.1",
+            "Top Speed": "130",
+            "Efficiency": "250",
+            "Fast Charge": "290",
+            "Brand": "Peugeot"
+        },
+        {
+            "Name": "Citroen e-Jumpy Combi XL 50 kWh",
+            "Range": "175",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "280",
+            "Brand": "Citroen"
+        },
+        {
+            "Name": "Mercedes eVito Tourer Extra-Long 60 kWh",
+            "Range": "205",
+            "Acceleration": "12.0",
+            "Top Speed": "160",
+            "Efficiency": "293",
+            "Fast Charge": "300",
+            "Brand": "Mercedes"
+        },
+        {
+            "Name": "Citroen e-SpaceTourer XL 50 kWh",
+            "Range": "175",
+            "Acceleration": "12.1",
+            "Top Speed": "130",
+            "Efficiency": "257",
+            "Fast Charge": "280",
+            "Brand": "Citroen"
+        }
+    ]
+}
