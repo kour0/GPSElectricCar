@@ -53,7 +53,7 @@ int main() {
     // dijkstra(graph, src, dest);
 
     // Print graph
-    printGraph(graph);
+    // printGraph(graph);
 
     // Libération de la mémoire
     freeGraph(graph);

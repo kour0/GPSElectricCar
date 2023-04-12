@@ -84,7 +84,7 @@ ChargingStation* readJSON(char* filename, int* n) {
     }
 
     // Récupération du nombre de stations
-    cJSON* features = cJSON_GetObjectItemCaseSensitive(json, "features");
+    cJSON* features = cJSON_GetObjectItemCaseSensitive(json, "stations");
     *n = cJSON_GetArraySize(features);
 
     // Allocation du tableau de stations
@@ -93,15 +93,14 @@ ChargingStation* readJSON(char* filename, int* n) {
     // Récupération des stations
     for (int i = 0; i < *n; ++i) {
         cJSON* feature = cJSON_GetArrayItem(features, i);
-        cJSON* geometry = cJSON_GetObjectItemCaseSensitive(feature, "geometry");
-        cJSON* coordinates = cJSON_GetObjectItemCaseSensitive(geometry, "coordinates");
-        cJSON* properties = cJSON_GetObjectItemCaseSensitive(feature, "properties");
-        cJSON* name = cJSON_GetObjectItemCaseSensitive(properties, "nom_amenageur");
+        cJSON* name = cJSON_GetObjectItemCaseSensitive(feature, "nom_station");
+        cJSON* longitude = cJSON_GetObjectItemCaseSensitive(feature, "longitude");
+        cJSON* latitude = cJSON_GetObjectItemCaseSensitive(feature, "latitude");
 
         stations[i].name = malloc((strlen(name->valuestring) + 1) * sizeof(char));
         strcpy(stations[i].name, name->valuestring);
-        stations[i].coord.longitude = cJSON_GetArrayItem(coordinates, 0)->valuedouble;
-        stations[i].coord.latitude = cJSON_GetArrayItem(coordinates, 1)->valuedouble;
+        stations[i].coord.longitude = longitude->valuedouble;
+        stations[i].coord.latitude = latitude->valuedouble;
     }
 
     // Libération de la mémoire
@@ -119,7 +118,6 @@ Graph* createGraphFromStations(ChargingStation* stations, int n) {
         for (int j = i + 1; j < n; ++j) {
             graph->adjMat[i*(n-1)-((i-1)*i)/2+j-(i+1)] = distance(stations[i].coord, stations[j].coord);
         }
-        printf("Calcul des distances entre les stations : %d/%d\n", i+1, n-1);
     }
 
     return graph;
