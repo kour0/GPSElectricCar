@@ -73,7 +73,11 @@ int main(int argc, char** argv) {
     for (int i = 0; i < n; ++i) {
         free(stations[i].name);
     }
+    for (int i = 0; i < m; ++i) {
+        free(vehicles[i].name);
+    }
     free(stations);
+    free(vehicles);
 
     return 0;
 }
