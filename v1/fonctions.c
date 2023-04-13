@@ -6,6 +6,7 @@
 
 #include "cJSON.h"
 #include "fonctions.h"
+#define WIDTH 100
 
 // Fonction pour initialiser un graphe pondéré à l'aide d'une liste contigue à une dimension
 Graph* createGraph(int V) {
@@ -17,12 +18,12 @@ Graph* createGraph(int V) {
 
     Graph* graph = malloc(sizeof(Graph));
     graph->V = V;
-    graph->adjMat = calloc(((V_double * (V_double+1))/2-V_double), sizeof(int));
+    graph->adjMat = calloc(((V_double * (V_double+1))/2-V_double), sizeof(float));
     return graph;
 }
 
 // Fonction pour calculer la distance entre deux coordonnées géographiques en km
-int distance(Coordinate coord1, Coordinate coord2) {
+float distance(Coordinate coord1, Coordinate coord2) {
     // Conversion des coordonnées en radians
     double lat1 = coord1.latitude * M_PI / 180;
     double lon1 = coord1.longitude * M_PI / 180;
@@ -34,7 +35,7 @@ int distance(Coordinate coord1, Coordinate coord2) {
     double dlat = lat2 - lat1;
     double a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return (int) (EARTH_RADIUS * c);
+    return (EARTH_RADIUS * c);
 }
 
 // Fonction pour lire le fichier JSON et récupérer les stations de recharge
@@ -129,8 +130,8 @@ Vehicle* readJSONvehicles(char* filename, int* n) {
 
         tab_vehicles[i].name = malloc((strlen(name->valuestring) + 1) * sizeof(char));
         strcpy(tab_vehicles[i].name, name->valuestring);
-        tab_vehicles[i].range = range->valuedouble;
-        tab_vehicles[i].fastCharge = fastCharge->valuedouble;
+        tab_vehicles[i].range = atoi(range->valuestring);
+        tab_vehicles[i].fastCharge = atoi(fastCharge->valuestring);
     }
 
     // Libération de la mémoire
@@ -144,11 +145,49 @@ Graph* createGraphFromStations(ChargingStation* stations, int n) {
     Graph* graph = createGraph(n);
 
     // Calcul des distances entre les stations
+    float progress = 0.0;
+    int c  = 0, x=0, last_c=0;
+    int MAX = n - 1;
+    /**
+     * Print a basic template of the progress line.
+     **/
+    fprintf(stderr, "%3d%% [", (int)progress);
+    for (x = 0; x < c; x++){
+        fprintf(stderr, "=");
+    }
+    for (x = c; x < WIDTH; x++){
+        fprintf(stderr, " ");
+    }
+    fprintf(stderr, "]");
     for (int i = 0; i < n-1; ++i) {
         for (int j = i + 1; j < n; ++j) {
             graph->adjMat[i*(n-1)-((i-1)*i)/2+j-(i+1)] = distance(stations[i].coord, stations[j].coord);
         }
+        // On affiche une progress bar
+        // printf("\rProgression : %d%%", (int) ((i+1) * 100 / n));
+        // fflush(stdout);
+        progress = i*100.0/MAX+1;
+        c = (int) progress;
+        /**
+         * Update the template on each increment in progress.
+        **/
+        fprintf(stderr, "\n\033[F");
+        fprintf(stderr, "%3d%%", (int)progress);
+        fprintf(stderr, "\033[1C");
+        fprintf(stderr, "\033[%dC=", last_c);
+        for (x = last_c; x < c; x++){
+        fprintf(stderr, "=");
+        }
+        if(x<WIDTH){
+        fprintf(stderr, ">");
+        }
+        last_c = c;
     }
+    // printf("\rProgression : 100%%\n");
+    /**
+    * Write a finish line.
+     **/
+    fprintf(stderr, "\033[EDone\n");
 
     return graph;
 }
@@ -178,13 +217,13 @@ void printGraph(Graph* graph) {
 // Algorithme de Dijkstra pour trouver le plus court chemin entre deux stations
 int* dijkstra(Graph* graph, int src, int dest, int* n) {
     // Initialisation des tableaux
-    int* dist = malloc(graph->V * sizeof(int));
+    float* dist = malloc(graph->V * sizeof(float));
     int* prev = malloc(graph->V * sizeof(int));
     bool* visited = calloc(graph->V, sizeof(bool));
 
     // Initialisation des distances
     for (int i = 0; i < graph->V; ++i) {
-        dist[i] = INT_MAX;
+        dist[i] = FLOAT_MAX;
         prev[i] = -1;
     }
     dist[src] = 0;
@@ -192,7 +231,7 @@ int* dijkstra(Graph* graph, int src, int dest, int* n) {
     // Boucle principale
     for (int i = 0; i < graph->V; ++i) {
         // Recherche du sommet non visité le plus proche
-        int min = INT_MAX;
+        float min = FLOAT_MAX;
         int u = -1;
         for (int j = 0; j < graph->V; ++j) {
             if (!visited[j] && dist[j] < min) {
@@ -212,7 +251,7 @@ int* dijkstra(Graph* graph, int src, int dest, int* n) {
         // On met à jour les distances
         for (int v = 0; v < graph->V; ++v) {
             if (!visited[v]) {
-                int w = 0;
+                float w = 0;
                 if (u < v) {
                     w = graph->adjMat[u*(graph->V-1) - ((u-1)*u)/2 + v - (u+1)];
                 } else {
@@ -250,9 +289,56 @@ int* dijkstra(Graph* graph, int src, int dest, int* n) {
     return result;
 }
 
-void printPath(ChargingStation* stations, int* path, int n) {
-    for (int i = 0; i < n; ++i) {
-        printf("%s (%f, %f) -> ", stations[path[i]].name, stations[path[i]].coord.longitude, stations[path[i]].coord.latitude);
+// Fonction qui réduit la taille du chemin en supprimant les stations inutiles où la voiture n'a pas besoin de recharger
+int* reducePath(Vehicle* vehicle, ChargingStation* stations, int* path, int n, int* nReduced) {
+    // On crée un nouveau tableau pour le chemin réduit
+    int* reducedPath = malloc(n * sizeof(int));
+    int reducedPathLength = 0;
+    float remainingRange = vehicle->range;
+
+    // On ajoute la première station
+    reducedPath[reducedPathLength++] = path[0];
+
+    // On parcourt le chemin
+    for (int i = 0; i < n-1; ++i) {
+        // On calcule la distance entre la station actuelle et la station suivante
+        float dist = distance(stations[path[i]].coord, stations[path[i+1]].coord);
+
+        // Si la distance est supérieure à la portée de la voiture, on ajoute la station actuelle au chemin réduit
+        if (dist > remainingRange) {
+            reducedPath[reducedPathLength++] = path[i];
+            remainingRange = vehicle->range;
+            if (dist > remainingRange) {
+                printf("Impossible de recharger la voiture entre les stations %s et %s)", stations[path[i]].name, stations[path[i+1]].name);
+                exit(1);
+            }
+            remainingRange -= dist;
+        } else {
+            remainingRange -= dist;
+        }
     }
+
+    // On ajoute la dernière station (qui est l'arrivée)
+    reducedPath[reducedPathLength++] = path[n-1];
+
+    // On libère la mémoire
+    int* result = malloc(reducedPathLength * sizeof(int));
+    for (int i = 0; i < reducedPathLength; ++i) {
+        result[i] = reducedPath[i];
+    }
+    free(reducedPath);
+    *nReduced = reducedPathLength;
+    return result;
+}
+
+// Fonction pour afficher le chemin
+void printPath(ChargingStation* stations, int* path, int n) {
+    float totalDistance = 0;
+    for (int i = 0; i < n-1; ++i) {
+        printf("%s (%f, %f) -> (distance : %f) ", stations[path[i]].name, stations[path[i]].coord.longitude, stations[path[i]].coord.latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
+        totalDistance += distance(stations[path[i]].coord, stations[path[i+1]].coord);
+    }
+    printf("%s (%f, %f)\n", stations[path[n-1]].name, stations[path[n-1]].coord.longitude, stations[path[n-1]].coord.latitude);
+    printf("Distance totale : %f km\n", totalDistance);
     printf("FIN\n");
 }

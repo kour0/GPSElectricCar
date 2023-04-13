@@ -16,7 +16,7 @@ int main(int argc, char** argv) {
     printf("Nombre de véhicules : %d\n", m);
     
     // On récupère en argument les coordonnées du point de départ et d'arrivée
-    if (argc != 5) {
+    if (argc != 6) {
         printf("Usage : %s <latitude depart> <longitude depart> <latitude arrivee> <longitude arrivee>\n", argv[0]);
         return 1;
     }
@@ -24,6 +24,29 @@ int main(int argc, char** argv) {
     float lon1 = atof(argv[2]);
     float lat2 = atof(argv[3]);
     float lon2 = atof(argv[4]);
+
+    // On récupère le véhicule choisi par l'utilisateur en argument qui est le nom du véhicule
+    int i = 0;
+    if (argc == 6) {
+        while (i < m && strcmp(vehicles[i].name, argv[5]) != 0) {
+            ++i;
+        }
+        if (i == m) {
+            printf("Véhicule %s non trouvé\n", argv[5]);
+            return 1;
+        }
+    }
+    else {
+        printf("Veuillez choisir un véhicule parmi la liste suivante :\n");
+        for (int j = 0; j < m; ++j) {
+            printf("%s\n", vehicles[j].name);
+        }
+        return 1;
+    }
+
+    printf("Véhicule choisi : %s\n", vehicles[i].name);
+    printf("Autonomie : %d\n", vehicles[i].range);
+    printf("Temps de recharge : %d\n", vehicles[i].fastCharge);
 
     // Ajout des stations de départ et d'arrivée (48.672894, 6.1582773) et (48.6834253, 6.1617406) ou (50.3933812, 3.6062753)
     struct ChargingStation start;
@@ -59,14 +82,21 @@ int main(int argc, char** argv) {
     int* pathLength = malloc(sizeof(int));
     int* res = dijkstra(graph, src, dest, pathLength);
 
+    // On affiche le chemin le plus court en utilisant le véhicule choisi
+    printf("Chemin le plus court en utilisant le véhicule %s : \n", vehicles[i].name);
+    int* pathLengthVehicle = malloc(sizeof(int));
+    int* resVehicle = reducePath(vehicles+i, stations, res, *pathLength, pathLengthVehicle);
+
     // Affichage du chemin le plus court
-    printf("Chemin le plus court est de longueur %d : ", *pathLength);
-    printPath(stations, res, *pathLength);
+    printf("Chemin le plus court est de longueur %d : \n", *pathLengthVehicle);
+    printPath(stations, resVehicle, *pathLengthVehicle);
 
     // Print graph
     // printGraph(graph);
 
     // Libération de la mémoire
+    free(resVehicle);
+    free(pathLengthVehicle);
     free(res);
     free(pathLength);
     freeGraph(graph);
