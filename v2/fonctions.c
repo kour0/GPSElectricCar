@@ -11,14 +11,10 @@
 // Fonction pour initialiser un graphe pondéré à l'aide d'une liste contigue à une dimension
 Graph* createGraph(int V) {
 
-    long V_double = (long) V;
-
     // Allocation de la mémoire pour le graphe
-    printf("Allocation de la mémoire pour le graphe de taille : %ld\n", ((V_double * (V_double+1))/2-V_double));
-
     Graph* graph = malloc(sizeof(Graph));
     graph->V = V;
-    graph->adjMat = calloc(((V_double * (V_double+1))/2-V_double), sizeof(float));
+    graph->adj = malloc((V-1)*sizeof(List));
     return graph;
 }
 
@@ -141,10 +137,12 @@ Vehicle* readJSONvehicles(char* filename, int* n) {
 }
 
 // Fonction pour créer le graphe pondéré
-Graph* createGraphFromStations(ChargingStation* stations, int n) {
+Graph* createGraphFromStations(ChargingStation* stations, Vehicle* vehicle, int n) {
     Graph* graph = createGraph(n);
 
     // Calcul des distances entre les stations
+
+    // Largeur de la barre de progression
     float progress = 0.0;
     int c  = 0, x=0, last_c=0;
     int MAX = n - 1;
@@ -160,9 +158,20 @@ Graph* createGraphFromStations(ChargingStation* stations, int n) {
     }
     fprintf(stderr, "]");
     for (int i = 0; i < n-1; ++i) {
+        graph->adj[i].data = malloc(1 * sizeof(Node));
+        graph->adj[i].size = 0;
+        int size = 0;
         for (int j = i + 1; j < n; ++j) {
-            graph->adjMat[i*(n-1)-((i-1)*i)/2+j-(i+1)] = distance(stations[i].coord, stations[j].coord);
+            // Si la distance est inférieur à la range du véhicule, alors il est accessible
+            float dist = distance(stations[i].coord, stations[j].coord);
+            if (dist <= vehicle->range) {
+                graph->adj[i].data = realloc(graph->adj[i].data, (size + 1) * sizeof(Node));
+                graph->adj[i].data[size].point = j;
+                graph->adj[i].data[size].distance = dist;
+                size++;
+            }
         }
+        graph->adj[i].size = size;
         // On affiche une progress bar
         // printf("\rProgression : %d%%", (int) ((i+1) * 100 / n));
         // fflush(stdout);
@@ -194,25 +203,13 @@ Graph* createGraphFromStations(ChargingStation* stations, int n) {
 
 // Fonction pour libérer la mémoire
 void freeGraph(Graph* graph) {
-    free(graph->adjMat);
+    for (int i = 0; i < graph->V; ++i) {
+        free(graph->adj[i].data);
+    }
+    free(graph->adj);
     free(graph);
 }
 
-// Fonction pour afficher le graphe
-void printGraph(Graph* graph) {
-    for (int i = 0; i < graph->V; ++i) {
-        for (int j = 0; j < graph->V; ++j) {
-            if (i == j) {
-                printf("0 ");
-            } else if (i < j) {
-                printf("%d ", graph->adjMat[i*(graph->V-1) - ((i-1)*i)/2 + j - (i+1)]);
-            } else {
-                printf("%d ", graph->adjMat[j*(graph->V-1) - ((j-1)*j)/2 + i - (j+1)]);
-            }
-        }
-        printf("\n");
-    }
-}
 
 // Algorithme de Dijkstra pour trouver le plus court chemin entre deux stations
 int* dijkstra(Graph* graph, int src, int dest, int* n) {
@@ -223,7 +220,7 @@ int* dijkstra(Graph* graph, int src, int dest, int* n) {
 
     // Initialisation des distances
     for (int i = 0; i < graph->V; ++i) {
-        dist[i] = FLOAT_MAX;
+        dist[i] = INT_MAX;
         prev[i] = -1;
     }
     dist[src] = 0;
@@ -231,7 +228,7 @@ int* dijkstra(Graph* graph, int src, int dest, int* n) {
     // Boucle principale
     for (int i = 0; i < graph->V; ++i) {
         // Recherche du sommet non visité le plus proche
-        float min = FLOAT_MAX;
+        float min = INT_MAX;
         int u = -1;
         for (int j = 0; j < graph->V; ++j) {
             if (!visited[j] && dist[j] < min) {
@@ -253,9 +250,23 @@ int* dijkstra(Graph* graph, int src, int dest, int* n) {
             if (!visited[v]) {
                 float w = 0;
                 if (u < v) {
-                    w = graph->adjMat[u*(graph->V-1) - ((u-1)*u)/2 + v - (u+1)];
+                    // On récupère la distance dans la liste d'adjacence de u
+                    for (int k = 0; k < graph->adj[u].size; ++k) {
+                        if (graph->adj[u].data[k].point == v) {
+                            w = graph->adj[u].data[k].distance;
+                            break;
+                        }
+                        w = INT_MAX;
+                    }
                 } else {
-                    w = graph->adjMat[v*(graph->V-1) - ((v-1)*v)/2 + u - (v+1)];
+                    // On récupère la distance dans la liste d'adjacence de v
+                    for (int k = 0; k < graph->adj[v].size; ++k) {
+                        if (graph->adj[v].data[k].point == u) {
+                            w = graph->adj[v].data[k].distance;
+                            break;
+                        }
+                        w = INT_MAX;
+                    }
                 }
                 if (dist[u] + w < dist[v]) {
                     dist[v] = dist[u] + w;
@@ -286,48 +297,6 @@ int* dijkstra(Graph* graph, int src, int dest, int* n) {
     }
     free(path);
     *n = pathLength;
-    return result;
-}
-
-// Fonction qui réduit la taille du chemin en supprimant les stations inutiles où la voiture n'a pas besoin de recharger
-int* reducePath(Vehicle* vehicle, ChargingStation* stations, int* path, int n, int* nReduced, int pourcentageMinRange) {
-    // On crée un nouveau tableau pour le chemin réduit
-    int* reducedPath = malloc(n * sizeof(int));
-    int reducedPathLength = 0;
-    float remainingRange = vehicle->range*((100-pourcentageMinRange)/100.0);
-
-    // On ajoute la première station
-    reducedPath[reducedPathLength++] = path[0];
-
-    // On parcourt le chemin
-    for (int i = 0; i < n-1; ++i) {
-        // On calcule la distance entre la station actuelle et la station suivante
-        float dist = distance(stations[path[i]].coord, stations[path[i+1]].coord);
-
-        // Si la distance est supérieure à la portée de la voiture, on ajoute la station actuelle au chemin réduit
-        if (dist > remainingRange) {
-            reducedPath[reducedPathLength++] = path[i];
-            remainingRange = vehicle->range*((100-pourcentageMinRange)/100.0);
-            if (dist > remainingRange) {
-                printf("Impossible de recharger la voiture entre les stations %s et %s)", stations[path[i]].name, stations[path[i+1]].name);
-                exit(1);
-            }
-            remainingRange -= dist;
-        } else {
-            remainingRange -= dist;
-        }
-    }
-
-    // On ajoute la dernière station (qui est l'arrivée)
-    reducedPath[reducedPathLength++] = path[n-1];
-
-    // On libère la mémoire
-    int* result = malloc(reducedPathLength * sizeof(int));
-    for (int i = 0; i < reducedPathLength; ++i) {
-        result[i] = reducedPath[i];
-    }
-    free(reducedPath);
-    *nReduced = reducedPathLength;
     return result;
 }
 

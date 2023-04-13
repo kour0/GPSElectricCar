@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
 
     
     // Création du graphe pondéré
-    struct Graph* graph = createGraphFromStations(stations, n);
+    struct Graph* graph = createGraphFromStations(stations, vehicles, n);
 
     // Affichage de la matrice d'adjacence
     // printAdjMat(graph->adjMat, n);
@@ -89,22 +89,10 @@ int main(int argc, char** argv) {
     printf("Chemin le plus court est de longueur %d : \n", *pathLength);
     printPath(stations, res, *pathLength);
 
-    // On affiche le chemin le plus court en utilisant le véhicule choisi
-    printf("Chemin le plus court en utilisant le véhicule %s : \n", vehicles[i].name);
-    int* pathLengthVehicle = malloc(sizeof(int));
-    int pourcentageMinRange = 0;
-    int* resVehicle = reducePath(vehicles+i, stations, res, *pathLength, pathLengthVehicle, pourcentageMinRange);
-
-    // Affichage du chemin le plus court
-    printf("Chemin le plus court est de longueur %d : \n", *pathLengthVehicle);
-    printPath(stations, resVehicle, *pathLengthVehicle);
-
     // Print graph
     // printGraph(graph);
 
     // Libération de la mémoire
-    free(resVehicle);
-    free(pathLengthVehicle);
     free(res);
     free(pathLength);
     freeGraph(graph);
