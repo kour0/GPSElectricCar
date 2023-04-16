@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
 
     
     // Création du graphe pondéré
-    struct Graph* graph = createGraphFromStations(stations, vehicles, n);
+    struct Graph* graph = createGraphFromStations(stations, vehicles+i, n);
 
     // Affichage de la matrice d'adjacence
     // printAdjMat(graph->adjMat, n);
@@ -83,6 +83,7 @@ int main(int argc, char** argv) {
 
     // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
     int* pathLength = malloc(sizeof(int));
+    printf("Appel de l'algorithme de Dijkstra...\n");
     int* res = dijkstra(graph, src, dest, pathLength);
 
     // Affichage du chemin le plus court

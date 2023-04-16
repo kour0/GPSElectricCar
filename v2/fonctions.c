@@ -14,7 +14,7 @@ Graph* createGraph(int V) {
     // Allocation de la mémoire pour le graphe
     Graph* graph = malloc(sizeof(Graph));
     graph->V = V;
-    graph->adj = malloc((V-1)*sizeof(List));
+    graph->adj = malloc(V*sizeof(List));
     return graph;
 }
 
@@ -157,25 +157,24 @@ Graph* createGraphFromStations(ChargingStation* stations, Vehicle* vehicle, int 
         fprintf(stderr, " ");
     }
     fprintf(stderr, "]");
-    for (int i = 0; i < n-1; ++i) {
-        graph->adj[i].data = malloc(1 * sizeof(Node));
-        graph->adj[i].size = 0;
+    for (int i = 0; i < n; ++i) {
+        graph->adj[i].data = malloc(n * sizeof(Node));
         int size = 0;
         for (int j = i + 1; j < n; ++j) {
             // Si la distance est inférieur à la range du véhicule, alors il est accessible
             float dist = distance(stations[i].coord, stations[j].coord);
             if (dist <= vehicle->range) {
-                graph->adj[i].data = realloc(graph->adj[i].data, (size + 1) * sizeof(Node));
                 graph->adj[i].data[size].point = j;
                 graph->adj[i].data[size].distance = dist;
                 size++;
             }
         }
+        graph->adj[i].data = realloc(graph->adj[i].data, size * sizeof(Node));
         graph->adj[i].size = size;
         // On affiche une progress bar
         // printf("\rProgression : %d%%", (int) ((i+1) * 100 / n));
         // fflush(stdout);
-        progress = i*100.0/MAX+1;
+        progress = i*100.0/(double)MAX;
         c = (int) progress;
         /**
          * Update the template on each increment in progress.
@@ -210,73 +209,72 @@ void freeGraph(Graph* graph) {
     free(graph);
 }
 
+int getMinDistance(float* dist, bool* visited, int V) {
+    int minIndex = -1;
+    float minValue = INFINITY;
+    for (int i = 0; i < V; ++i) {
+        if (!visited[i] && dist[i] < minValue) {
+            minIndex = i;
+            minValue = dist[i];
+        }
+    }
+    return minIndex;
+}
 
 // Algorithme de Dijkstra pour trouver le plus court chemin entre deux stations
 int* dijkstra(Graph* graph, int src, int dest, int* n) {
-    // Initialisation des tableaux
+    // On initialise les tableaux
     float* dist = malloc(graph->V * sizeof(float));
     int* prev = malloc(graph->V * sizeof(int));
-    bool* visited = calloc(graph->V, sizeof(bool));
+    bool* visited = malloc(graph->V * sizeof(bool));
 
-    // Initialisation des distances
+    // On initialise les distances à l'infini
     for (int i = 0; i < graph->V; ++i) {
-        dist[i] = INT_MAX;
+        dist[i] = INFINITY;
         prev[i] = -1;
+        visited[i] = false;
     }
+
+    // On initialise la distance de la source à 0
     dist[src] = 0;
 
-    // Boucle principale
+    // On parcourt tous les sommets
     for (int i = 0; i < graph->V; ++i) {
-        // Recherche du sommet non visité le plus proche
-        float min = INT_MAX;
-        int u = -1;
-        for (int j = 0; j < graph->V; ++j) {
-            if (!visited[j] && dist[j] < min) {
-                min = dist[j];
-                u = j;
-            }
+        // On récupère le sommet le plus proche
+        int u = getMinDistance(dist, visited, graph->V);
+
+        // Si on a pas trouvé de sommet, alors on arrête
+        if (u == -1) {
+            break;
         }
 
-        // Si on a pas trouvé de sommet, on arrête
-        if (u == -1) {
+        // Si on a trouvé le sommet de destination, alors on arrête
+        if (u == dest) {
             break;
         }
 
         // On marque le sommet comme visité
         visited[u] = true;
 
-        // On met à jour les distances
-        for (int v = 0; v < graph->V; ++v) {
-            if (!visited[v]) {
-                float w = 0;
-                if (u < v) {
-                    // On récupère la distance dans la liste d'adjacence de u
-                    for (int k = 0; k < graph->adj[u].size; ++k) {
-                        if (graph->adj[u].data[k].point == v) {
-                            w = graph->adj[u].data[k].distance;
-                            break;
-                        }
-                        w = INT_MAX;
-                    }
-                } else {
-                    // On récupère la distance dans la liste d'adjacence de v
-                    for (int k = 0; k < graph->adj[v].size; ++k) {
-                        if (graph->adj[v].data[k].point == u) {
-                            w = graph->adj[v].data[k].distance;
-                            break;
-                        }
-                        w = INT_MAX;
-                    }
-                }
-                if (dist[u] + w < dist[v]) {
-                    dist[v] = dist[u] + w;
-                    prev[v] = u;
-                }
+        // On met à jour les distances en sachant que si u > v alors on doit aller dans la liste d'adjacence de v
+        List adj;
+        if (u > dest) {
+            adj = graph->adj[dest];
+        } else {
+            adj = graph->adj[u];
+        }
+        for (int j = 0; j < adj.size; ++j) {
+            int v = adj.data[j].point;
+            float distance = adj.data[j].distance;
+            if (!visited[v] && dist[u] + distance < dist[v]) {
+                dist[v] = dist[u] + distance;
+                prev[v] = u;
             }
         }
     }
 
     // On récupère le chemin
+    printf("Récupération du chemin...\n");
     int* path = malloc(graph->V * sizeof(int));
     int pathLength = 0;
     int u = dest;

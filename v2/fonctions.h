@@ -4,7 +4,7 @@
 #define M_PI 3.14159265358979323846 // Valeur de pi
 #define EARTH_RADIUS 6371 // Rayon de la Terre en km
 #define FLOAT_MAX 3.402823466e+38F // Valeur maximale d'un float
-#define INT_MAX 2147483647 // Valeur maximale d'un int
+#define DIST_MAX 10000 // Valeur maximale de la distance entre deux points
 
 // Structure pour stocker les coordonnées géographiques
 typedef struct Coordinate {
