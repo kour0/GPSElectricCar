@@ -2,7 +2,7 @@
 
 // Constantes
 #define M_PI 3.14159265358979323846 // Valeur de pi
-#define EARTH_RADIUS 6371 // Rayon de la Terre en km
+#define EARTH_RADIUS 6378.137 // Rayon de la Terre en km
 #define FLOAT_MAX 3.402823466e+38F // Valeur maximale d'un float
 
 // Structure pour stocker les coordonnées géographiques
@@ -27,16 +27,16 @@ typedef struct Vehicle {
 // Structure de graphe pondéré
 typedef struct Graph {
     int V; // Nombre de sommets
-    int* adjMat; // Matrice d'adjacence de taille V*(V+1)/2-V et de dimension 1
+    double* adjMat; // Matrice d'adjacence de taille V*(V+1)/2-V et de dimension 1
 } Graph; // Structure de graphe pondéré à l'aide d'une liste contigue à une dimension
 
 Graph* createGraph(int V);
-float distance(Coordinate coord1, Coordinate coord2);
-ChargingStation* readJSONstations(char* filename, int* n);
+double distance(Coordinate coord1, Coordinate coord2);
+ChargingStation* readJSONstations(char* filename, int* n, ChargingStation* depart, ChargingStation* arrivee);
 Vehicle* readJSONvehicles(char* filename, int* n);
 Graph* createGraphFromStations(ChargingStation* stations, int n);
 void freeGraph(Graph* graph);
 void printGraph(Graph* graph);
-int* dijkstra(Graph* graph, int src, int dest, int* n);
+int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n);
 void printPath(ChargingStation* stations, int* path, int n);
 int* reducePath(Vehicle* vehicle, ChargingStation* stations, int* path, int n, int* nReduced, int pourcentageMinRange);

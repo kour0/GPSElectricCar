@@ -19,11 +19,11 @@ Graph* createGraph(int V) {
 }
 
 // Fonction pour calculer la distance entre deux coordonnées géographiques en km
-float distance(Coordinate coord1, Coordinate coord2) {
+double distance(Coordinate coord1, Coordinate coord2) {
     // Conversion des coordonnées en radians
     double lat1 = coord1.latitude * M_PI / 180;
-    double lon1 = coord1.longitude * M_PI / 180;
     double lat2 = coord2.latitude * M_PI / 180;
+    double lon1 = coord1.longitude * M_PI / 180;
     double lon2 = coord2.longitude * M_PI / 180;
 
     // Calcul de la distance
@@ -31,7 +31,9 @@ float distance(Coordinate coord1, Coordinate coord2) {
     double dlat = lat2 - lat1;
     double a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return (EARTH_RADIUS * c);
+    double d = EARTH_RADIUS * c;
+
+    return d;
 }
 
 // Fonction pour lire le fichier JSON et récupérer les stations de recharge
@@ -160,7 +162,7 @@ Graph* createGraphFromStations(ChargingStation* stations, Vehicle* vehicle, int 
     for (int i = 0; i < n; ++i) {
         graph->adj[i].data = malloc(n * sizeof(Node));
         int size = 0;
-        for (int j = i + 1; j < n; ++j) {
+        for (int j = 0; j < n; ++j) {
             // Si la distance est inférieur à la range du véhicule, alors il est accessible
             float dist = distance(stations[i].coord, stations[j].coord);
             if (dist <= vehicle->range) {
@@ -209,9 +211,9 @@ void freeGraph(Graph* graph) {
     free(graph);
 }
 
-int getMinDistance(float* dist, bool* visited, int V) {
+int getMinDistance(double* dist, bool* visited, int V) {
     int minIndex = -1;
-    float minValue = INFINITY;
+    double minValue = INFINITY;
     for (int i = 0; i < V; ++i) {
         if (!visited[i] && dist[i] < minValue) {
             minIndex = i;
@@ -224,15 +226,14 @@ int getMinDistance(float* dist, bool* visited, int V) {
 // Algorithme de Dijkstra pour trouver le plus court chemin entre deux stations
 int* dijkstra(Graph* graph, int src, int dest, int* n) {
     // On initialise les tableaux
-    float* dist = malloc(graph->V * sizeof(float));
+    double* dist = malloc(graph->V * sizeof(double));
     int* prev = malloc(graph->V * sizeof(int));
-    bool* visited = malloc(graph->V * sizeof(bool));
+    bool* visited = calloc(graph->V, sizeof(bool));
 
     // On initialise les distances à l'infini
     for (int i = 0; i < graph->V; ++i) {
-        dist[i] = INFINITY;
-        prev[i] = -1;
-        visited[i] = false;
+        dist[i] = INFINITY; // On met l'infini pour dire qu'on ne connait pas la distance
+        prev[i] = -1; // On met -1 pour dire qu'il n'y a pas de précédent
     }
 
     // On initialise la distance de la source à 0
@@ -256,16 +257,11 @@ int* dijkstra(Graph* graph, int src, int dest, int* n) {
         // On marque le sommet comme visité
         visited[u] = true;
 
-        // On met à jour les distances en sachant que si u > v alors on doit aller dans la liste d'adjacence de v
-        List adj;
-        if (u > dest) {
-            adj = graph->adj[dest];
-        } else {
-            adj = graph->adj[u];
-        }
+        // On met à jour les distances
+        List adj = graph->adj[u];
         for (int j = 0; j < adj.size; ++j) {
             int v = adj.data[j].point;
-            float distance = adj.data[j].distance;
+            double distance = adj.data[j].distance;
             if (!visited[v] && dist[u] + distance < dist[v]) {
                 dist[v] = dist[u] + distance;
                 prev[v] = u;
@@ -300,7 +296,7 @@ int* dijkstra(Graph* graph, int src, int dest, int* n) {
 
 // Fonction pour afficher le chemin
 void printPath(ChargingStation* stations, int* path, int n) {
-    float totalDistance = 0;
+    double totalDistance = 0;
     for (int i = 0; i < n-1; ++i) {
         printf("%s (%f, %f) -> (distance : %f) ", stations[path[i]].name, stations[path[i]].coord.longitude, stations[path[i]].coord.latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
         totalDistance += distance(stations[path[i]].coord, stations[path[i+1]].coord);

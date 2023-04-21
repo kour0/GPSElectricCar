@@ -2,9 +2,8 @@
 
 // Constantes
 #define M_PI 3.14159265358979323846 // Valeur de pi
-#define EARTH_RADIUS 6371 // Rayon de la Terre en km
-#define FLOAT_MAX 3.402823466e+38F // Valeur maximale d'un float
 #define DIST_MAX 10000 // Valeur maximale de la distance entre deux points
+#define EARTH_RADIUS 6378.137 // Rayon de la Terre en km
 
 // Structure pour stocker les coordonnées géographiques
 typedef struct Coordinate {
@@ -42,7 +41,7 @@ typedef struct Graph {
 } Graph; // Structure de graphe pondéré à l'aide d'une liste contigue à une dimension
 
 Graph* createGraph(int V);
-float distance(Coordinate coord1, Coordinate coord2);
+double distance(Coordinate coord1, Coordinate coord2);
 ChargingStation* readJSONstations(char* filename, int* n);
 Vehicle* readJSONvehicles(char* filename, int* n);
 Graph* createGraphFromStations(ChargingStation* stations, Vehicle* vehicle, int n);

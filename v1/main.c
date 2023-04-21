@@ -8,11 +8,11 @@ int main(int argc, char** argv) {
     // Lecture du fichier JSON
     int n; // Nombre de stations de recharge
     int m; // Nombre de véhicules
-    ChargingStation* stations = readJSONstations("../data/data_mod.json", &n);
+
     Vehicle* vehicles = readJSONvehicles("../data/ev-data.json", &m);
 
     // Affichage du nombre de stations de recharge
-    printf("Nombre de stations de recharge : %d\n", n);
+    // printf("Nombre de stations de recharge : %d\n", n);
     printf("Nombre de véhicules : %d\n", m);
     
     // On récupère en argument les coordonnées du point de départ et d'arrivée
@@ -59,6 +59,7 @@ int main(int argc, char** argv) {
     strcpy(end.name, "Arrivee");
     end.coord.latitude = lat2;
     end.coord.longitude = lon2;
+    ChargingStation* stations = readJSONstations("../data/data_mod.json", &n, &start, &end);
     stations = realloc(stations, (n + 2) * sizeof(struct ChargingStation));
     stations[n] = start;
     stations[n + 1] = end;
@@ -83,28 +84,32 @@ int main(int argc, char** argv) {
 
     // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
     int* pathLength = malloc(sizeof(int));
-    int* res = dijkstra(graph, src, dest, pathLength);
+    int* res = dijkstra(graph, vehicles+i ,src, dest, pathLength);
 
     // Affichage du chemin le plus court
     printf("Chemin le plus court est de longueur %d : \n", *pathLength);
     printPath(stations, res, *pathLength);
 
     // On affiche le chemin le plus court en utilisant le véhicule choisi
-    printf("Chemin le plus court en utilisant le véhicule %s : \n", vehicles[i].name);
-    int* pathLengthVehicle = malloc(sizeof(int));
-    int pourcentageMinRange = 0;
-    int* resVehicle = reducePath(vehicles+i, stations, res, *pathLength, pathLengthVehicle, pourcentageMinRange);
+
+    // printf("Chemin le plus court en utilisant le véhicule %s : \n", vehicles[i].name);
+    // int* pathLengthVehicle = malloc(sizeof(int));
+    // int pourcentageMinRange = 0;
+    // int* resVehicle = reducePath(vehicles+i, stations, res, *pathLength, pathLengthVehicle, pourcentageMinRange);
 
     // Affichage du chemin le plus court
-    printf("Chemin le plus court est de longueur %d : \n", *pathLengthVehicle);
-    printPath(stations, resVehicle, *pathLengthVehicle);
+
+    // printf("Chemin le plus court est de longueur %d : \n", *pathLengthVehicle);
+    // printPath(stations, resVehicle, *pathLengthVehicle);
 
     // Print graph
     // printGraph(graph);
 
     // Libération de la mémoire
-    free(resVehicle);
-    free(pathLengthVehicle);
+    
+    // free(resVehicle);
+    // free(pathLengthVehicle);
+
     free(res);
     free(pathLength);
     freeGraph(graph);
