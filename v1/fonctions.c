@@ -6,7 +6,122 @@
 
 #include "cJSON.h"
 #include "fonctions.h"
-#define WIDTH 100
+
+void drawPoint(SDL_Renderer *renderer, Point p) {
+    SDL_RenderDrawPoint(renderer, p.x, p.y);
+}
+
+void drawCircle(SDL_Renderer *renderer, ChargingStation station, int radius) {
+    Point center = {station.coord.longitude, station.coord.latitude};
+    for (int w = 0; w < radius * 2; w++) {
+        for (int h = 0; h < radius * 2; h++) {
+            int dx = radius - w; // horizontal offset
+            int dy = radius - h; // vertical offset
+            if ((dx*dx + dy*dy) <= (radius * radius)) {
+                Point p = {center.x + dx, center.y + dy};
+                drawPoint(renderer, p);
+            }
+        }
+    }
+}
+
+// Fonction pour transformer les coordonnées longitude/latitude en coordonnées de la carte
+void coord_to_pixel(double longitude, double latitude, int *x, int *y) {
+    double x_f = (longitude + 180) * (SCREEN_WIDTH / 360);
+    double y_f = (latitude + 90) * (SCREEN_HEIGHT / 180);
+    *x = (int) round(x_f);
+    *y = (int) round(y_f);
+}
+
+void printMap(ChargingStation* stations, int* path, int nPath) {
+
+    // Initialiser la bibliothèque SDL
+    if (SDL_Init(SDL_INIT_VIDEO) != 0) {
+        printf("Erreur : impossible d'initialiser la SDL : %s\n", SDL_GetError());
+        return;
+    }
+
+    // Créer une fenêtre pour afficher la carte
+    SDL_Window *fenetre = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
+    if (fenetre == NULL) {
+        printf("Erreur : impossible de créer la fenêtre SDL : %s\n", SDL_GetError());
+        SDL_Quit();
+        return;
+    }
+
+    // Créer un rendu pour la fenêtre
+    SDL_Renderer *rendu = SDL_CreateRenderer(fenetre, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
+    if (rendu == NULL) {
+        printf("Erreur : impossible de créer le rendu SDL : %s\n", SDL_GetError());
+        SDL_DestroyWindow(fenetre);
+        SDL_Quit();
+        return;
+    }
+
+    // Dessiner la carte de la France
+    SDL_SetRenderDrawColor(rendu, 255, 255, 255, 255);
+    SDL_RenderClear(rendu);
+    SDL_SetRenderDrawColor(rendu, 0, 0, 0, 255);
+    SDL_Rect france = {0, 0, SCREEN_WIDTH, SCREEN_HEIGHT};
+    SDL_RenderDrawRect(rendu, &france);
+
+    // Dessiner les stations de recharge du chemin
+    for (int i = 0; i < nPath; i++) {
+        int x, y;
+        coord_to_pixel(stations[path[i]].coord.longitude, stations[path[i]].coord.latitude, &x, &y);
+        SDL_Rect station = {x, y, 5, 5};
+        SDL_RenderFillRect(rendu, &station);
+        // Rajouter le nom de la station
+        TTF_Font *police = TTF_OpenFont("arial.ttf", 10);
+        SDL_Color couleurNoire = {0, 0, 0, 255};
+        SDL_Surface *texte = TTF_RenderText_Blended(police, stations[path[i]].name, couleurNoire);
+        SDL_Texture *texture = SDL_CreateTextureFromSurface(rendu, texte);
+        SDL_Rect position = {x+5, y-5, 0, 0};
+        SDL_RenderCopy(rendu, texture, NULL, &position);
+        SDL_FreeSurface(texte);
+        SDL_DestroyTexture(texture);
+    }
+
+    // Dessine le chemin
+    for (int i = 0; i < nPath-1; i++) {
+        int x1, y1, x2, y2;
+        coord_to_pixel(stations[path[i]].coord.longitude, stations[path[i]].coord.latitude, &x1, &y1);
+        coord_to_pixel(stations[path[i+1]].coord.longitude, stations[path[i+1]].coord.latitude, &x2, &y2);
+        SDL_RenderDrawLine(rendu, x1, y1, x2, y2);
+    }
+
+    // Afficher la fenêtre
+    SDL_RenderPresent(rendu);
+
+    // Attendre que l'utilisateur ferme la fenêtre par un input
+    SDL_Event evenement;
+    bool continuer = true;
+    while (continuer) {
+        SDL_WaitEvent(&evenement);
+        switch (evenement.type) {
+            case SDL_QUIT:
+                continuer = false;
+                break;
+            case SDL_KEYDOWN:
+                continuer = false;
+                break;
+            case SDL_MOUSEBUTTONDOWN:
+                continuer = false;
+                break;
+        }
+    }
+
+    // Libérer la mémoire
+    SDL_DestroyRenderer(rendu);
+    SDL_DestroyWindow(fenetre);
+    // On supprime l'évenement de la pile
+    SDL_PollEvent(&evenement);
+    // On quitte les sous-systèmes
+    SDL_QuitSubSystem(SDL_INIT_VIDEO);
+    SDL_Quit();
+
+    return;
+}
 
 // Fonction pour initialiser un graphe pondéré à l'aide d'une liste contigue à une dimension
 Graph* createGraph(int V) {
@@ -304,10 +419,6 @@ int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n) {
     int* path = malloc(graph->V * sizeof(int));
     int pathLength = 0;
     int u = dest;
-    if (prev[u] == -1) {
-        printf("Pas de chemin trouvé\n");
-        return NULL;
-    }
     while (u != -1) {
         path[pathLength++] = u;
         u = prev[u];
@@ -331,6 +442,10 @@ int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n) {
 // Fonction pour afficher le chemin
 void printPath(ChargingStation* stations, int* path, int n) {
     float totalDistance = 0;
+    if (n == 1) {
+        printf("Pas de chemin trouvé\n");
+        return;
+    }
     for (int i = 0; i < n-1; ++i) {
         printf("%s (%f, %f) -> (distance : %f) ", stations[path[i]].name, stations[path[i]].coord.longitude, stations[path[i]].coord.latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
         totalDistance += distance(stations[path[i]].coord, stations[path[i+1]].coord);

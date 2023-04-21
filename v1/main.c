@@ -3,8 +3,14 @@
 #include <string.h>
 #include "cJSON.h"
 #include "fonctions.h"
+#include <SDL2/SDL.h>
+
+// Define screen dimensions
+#define SCREEN_WIDTH    800
+#define SCREEN_HEIGHT   600
 
 int main(int argc, char** argv) {
+
     // Lecture du fichier JSON
     int n; // Nombre de stations de recharge
     int m; // Nombre de véhicules
@@ -109,6 +115,13 @@ int main(int argc, char** argv) {
     
     // free(resVehicle);
     // free(pathLengthVehicle);
+
+    printf("Appuyez sur une touche pour quitter\n");
+
+    // Affichage de la carte avec les stations de recharge
+    printMap(stations, res, *pathLength);
+
+    printf("Fermeture de la fenêtre\n");
 
     free(res);
     free(pathLength);

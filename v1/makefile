@@ -1,6 +1,6 @@
 CC=clang
 CFLAGS=-Wall -Wextra -pedantic -O0 -g3 -fsanitize=address
-LDFLAGS+=-fsanitize=address
+LDFLAGS+=-fsanitize=address -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer
 
 ALL_EXECUTABLES=main
 
