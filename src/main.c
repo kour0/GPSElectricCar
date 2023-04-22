@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "cJSON.h"
-#include "fonctions.h"
+#include "structures/vehicle.h"
+#include "structures/coordinate.h"
+#include "structures/charging_station.h"
+#include "structures/graph.h"
+#include "constants.h"
 
 int main(int argc, char** argv) {
     // Lecture du fichier JSON
