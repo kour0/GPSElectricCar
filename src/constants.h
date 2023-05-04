@@ -10,4 +10,6 @@
 #define FLOAT_MAX 3.402823466e+38F // Valeur maximale d'un float
 #define WIDTH 100
 
+#define LENGTH_STATIONS 17
+
 #endif //PPII2_GRP_30_CONSTANTS_H

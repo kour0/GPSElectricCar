@@ -1,13 +1,14 @@
-LLVM=/opt/homebrew/opt/llvm
-CC=$(LLVM)/bin/clang
-CFLAGS= -Wall -Wextra -pedantic
-LDFLAGS=-L$(LLVM)/lib -fsanitize=address
-CPPFLAGS=-I$(LLVM)/include -Iinclude
-CFLAGS += $(CPPFLAGS) -O0 -g3 -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls
+#LLVM=/opt/homebrew/opt/llvm
+#CC=$(LLVM)/bin/clang
+#CFLAGS= -Wall -Wextra -pedantic
+#LDFLAGS=-L$(LLVM)/lib -fsanitize=address
+#CPPFLAGS=-I$(LLVM)/include -Iinclude
+#CFLAGS += $(CPPFLAGS) -O0 -g3 -fsanitize=address -fno-omit-frame-pointer -fno-optimize-sibling-calls
 
-#CC=clang
-#CFLAGS=-Wall -Wextra -pedantic -O0 -g3 -fsanitize=address
-#LDFLAGS+=-fsanitize=address
+CC=clang
+CFLAGS=-Wall -Wextra -pedantic -O0 -g3 -fsanitize=address
+LDFLAGS+=-L$lib -fsanitize=address
+CPPFLAGS=-I$include -Iinclude
 
 ALL_EXECUTABLES=main
 

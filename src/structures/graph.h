@@ -19,5 +19,7 @@ void printGraph(Graph* graph);
 int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n);
 void printPath(ChargingStation* stations, int* path, int n);
 int* reducePath(Vehicle* vehicle, ChargingStation* stations, int* path, int n, int* nReduced, int pourcentageMinRange);
+void serializeGraph(Graph* graph, char* filename);
+Graph* deserializeGraph(char* filename, int V);
 
 #endif //PPII2_GRP_30_GRAPH_H

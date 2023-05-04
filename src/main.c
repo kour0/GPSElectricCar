@@ -6,8 +6,16 @@
 #include "structures/charging_station.h"
 #include "structures/graph.h"
 #include "constants.h"
+#include <unistd.h>
+#include <time.h>
+
 
 int main(int argc, char** argv) {
+
+    // Initialisation du temps d'exécution
+    double time_spent = 0.0;
+    clock_t begin = clock();
+
     // Lecture du fichier JSON
     int n; // Nombre de stations de recharge
     int m; // Nombre de véhicules
@@ -62,7 +70,20 @@ int main(int argc, char** argv) {
     strcpy(end.name, "Arrivee");
     end.coord.latitude = lat2;
     end.coord.longitude = lon2;
-    ChargingStation* stations = readJSONstations("../data/data_mod.json", &n, &start, &end);
+
+    ChargingStation* stations;
+
+    // Si le fichier existe dans data, on le deserialize sinon on le crée
+    if (access("../data/data_mod.bin", F_OK) == -1) {
+        // Création du fichier JSON
+        stations = readJSONstations("../data/data_mod.json", &n, &start, &end);
+
+        // On stocke les stations de recharge
+        serializeStations("../data/data_mod.bin", stations, n);
+    } else {
+        // On récupère les stations de recharge
+        stations = deserializeStations("../data/data_mod.bin", &n);
+    }
     stations = realloc(stations, (n + 2) * sizeof(struct ChargingStation));
     stations[n] = start;
     stations[n + 1] = end;
@@ -74,9 +95,19 @@ int main(int argc, char** argv) {
     // Affichage des stations de recharge
     // printStations(stations, n);
 
-    
-    // Création du graphe pondéré
-    struct Graph* graph = createGraphFromStations(stations, n);
+    Graph* graph;
+
+    // Si le graph n'est pas déjà créer et présent dans le dossier data, on le crée sinon on le récupère
+    if (access("../data/graph.txt", F_OK) == -1) {
+        // Création du graphe pondéré
+        graph = createGraphFromStations(stations, n);
+
+        // On stocke la matrice d'adjacence
+        serializeGraph(graph, "../data/graph.txt");
+    } else {
+        // On récupère la matrice d'adjacence
+        graph = deserializeGraph("../data/graph.txt", n);
+    }
 
     // Affichage de la matrice d'adjacence
     // printAdjMat(graph->adjMat, n);
@@ -124,6 +155,11 @@ int main(int argc, char** argv) {
     }
     free(stations);
     free(vehicles);
+
+    // Calcul du temps d'exécution
+    clock_t end_time = clock();
+    time_spent = (double)(end_time - begin) / CLOCKS_PER_SEC;
+    printf("Temps d'exécution : %f\n", time_spent);
 
     return 0;
 }

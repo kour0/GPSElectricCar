@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include "../constants.h"
+#include <time.h>
 
 Graph* createGraph(int V) {
 
@@ -97,6 +98,12 @@ void printGraph(Graph* graph) {
 
 // Algorithme de Dijkstra pour trouver le plus court chemin entre deux stations
 int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n) {
+
+    // Initialisation temps
+    clock_t start, end;
+    double cpu_time_used;
+    start = clock();
+
     // Initialisation des tableaux
     double* dist = malloc(graph->V * sizeof(double));
     int* prev = malloc(graph->V * sizeof(int));
@@ -185,6 +192,12 @@ int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n) {
     }
     free(path);
     *n = pathLength;
+
+    // Fin temps
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("Temps dijsktra : %f\n", cpu_time_used);
+
     return result;
 }
 
@@ -198,4 +211,23 @@ void printPath(ChargingStation* stations, int* path, int n) {
     printf("%s (%f, %f)\n", stations[path[n-1]].name, stations[path[n-1]].coord.longitude, stations[path[n-1]].coord.latitude);
     printf("Distance totale : %f km\n", totalDistance);
     printf("FIN\n");
+}
+
+// Fonction pour stocker la matrice d'adjacence en binaire
+void serializeGraph(Graph* graph, char* filename) {
+    FILE* file = fopen(filename, "wb");
+    fwrite(graph->adjMat, sizeof(double), graph->V*(graph->V-1)/2, file);
+    fclose(file);
+}
+
+// Fonction pour récupérer la matrice d'adjacence en binaire dont on connait la taille
+Graph* deserializeGraph(char* filename, int V) {
+    FILE* file = fopen(filename, "rb");
+    Graph* graph = malloc(sizeof(Graph));
+    graph->V = V;
+    graph->adjMat = malloc(graph->V*(graph->V-1)/2 * sizeof(double));
+    fseek(file, 0, SEEK_SET);
+    fread(graph->adjMat, sizeof(double), graph->V*(graph->V-1)/2, file);
+    fclose(file);
+    return graph;
 }
