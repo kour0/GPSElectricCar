@@ -7,7 +7,7 @@
 
 typedef struct Vehicle {
     char* name; // Nom du véhicule
-    int fastCharge; // Capacité de charge rapide
+    int fastCharge; // Capacité de charge rapide en km/h
     int range; // Autonomie
 } Vehicle;
 

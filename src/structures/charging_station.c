@@ -7,6 +7,7 @@
 #include <string.h>
 #include "../include/cJSON.h"
 #include "../constants.h"
+#include "queue.h"
 
 ChargingStation* readJSONstations(char* filename, int* n, ChargingStation* depart, ChargingStation* arrivee) {
     // Ouverture du fichier
@@ -39,12 +40,6 @@ ChargingStation* readJSONstations(char* filename, int* n, ChargingStation* depar
     // Allocation du tableau de stations
     ChargingStation* stations = malloc(*n * sizeof(ChargingStation));
 
-    int size = 0;
-
-    double center_longitude = (depart->coord.longitude + arrivee->coord.longitude) / 2;
-    double center_latitude = (depart->coord.latitude + arrivee->coord.latitude) / 2;
-    double rayon = distance(depart->coord, arrivee->coord) / 2;
-
     // Récupération des stations
     for (int i = 0; i < *n; ++i) {
         // On prend que les stations qui nous intéresse en prenant comme centre du cercle le milieu des deux stations de départ et d'arrivée
@@ -52,24 +47,21 @@ ChargingStation* readJSONstations(char* filename, int* n, ChargingStation* depar
         cJSON* name = cJSON_GetObjectItemCaseSensitive(feature, "nom_station");
         cJSON* longitude = cJSON_GetObjectItemCaseSensitive(feature, "longitude");
         cJSON* latitude = cJSON_GetObjectItemCaseSensitive(feature, "latitude");
+        cJSON* nbre_places = cJSON_GetObjectItemCaseSensitive(feature, "nbre_pdc");
 
         //if (isInCircle((Coordinate) {longitude->valuedouble, latitude->valuedouble}, center_longitude, center_latitude, rayon)) {
-        if (1) {
-            stations[size].name = malloc((strlen(name->valuestring) + 1) * sizeof(char));
-            strcpy(stations[size].name, name->valuestring);
-            stations[size].coord.longitude = longitude->valuedouble;
-            stations[size].coord.latitude = latitude->valuedouble;
-            size++;
-        }
+        stations[i].name = malloc((strlen(name->valuestring) + 1) * sizeof(char));
+        strcpy(stations[i].name, name->valuestring);
+        stations[i].coord.longitude = longitude->valuedouble;
+        stations[i].coord.latitude = latitude->valuedouble;
+        stations[i].nbAvailableChargingPoints = nbre_places->valueint;
+        stations[i].queue = malloc(sizeof(Queue)*nbre_places->valueint);
+
+
     }
 
     // Libération de la mémoire
     cJSON_Delete(json);
-
-    // Realloc du tableau de stations
-    // stations = realloc(stations, size * sizeof(ChargingStation));
-
-    // *n = size;
 
     return stations;
 }
@@ -148,3 +140,17 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 
     return stations;
 }
+
+// Fonction qui ajoute une personne à une station
+void addPersonToStation(ChargingStation* station, Person* person) {
+    if (station->nbAvailableChargingPoints == 0) {
+        push(station->queue, person);
+        dist = distance(station->coord, person->path[2])
+        person->remainingTime = timeToFastCharge(person, station);
+    } else {
+        if (station->nbQueue > 2*nbAvailableChargingPoints) {
+            push(station->queue, person);
+
+    }
+}
+

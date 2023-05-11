@@ -12,6 +12,7 @@ typedef struct Coordinate {
 } Coordinate;
 
 bool isInCircle(Coordinate coord, double longitude, double latitude, double r);
-double distance(Coordinate coord1, Coordinate coord2);
+float distance(Coordinate coord1, Coordinate coord2);
+Coordinate* pos_after_step(int* path, float distance);
 
 #endif //PPII2_GRP_30_COORDINATE_H
