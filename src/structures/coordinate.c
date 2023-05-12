@@ -6,11 +6,7 @@
 #include <math.h>
 #include "../constants.h"
 #include <stdlib.h>
-
-bool isInCircle(Coordinate coord, double longitude, double latitude, double r) {
-    double d = distance(coord, (Coordinate) {longitude, latitude});
-    return d <= r;
-}
+#include "charging_station.h"
 
 // Fonction pour calculer la distance entre deux coordonnées géographiques en km
 double distance(Coordinate coord1, Coordinate coord2) {
@@ -30,13 +26,30 @@ double distance(Coordinate coord1, Coordinate coord2) {
 
 
 // Fonction qui calcule la position après un déplacement de distance sur un chemin
-Coordinate* pos_after_step(Coordinate* coord1, Coordinate* coord2, float distance) {
+Coordinate* pos_after_step(Person* person, chargingStation* stations, float temps) {
+
+    Coordinate* coord1 = person->coord;
+    Coordinate* coord2 = stations[person->path[1]]->coord;
+
+    float dist = temps * VITESSE / 3600;
 
     double d = distance(coord1, coord2);
 
+    if (dist >= d) {
+        float distance_res = dist-d;
+        float temps_res = distance_res*3600/VITESSE;
+        person->remainingTime = temps_res;
+        if (pathSize == 2) {
+            person->path[0] = person->path[1];
+            person->path[1] = -1;
+            return coord2;
+        }
+        return coord2;
+    }
+
     // Calcul de la position après un déplacement de distance sur le chemin
-    double A = sin((1 - distance / d) * c) / sin(c);
-    double B = sin(distance / d * c) / sin(c);
+    double A = sin((1 - dist / d) * c) / sin(c);
+    double B = sin(dist / d * c) / sin(c);
     double x = A * cos(lat1) * cos(lon1) + B * cos(lat2) * cos(lon2);
     double y = A * cos(lat1) * sin(lon1) + B * cos(lat2) * sin(lon2);
     double z = A * sin(lat1) + B * sin(lat2);

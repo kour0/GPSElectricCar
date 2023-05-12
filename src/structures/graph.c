@@ -231,3 +231,7 @@ Graph* deserializeGraph(char* filename, int V) {
     fclose(file);
     return graph;
 }
+
+int sizePath(int* path, ) {
+
+}

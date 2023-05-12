@@ -8,6 +8,7 @@
 #include "../include/cJSON.h"
 #include "../constants.h"
 #include "queue.h"
+#include "person.h"
 
 ChargingStation* readJSONstations(char* filename, int* n, ChargingStation* depart, ChargingStation* arrivee) {
     // Ouverture du fichier
@@ -142,15 +143,19 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 }
 
 // Fonction qui ajoute une personne à une station
-void addPersonToStation(ChargingStation* station, Person* person) {
-    if (station->nbAvailableChargingPoints == 0) {
-        push(station->queue, person);
-        dist = distance(station->coord, person->path[2])
-        person->remainingTime = timeToFastCharge(person, station);
+void addPersonToStation(ChargingStation* stations ,ChargingStation* station, Person* person) {
+    float dist;
+    if (strcmp(station->name, stations[person->path[0]]) == 0 ) {
+        dist = distance(station->coord, stations[person->path[1]]);
     } else {
-        if (station->nbQueue > 2*nbAvailableChargingPoints) {
-            push(station->queue, person);
-
+        dist = distance(station->coord, stations[person->path[2]]);
     }
+    if (station->nbAvailableChargingPoints != 0) {
+        nbAvailableChargingPoints--;
+        person->remainingTime += timeToFastCharge(person, station);
+    } else {
+        person->remainingTime += timeToFastCharge(person, station) + index_of_from(queue, nbAvailableChargingPoints)->remainingTime;
+    }
+    push(station, person);
 }
 

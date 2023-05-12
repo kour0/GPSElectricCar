@@ -9,11 +9,14 @@ typedef struct Person {
     Vehicle* vehicle;
     Coordinate* coordinate;
     int* path;
+    int pathSize;
     ChargingStation* chargingStation;
     float remainingTime;
     float autonomy;
 };
 
 float timeToFastCharge(Person* person, int distance);
+void nextStepDistance(Person* person, int distance);
+void nextStep(Person* person);
 
 #endif //PPII2_GRP_30_PERSON_H
