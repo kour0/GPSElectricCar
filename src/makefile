@@ -10,7 +10,7 @@ CFLAGS=-Wall -Wextra -pedantic -O0 -g3 -fsanitize=address
 LDFLAGS+=-L$lib -fsanitize=address
 CPPFLAGS=-I$include -Iinclude
 
-ALL_EXECUTABLES=main
+ALL_EXECUTABLES=main simu
 
 all: $(ALL_EXECUTABLES)
 
@@ -20,20 +20,34 @@ main: main.o cJSON.o vehicle.o graph.o coordinate.o charging_station.o
 main.o: main.c constants.h structures/vehicle.h structures/graph.h structures/coordinate.h structures/charging_station.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-cJSON.o: include/cJSON.c include/cJSON.h
+simu: simu.o cJSON.o vehicle.o graph.o coordinate.o charging_station.o person.o queue.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+simu.o: simu.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+cJSON.o: include/cJSON.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 #STRUCTURES :
-vehicle.o: structures/vehicle.c structures/vehicle.h structures/coordinate.h
+vehicle.o: structures/vehicle.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-graph.o: structures/graph.c structures/graph.h structures/coordinate.h structures/charging_station.h
+graph.o: structures/graph.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-coordinate.o: structures/coordinate.c structures/coordinate.h
+coordinate.o: structures/coordinate.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
-charging_station.o: structures/charging_station.c structures/charging_station.h structures/coordinate.h
+charging_station.o: structures/charging_station.c
 	$(CC) $(CFLAGS) -c -o $@ $<
+
+person.o: structures/person.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+queue.o: structures/queue.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+
 
 clean:
 	rm -f *.o ${ALL_EXECUTABLES}

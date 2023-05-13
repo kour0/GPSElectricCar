@@ -8,6 +8,7 @@
 #include <math.h>
 #include "../constants.h"
 #include <time.h>
+#include <stdbool.h>
 
 Graph* createGraph(int V) {
 
@@ -97,7 +98,7 @@ void printGraph(Graph* graph) {
 }
 
 // Algorithme de Dijkstra pour trouver le plus court chemin entre deux stations
-int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n) {
+int* dijkstra(Graph* graph, ChargingStation* stations, Vehicle* vehicle, Coordinate* src, Coordinate* dest, int* n) {
 
     // Initialisation temps
     clock_t start, end;
@@ -105,27 +106,28 @@ int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n) {
     start = clock();
 
     // Initialisation des tableaux
-    double* dist = malloc(graph->V * sizeof(double));
-    int* prev = malloc(graph->V * sizeof(int));
-    bool* visited = calloc(graph->V, sizeof(bool));
+    double* dist = malloc((graph->V+2) * sizeof(double));
+    int* prev = malloc((graph->V+2) * sizeof(int));
+    bool* visited = calloc((graph->V+2), sizeof(bool));
 
     // Initialisation de l'autonomie
     double autonomy = vehicle->range;
     printf("Autonomie : %f\n", autonomy);
 
     // Initialisation des distances
-    for (int i = 0; i < graph->V; ++i) {
+    for (int i = 0; i < graph->V+2; ++i) {
         dist[i] = FLOAT_MAX;
         prev[i] = -1;
     }
-    dist[src] = 0;
+    dist[graph->V] = 0;
+
 
     // Boucle principale
-    for (int i = 0; i < graph->V; ++i) {
+    for (int i = 0; i < graph->V+2; ++i) {
         // Recherche du sommet non visité le plus proche
         double min = FLOAT_MAX;
         int u = -1;
-        for (int j = 0; j < graph->V; ++j) {
+        for (int j = 0; j < graph->V+2; ++j) {
             if (!visited[j] && dist[j] < min) {
                 min = dist[j];
                 u = j;
@@ -139,7 +141,7 @@ int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n) {
         }
 
         // Si on a trouvé le sommet de destination, on arrête
-        if (u == dest) {
+        if (u == graph->V+1) {
             break;
         }
 
@@ -147,13 +149,25 @@ int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n) {
         visited[u] = true;
 
         // On met à jour les distances
-        for (int v = 0; v < graph->V; ++v) {
+        for (int v = 0; v < graph->V+2; ++v) {
             if (!visited[v]) {
                 double w = 0;
-                if (u < v) {
-                    w = graph->adjMat[u*(graph->V-1) - ((u-1)*u)/2 + v - (u+1)];
+                if (v == graph->V) {
+                    w=distance(src, stations[u].coord);
                 } else {
-                    w = graph->adjMat[v*(graph->V-1) - ((v-1)*v)/2 + u - (v+1)];
+                    if (v == graph->V+1) {
+                        w=distance(stations[u].coord, dest);
+                    } else {
+                        if (u == graph->V) {
+                            w = distance(src, stations[v].coord);
+                        } else {
+                            if (u < v) {
+                                w = graph->adjMat[u * (graph->V - 1) - ((u - 1) * u) / 2 + v - (u + 1)];
+                            } else {
+                                w = graph->adjMat[v * (graph->V - 1) - ((v - 1) * v) / 2 + u - (v + 1)];
+                            }
+                        }
+                    }
                 }
                 if (w >= autonomy) {
                     continue;
@@ -170,7 +184,7 @@ int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n) {
     // On récupère le chemin
     int* path = malloc(graph->V * sizeof(int));
     int pathLength = 0;
-    int u = dest;
+    int u = graph->V+1;
     if (prev[u] == -1) {
         printf("Pas de chemin trouvé\n");
         return NULL;
@@ -205,10 +219,10 @@ int* dijkstra(Graph* graph, Vehicle* vehicle, int src, int dest, int* n) {
 void printPath(ChargingStation* stations, int* path, int n) {
     float totalDistance = 0;
     for (int i = 0; i < n-1; ++i) {
-        printf("%s (%f, %f) -> (distance : %f) ", stations[path[i]].name, stations[path[i]].coord.longitude, stations[path[i]].coord.latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
+        printf("%s (%f, %f) -> (distance : %f) ", stations[path[i]].name, stations[path[i]].coord->longitude, stations[path[i]].coord->latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
         totalDistance += distance(stations[path[i]].coord, stations[path[i+1]].coord);
     }
-    printf("%s (%f, %f)\n", stations[path[n-1]].name, stations[path[n-1]].coord.longitude, stations[path[n-1]].coord.latitude);
+    printf("%s (%f, %f)\n", stations[path[n-1]].name, stations[path[n-1]].coord->longitude, stations[path[n-1]].coord->latitude);
     printf("Distance totale : %f km\n", totalDistance);
     printf("FIN\n");
 }
@@ -230,8 +244,4 @@ Graph* deserializeGraph(char* filename, int V) {
     fread(graph->adjMat, sizeof(double), graph->V*(graph->V-1)/2, file);
     fclose(file);
     return graph;
-}
-
-int sizePath(int* path, ) {
-
 }

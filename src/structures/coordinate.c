@@ -7,45 +7,55 @@
 #include "../constants.h"
 #include <stdlib.h>
 #include "charging_station.h"
+#include "person.h"
 
 // Fonction pour calculer la distance entre deux coordonnées géographiques en km
-double distance(Coordinate coord1, Coordinate coord2) {
+float distance(Coordinate* coord1, Coordinate* coord2) {
     // Conversion des coordonnées en radians
-    double lat1 = coord1.latitude * M_PI / 180;
-    double lon1 = coord1.longitude * M_PI / 180;
-    double lat2 = coord2.latitude * M_PI / 180;
-    double lon2 = coord2.longitude * M_PI / 180;
+    double lat1 = coord1->latitude * M_PI / 180;
+    double lon1 = coord1->longitude * M_PI / 180;
+    double lat2 = coord2->latitude * M_PI / 180;
+    double lon2 = coord2->longitude * M_PI / 180;
 
     // Calcul de la distance
     double dlon = lon2 - lon1;
     double dlat = lat2 - lat1;
     double a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return (EARTH_RADIUS * c);
+    return (float)(EARTH_RADIUS * c);
 }
 
 
 // Fonction qui calcule la position après un déplacement de distance sur un chemin
-Coordinate* pos_after_step(Person* person, chargingStation* stations, float temps) {
-
-    Coordinate* coord1 = person->coord;
-    Coordinate* coord2 = stations[person->path[1]]->coord;
+Coordinate* pos_after_step(Coordinate* coord1, Coordinate* coord2, float temps, float* remainingTime, int* path, int* pathSize) {
 
     float dist = temps * VITESSE / 3600;
 
-    double d = distance(coord1, coord2);
+    float d = distance(coord1, coord2);
 
     if (dist >= d) {
         float distance_res = dist-d;
         float temps_res = distance_res*3600/VITESSE;
-        person->remainingTime = temps_res;
-        if (pathSize == 2) {
-            person->path[0] = person->path[1];
-            person->path[1] = -1;
+        *remainingTime = temps_res;
+        if (*pathSize == 2) {
+            path[0] = path[1];
+            *pathSize = 1;
             return coord2;
         }
         return coord2;
     }
+
+    // Conversion des coordonnées en radians
+    double lat1 = coord1->latitude * M_PI / 180;
+    double lon1 = coord1->longitude * M_PI / 180;
+    double lat2 = coord2->latitude * M_PI / 180;
+    double lon2 = coord2->longitude * M_PI / 180;
+
+    // Calcul de la distance entre les deux coordonnées
+    double dlon = lon2 - lon1;
+    double dlat = lat2 - lat1;
+    double a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
     // Calcul de la position après un déplacement de distance sur le chemin
     double A = sin((1 - dist / d) * c) / sin(c);
@@ -62,8 +72,8 @@ Coordinate* pos_after_step(Person* person, chargingStation* stations, float temp
 
     // Création de la nouvelle coordonnée
     Coordinate* coord = malloc(sizeof(Coordinate));
-    coord->latitude = lat;
-    coord->longitude = lon;
+    coord->latitude = (float)lat;
+    coord->longitude = (float)lon;
 
     return coord;
 }

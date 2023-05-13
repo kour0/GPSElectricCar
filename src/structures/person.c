@@ -6,8 +6,10 @@
 #include "../constants.h"
 #include "coordinate.h"
 #include <stdlib.h>
+#include "charging_station.h"
+#include "graph.h"
 
-float timeToFastCharge(Person* person, int distance){
+float timeToFastCharge(Person* person, float distance){
     Vehicle* vehicle = person->vehicle;
     float fastCharge = vehicle->fastCharge;
     float autonomy = person->autonomy;
@@ -15,31 +17,31 @@ float timeToFastCharge(Person* person, int distance){
     return temps;
 }
 
-void nextStepDistance(Person* person, int distance) {
-    if (person->RemainingTime - STEP >= 0) {
-        person->RemainingTime -= STEP;
-        person->distance += STEP * person->vehicle->speed;
-        if (person->distance >= distance) {
-            person->distance = distance;
-            person->RemainingTime = 0;
-        }
+void nextStep(Person* person, Coordinate* next_station) {
+    // On est arrivé à destination
+    if (person->pathSize == 1) {
+        return;
     }
-}
-
-void nextStep(Person* person, ChargingStation* stations) {
-    if (person->RemainingTime == -1) {
-        Coordinate* new_coord = pos_after_step(person->coordinate, stations[person->path[1]], STEP);
+    // On est sur un chemin
+    if (person->remainingTime == 0) {
+        Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP, &(person->remainingTime), person->path, &(person->pathSize));
         free(person->coordinate);
+        if (next_station->longitude == new_coord->longitude && next_station->latitude == new_coord->latitude) {
+            // On est arrivé
+            person->pathSize = 1;
+        }
         person->coordinate = new_coord;
     } else {
-        if (person->remainingTime - STEP > 0) {
+        // On est dans une station
+        if (person->remainingTime - STEP >= 0) {
             person->remainingTime -= STEP;
         }
         else {
-            Coordinate* new_coord = pos_after_step(person->coordinate, stations[person->path[1]], STEP - person->remainingTime);
+            // On sort de la station avec une distance en plus
+            Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP - person->remainingTime, &(person->remainingTime), person->path, &(person->pathSize));
             free(person->coordinate);
             person->coordinate = new_coord;
-            person->remainingTime = -1;
+            person->remainingTime = 0;
         }
     }
 }

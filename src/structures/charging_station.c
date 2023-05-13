@@ -8,9 +8,8 @@
 #include "../include/cJSON.h"
 #include "../constants.h"
 #include "queue.h"
-#include "person.h"
 
-ChargingStation* readJSONstations(char* filename, int* n, ChargingStation* depart, ChargingStation* arrivee) {
+ChargingStation* readJSONstations(char* filename, int* n) {
     // Ouverture du fichier
     FILE* file = fopen(filename, "r");
     if (file == NULL) {
@@ -53,8 +52,9 @@ ChargingStation* readJSONstations(char* filename, int* n, ChargingStation* depar
         //if (isInCircle((Coordinate) {longitude->valuedouble, latitude->valuedouble}, center_longitude, center_latitude, rayon)) {
         stations[i].name = malloc((strlen(name->valuestring) + 1) * sizeof(char));
         strcpy(stations[i].name, name->valuestring);
-        stations[i].coord.longitude = longitude->valuedouble;
-        stations[i].coord.latitude = latitude->valuedouble;
+        stations[i].coord = malloc(sizeof(Coordinate));
+        stations[i].coord->longitude = (float)longitude->valuedouble;
+        stations[i].coord->latitude = (float)latitude->valuedouble;
         stations[i].nbAvailableChargingPoints = nbre_places->valueint;
         stations[i].queue = malloc(sizeof(Queue)*nbre_places->valueint);
 
@@ -81,17 +81,20 @@ void serializeStations(char* filename, ChargingStation* stations, int n) {
     // Ecriture des stations
     for (int i = 0; i < n; ++i) {
         // Ecriture de la taille du nom
-        int size = strlen(stations[i].name);
+        int size = (int)strlen(stations[i].name);
         fwrite(&size, sizeof(int), 1, file);
 
         // Ecriture du nom
         fwrite(stations[i].name, sizeof(char), size, file);
 
+        // Ecriture du nombre de places
+        fwrite(&stations[i].nbAvailableChargingPoints, sizeof(int), 1, file);
+
         // Ecriture de la longitude
-        fwrite(&stations[i].coord.longitude, sizeof(float), 1, file);
+        fwrite(&stations[i].coord->longitude, sizeof(float), 1, file);
 
         // Ecriture de la latitude
-        fwrite(&stations[i].coord.latitude, sizeof(float), 1, file);
+        fwrite(&stations[i].coord->latitude, sizeof(float), 1, file);
     }
 
     // Fermeture du fichier
@@ -122,16 +125,21 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 
         // Allocation du nom
         stations[i].name = malloc((size + 1) * sizeof(char));
+        stations[i].queue = malloc(sizeof(Queue));
+        stations[i].coord = malloc(sizeof(Coordinate));
 
         // Lecture du nom
         fread(stations[i].name, sizeof(char), size, file);
         stations[i].name[size] = 0;
 
+        // Lecture du nombre de places
+        fread(&(stations[i].nbAvailableChargingPoints), sizeof(int), 1, file);
+
         // Lecture de la longitude
-        fread(&stations[i].coord.longitude, sizeof(float), 1, file);
+        fread(&(stations[i].coord->longitude), sizeof(float), 1, file);
 
         // Lecture de la latitude
-        fread(&stations[i].coord.latitude, sizeof(float), 1, file);
+        fread(&(stations[i].coord->latitude), sizeof(float), 1, file);
     }
 
     // Fermeture du fichier
@@ -143,19 +151,19 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 }
 
 // Fonction qui ajoute une personne à une station
-void addPersonToStation(ChargingStation* stations ,ChargingStation* station, Person* person) {
+void addPersonToStation(ChargingStation* station, ChargingStation* stations, Person* person) {
     float dist;
-    if (strcmp(station->name, stations[person->path[0]]) == 0 ) {
-        dist = distance(station->coord, stations[person->path[1]]);
+    if (strcmp(station->name,stations[person->path[1]].name) == 0) {
+        dist = distance(station->coord, stations[person->path[2]].coord);
     } else {
-        dist = distance(station->coord, stations[person->path[2]]);
+        dist = distance(station->coord, stations[person->path[1]].coord);
     }
     if (station->nbAvailableChargingPoints != 0) {
-        nbAvailableChargingPoints--;
-        person->remainingTime += timeToFastCharge(person, station);
+        station->nbAvailableChargingPoints--;
+        person->remainingTime += timeToFastCharge(person, dist);
     } else {
-        person->remainingTime += timeToFastCharge(person, station) + index_of_from(queue, nbAvailableChargingPoints)->remainingTime;
+        person->remainingTime += timeToFastCharge(person, dist) + index_of_from(station->queue, station->nbAvailableChargingPoints)->remainingTime;
     }
-    push(station, person);
+    push(station->queue, person);
 }
 

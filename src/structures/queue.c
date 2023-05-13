@@ -20,7 +20,7 @@ void del_person(Queue* queue) {
 
 void push(Queue* queue, Person* data) {
 
-    float time = data->RemainingTime;
+    float time = data->remainingTime;
 
     Queue* new_queue = create_queue(data);
     new_queue->next = NULL;
@@ -32,7 +32,7 @@ void push(Queue* queue, Person* data) {
     }
 
     while (queue->next != NULL) {
-        if (queue->data->RemainingTime < time) {
+        if (queue->data->remainingTime < time) {
             queue->prev->next = new_queue;
             new_queue->prev = queue->prev;
             new_queue->next = queue;

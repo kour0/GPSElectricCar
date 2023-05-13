@@ -5,10 +5,12 @@
 #ifndef PPII2_GRP_30_QUEUE_H
 #define PPII2_GRP_30_QUEUE_H
 
+#include "person.h"
+
 typedef struct Queue {
     Person* data;
-    Queue* next;
-    Queue* prev;
+    struct Queue* next;
+    struct Queue* prev;
 } Queue;
 
 Queue* create_queue(Person* data);
