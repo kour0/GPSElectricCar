@@ -55,10 +55,9 @@ ChargingStation* readJSONstations(char* filename, int* n) {
         stations[i].coord = malloc(sizeof(Coordinate));
         stations[i].coord->longitude = (float)longitude->valuedouble;
         stations[i].coord->latitude = (float)latitude->valuedouble;
-        stations[i].nbAvailableChargingPoints = nbre_places->valueint;
-        stations[i].queue = malloc(sizeof(Queue)*nbre_places->valueint);
-
-
+        stations[i].nbChargingPoints = atoi(nbre_places->valuestring);
+        stations[i].nbAvailableChargingPoints = atoi(nbre_places->valuestring);
+        stations[i].queue = create_queue();
     }
 
     // Libération de la mémoire
@@ -88,6 +87,9 @@ void serializeStations(char* filename, ChargingStation* stations, int n) {
         fwrite(stations[i].name, sizeof(char), size, file);
 
         // Ecriture du nombre de places
+        fwrite(&stations[i].nbChargingPoints, sizeof(int), 1, file);
+
+        // Ecriture du nombre de places
         fwrite(&stations[i].nbAvailableChargingPoints, sizeof(int), 1, file);
 
         // Ecriture de la longitude
@@ -95,6 +97,7 @@ void serializeStations(char* filename, ChargingStation* stations, int n) {
 
         // Ecriture de la latitude
         fwrite(&stations[i].coord->latitude, sizeof(float), 1, file);
+
     }
 
     // Fermeture du fichier
@@ -125,12 +128,15 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 
         // Allocation du nom
         stations[i].name = malloc((size + 1) * sizeof(char));
-        stations[i].queue = malloc(sizeof(Queue));
+        stations[i].queue = create_queue();
         stations[i].coord = malloc(sizeof(Coordinate));
 
         // Lecture du nom
         fread(stations[i].name, sizeof(char), size, file);
         stations[i].name[size] = 0;
+
+        // Lecture du nombre de places
+        fread(&(stations[i].nbChargingPoints), sizeof(int), 1, file);
 
         // Lecture du nombre de places
         fread(&(stations[i].nbAvailableChargingPoints), sizeof(int), 1, file);
@@ -151,19 +157,20 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 }
 
 // Fonction qui ajoute une personne à une station
-void addPersonToStation(ChargingStation* station, ChargingStation* stations, Person* person) {
+void addPersonToStation(ChargingStation* stations, Person* person, int stationIndex) {
     float dist;
-    if (strcmp(station->name,stations[person->path[1]].name) == 0) {
-        dist = distance(station->coord, stations[person->path[2]].coord);
+    ChargingStation* station = &stations[stationIndex];
+    if (person->path[2] == NB_STATIONS+1) {
+        dist = distance(station->coord, person->end);
     } else {
-        dist = distance(station->coord, stations[person->path[1]].coord);
+        dist = distance(station->coord, stations[person->path[2]].coord);
     }
+    printf("Je rentre dans une station %s avec %d places disponibles\n", station->name, station->nbAvailableChargingPoints);
     if (station->nbAvailableChargingPoints != 0) {
         station->nbAvailableChargingPoints--;
-        person->remainingTime += timeToFastCharge(person, dist);
+        person->remainingTime = timeToFastCharge(person, dist) - person->remainingTime;
     } else {
-        person->remainingTime += timeToFastCharge(person, dist) + index_of_from(station->queue, station->nbAvailableChargingPoints)->remainingTime;
+        person->remainingTime = timeToFastCharge(person, dist) + index_of_from(station->queue, station->nbAvailableChargingPoints)->remainingTime - person->remainingTime;
     }
     push(station->queue, person);
 }
-

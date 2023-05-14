@@ -13,7 +13,7 @@ typedef struct Queue {
     struct Queue* prev;
 } Queue;
 
-Queue* create_queue(Person* data);
+Queue* create_queue(void);
 void del_person(Queue* queue);
 void push(Queue* queue, Person* data);
 Person* last(Queue* queue);

@@ -14,6 +14,8 @@
 #include <time.h>
 
 
+void nextStep(Person *pPerson, Coordinate *pCoordinate, ChargingStation *pStation);
+
 int main(int argc, char** argv) {
 
     // Initialisation du temps d'exécution
@@ -24,7 +26,19 @@ int main(int argc, char** argv) {
     int n; // Nombre de stations de recharge
     int m; // Nombre de véhicules
 
-    Vehicle* vehicles = readJSONvehicles("../data/ev-data.json", &m);
+    Vehicle* vehicles;
+
+    // Si le fichier existe dans data, on le deserialize sinon on le crée
+    if (access("../data/ev-data.bin", F_OK) == -1) {
+        // Création du fichier JSON
+        vehicles = readJSONvehicles("../data/ev-data.json", &m);
+
+        // On stocke les stations de recharge
+        serializeVehicles("../data/ev-data.bin", vehicles, m);
+    } else {
+        // On récupère les stations de recharge
+        vehicles = deserializeVehicles("../data/ev-data.bin", &m);
+    }
 
     // Affichage du nombre de stations de recharge
     // printf("Nombre de stations de recharge : %d\n", n);
@@ -60,22 +74,16 @@ int main(int argc, char** argv) {
     }
 
     printf("Véhicule choisi : %s\n", vehicles[i].name);
-    printf("Autonomie : %d\n", vehicles[i].range);
+    printf("Autonomie : %f\n", vehicles[i].range);
     printf("Temps de recharge : %d\n", vehicles[i].fastCharge);
 
-    // Ajout des stations de départ et d'arrivée (48.672894, 6.1582773) et (48.6834253, 6.1617406) ou (50.3933812, 3.6062753)
-    struct ChargingStation start;
-    start.name = malloc(7 * sizeof(char));
-    strcpy(start.name, "Depart");
-    start.coord= malloc(sizeof(struct Coordinate));
-    start.coord->latitude = lat1;
-    start.coord->longitude = lon1;
-    struct ChargingStation end;
-    end.name = malloc(8 * sizeof(char));
-    strcpy(end.name, "Arrivee");
-    end.coord= malloc(sizeof(struct Coordinate));
-    end.coord->latitude = lat2;
-    end.coord->longitude = lon2;
+    // On crée les coordonnées du point de départ et d'arrivée
+    Coordinate* start = malloc(sizeof (Coordinate));
+    start->latitude = lat1;
+    start->longitude = lon1;
+    Coordinate* end = malloc(sizeof (Coordinate));
+    end->latitude = lat2;
+    end->longitude = lon2;
 
     ChargingStation* stations;
 
@@ -90,6 +98,8 @@ int main(int argc, char** argv) {
         // On récupère les stations de recharge
         stations = deserializeStations("../data/data_mod.bin", &n);
     }
+
+    printf("Nombre de stations de recharge : %d\n", n);
 
     Graph* graph;
 
@@ -106,13 +116,9 @@ int main(int argc, char** argv) {
     }
 
 
-    stations = realloc(stations, (n + 2) * sizeof(struct ChargingStation));
-    stations[n] = start;
-    stations[n + 1] = end;
-    n += 2;
 
     // Afficher la distance entre le point de départ et d'arrivée
-    printf("Distance entre le point de départ et d'arrivée : %f\n", distance(start.coord, end.coord));
+    printf("Distance entre le point de départ et d'arrivée : %f\n", distance(start, end));
 
     // Affichage des stations de recharge
     // printStations(stations, n);
@@ -122,39 +128,60 @@ int main(int argc, char** argv) {
 
     // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
     int* pathLength = malloc(sizeof(int));
-    int* res = dijkstra(graph, stations, vehicles+i, start.coord, end.coord, pathLength);
+    int* res = dijkstra(graph, stations, vehicles[i].range, vehicles[i].range,start, end, pathLength);
+
+    // Affichage du chemin le plus court
+    printf("Chemin le plus court est de longueur %d : \n", *pathLength);
+    printPath(stations, res, *pathLength, start, end);
+
+    // On crée la person
+
+    Person* person = createPerson(vehicles+i, start, res, *pathLength, end);
 
     // Fork pour lancer le simulateur
     // commande à chaque step : person->path = dijkstra(graph, stations, person->vehicle, person->coordinate, stations[person->path[person->pathSize]].coord, &(person->pathSize));
 
+    int step = 0;
 
-
-    // Affichage du chemin le plus court
-    printf("Chemin le plus court est de longueur %d : \n", *pathLength);
-    printPath(stations, res, *pathLength);
-
-    // On teste le simulateur
-
-
+    while (person->pathSize != 1) {
+        printf("Step %d\n", step); //(3.606275, 50.393383)
+        if (person->pathSize == 2) {
+            nextStep(person, person->end, stations);
+            free(person->path);
+            person->path = dijkstra(graph, stations, person->autonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
+        } else {
+            nextStep(person, stations[person->path[1]].coord, stations);
+            int* new_path = dijkstra(graph, stations, person->autonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
+            free(person->path);
+            person->path = new_path;
+        }
+        printf("Position : %f %f\n", person->coordinate->latitude, person->coordinate->longitude);
+        printf("Autonomie : %f\n", person->autonomy);
+        printf("Distance restante : %d\n", person->pathSize);
+        printf("Temps de recharge : %d\n", person->vehicle->fastCharge);
+        printf("Temps restant : %f\n", person->remainingTime);
+        ++step;
+        // Attendre un input dans la console
+        getchar();
+    }
 
     // On libère la mémoire
-    free(res);
     free(pathLength);
-    for (int k = 0; k < n-2; ++k) {
+    for (int k = 0; k < n; ++k) {
         free(stations[k].name);
         free(stations[k].coord);
         free(stations[k].queue);
     }
-    free(stations[graph->V+1].name);
-    free(stations[graph->V+1].coord);
-    free(stations[graph->V].name);
-    free(stations[graph->V].coord);
     for (int j = 0; j < m; ++j) {
         free(vehicles[j].name);
     }
     free(stations);
     free(vehicles);
     freeGraph(graph);
+    free(person->coordinate); // (5.531192, 49.150017)
+    free(person->path);
+    free(person->end);
+    free(person);
 
     // Calcul du temps d'exécution
     clock_t end_time = clock();
@@ -164,3 +191,39 @@ int main(int argc, char** argv) {
     return 0;
 }
 
+void nextStep(Person* person, Coordinate* next_station, ChargingStation* stations) {
+    // On est arrivé à destination
+    if (person->pathSize == 1) {
+        return;
+    }
+    // On est sur un chemin
+    if (person->remainingTime == 0) {
+        Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP, &(person->remainingTime), &person->pathSize);
+        person->autonomy -= distance(person->coordinate, new_coord);
+        if (person->end->longitude == new_coord->longitude && person->end->latitude == new_coord->latitude) {
+            // On est arrivé
+            person->pathSize = 1;
+        } else {
+            if (next_station->longitude == new_coord->longitude && next_station->latitude == new_coord->latitude) {
+                printf("On rentre dans une station\n");
+                addPersonToStation(stations, person, person->path[1]);
+            }
+        }
+        free(person->coordinate);
+        person->coordinate = new_coord;  // (3.606275, 50.393383)
+    } else {
+        // On est dans une station
+        if (person->remainingTime - STEP >= 0) {
+            person->remainingTime -= STEP;
+            person->autonomy += STEP/3600.0 * person->vehicle->fastCharge;
+        }
+        else {
+            // On sort de la station avec une distance en plus
+            person->autonomy += person->remainingTime/3600 * person->vehicle->fastCharge;
+            Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP - person->remainingTime, &(person->remainingTime), &person->pathSize);
+            free(person->coordinate);
+            person->coordinate = new_coord;
+            person->remainingTime = 0;
+        }
+    }
+}

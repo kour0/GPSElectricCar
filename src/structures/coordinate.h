@@ -11,6 +11,6 @@ typedef struct Coordinate {
 } Coordinate;
 
 float distance(Coordinate* coord1, Coordinate* coord2);
-Coordinate* pos_after_step(Coordinate* coord1, Coordinate* coord2, float temps, float* remainingTime, int* path, int* pathSize);
+Coordinate* pos_after_step(Coordinate* coord1, Coordinate* coord2, float temps, float* remainingTime, int* pathSize);
 
 #endif //PPII2_GRP_30_COORDINATE_H

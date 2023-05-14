@@ -11,11 +11,11 @@
         },
         {
             "Name": "Tesla Model 3 ",
-            "Range": "380",
+            "Range": "100",
             "Acceleration": "6.1",
             "Top Speed": "225",
             "Efficiency": "151",
-            "Fast Charge": "630",
+            "Fast Charge": "25",
             "Brand": "Tesla"
         },
         {

@@ -16,8 +16,8 @@ typedef struct Graph {
 Graph* createGraph(int V);
 Graph* createGraphFromStations(ChargingStation* stations, int n);
 void freeGraph(Graph* graph);
-int* dijkstra(Graph* graph, ChargingStation* stations, Vehicle* vehicle, Coordinate* src, Coordinate* dest, int* n);
-void printPath(ChargingStation* stations, int* path, int n);
+int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float range, Coordinate* src, Coordinate* dest, int* n);
+void printPath(ChargingStation* stations, int* path, int n, Coordinate* src, Coordinate* dest);
 void serializeGraph(Graph* graph, char* filename);
 Graph* deserializeGraph(char* filename, int V);
 

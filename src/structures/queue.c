@@ -6,9 +6,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-Queue* create_queue(Person* data) {
+Queue* create_queue(void) {
     Queue* queue = (Queue*) malloc(sizeof(Queue));
-    queue->data = data;
+    queue->data = NULL;
     queue->next = NULL;
     queue->prev = NULL;
     return queue;
@@ -22,14 +22,13 @@ void push(Queue* queue, Person* data) {
 
     float time = data->remainingTime;
 
-    Queue* new_queue = create_queue(data);
-    new_queue->next = NULL;
-    new_queue->prev = NULL;
-
-    if (queue == NULL) {
-        queue = new_queue;
+    if (queue->data == NULL) {
+        queue->data = data;
         return;
     }
+
+    Queue* new_queue = create_queue();
+    new_queue->data = data;
 
     while (queue->next != NULL) {
         if (queue->data->remainingTime < time) {

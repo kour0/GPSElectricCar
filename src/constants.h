@@ -11,6 +11,7 @@
 #define WIDTH 100
 #define STEP 600 // Pas de temps en secondes
 #define VITESSE 50 // Vitesse en km/h
+#define NB_STATIONS 17070 // Nombre de stations
 
 #define LENGTH_STATIONS 17
 

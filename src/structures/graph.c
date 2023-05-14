@@ -98,21 +98,31 @@ void printGraph(Graph* graph) {
 }
 
 // Algorithme de Dijkstra pour trouver le plus court chemin entre deux stations
-int* dijkstra(Graph* graph, ChargingStation* stations, Vehicle* vehicle, Coordinate* src, Coordinate* dest, int* n) {
+int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float range, Coordinate* src, Coordinate* dest, int* n) {
 
     // Initialisation temps
     clock_t start, end;
     double cpu_time_used;
     start = clock();
 
+    // Si le départ est la destination
+    if (src->longitude == dest->longitude && src->latitude == dest->latitude) {
+        *n = 1;
+        int* path = malloc(sizeof(int));
+        path[0] = graph->V;
+
+        // Fin temps
+        end = clock();
+        cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+        printf("Temps dijsktra : %f\n", cpu_time_used);
+
+        return path;
+    }
+
     // Initialisation des tableaux
     double* dist = malloc((graph->V+2) * sizeof(double));
     int* prev = malloc((graph->V+2) * sizeof(int));
     bool* visited = calloc((graph->V+2), sizeof(bool));
-
-    // Initialisation de l'autonomie
-    double autonomy = vehicle->range;
-    printf("Autonomie : %f\n", autonomy);
 
     // Initialisation des distances
     for (int i = 0; i < graph->V+2; ++i) {
@@ -121,9 +131,9 @@ int* dijkstra(Graph* graph, ChargingStation* stations, Vehicle* vehicle, Coordin
     }
     dist[graph->V] = 0;
 
-
     // Boucle principale
     for (int i = 0; i < graph->V+2; ++i) {
+
         // Recherche du sommet non visité le plus proche
         double min = FLOAT_MAX;
         int u = -1;
@@ -156,7 +166,11 @@ int* dijkstra(Graph* graph, ChargingStation* stations, Vehicle* vehicle, Coordin
                     w=distance(src, stations[u].coord);
                 } else {
                     if (v == graph->V+1) {
-                        w=distance(stations[u].coord, dest);
+                        if (u == graph->V) {
+                            w=distance(src, dest);
+                        } else {
+                            w=distance(stations[u].coord, dest);
+                        }
                     } else {
                         if (u == graph->V) {
                             w = distance(src, stations[v].coord);
@@ -179,6 +193,7 @@ int* dijkstra(Graph* graph, ChargingStation* stations, Vehicle* vehicle, Coordin
                 }
             }
         }
+        autonomy = range;
     }
 
     // On récupère le chemin
@@ -189,10 +204,18 @@ int* dijkstra(Graph* graph, ChargingStation* stations, Vehicle* vehicle, Coordin
         printf("Pas de chemin trouvé\n");
         return NULL;
     }
-    while (u != -1) {
-        path[pathLength++] = u;
-        u = prev[u];
+    path[pathLength++] = u;
+    u = prev[u];
+    while (u != -1 && u != graph->V) {
+        printf("%d\n", u);
+        if (stations[u].coord->longitude != src->longitude || stations[u].coord->latitude != src->latitude) {
+            path[pathLength++] = u;
+            u = prev[u];
+        } else {
+            u = -1;
+        }
     }
+    path[pathLength++] = graph->V;
 
     // On libère la mémoire
     free(dist);
@@ -216,13 +239,22 @@ int* dijkstra(Graph* graph, ChargingStation* stations, Vehicle* vehicle, Coordin
 }
 
 // Fonction pour afficher le chemin
-void printPath(ChargingStation* stations, int* path, int n) {
+void printPath(ChargingStation* stations, int* path, int n, Coordinate* src, Coordinate* dest) {
     float totalDistance = 0;
-    for (int i = 0; i < n-1; ++i) {
+    printf("DEBUT\n");
+    if (n == 2) {
+        printf("%s (%f, %f) -> (distance : %f) ", "Début", src->longitude, src->latitude, distance(src, dest));
+        printf("%s (%f, %f)\n", "Fin", dest->longitude, dest->latitude);
+        printf("Distance totale : %f km\n", distance(src, dest));
+        printf("FIN\n");
+        return;
+    }
+    printf("%s (%f, %f) -> (distance : %f) ", "Début", src->longitude, src->latitude, distance(src, stations[path[1]].coord));
+    for (int i = 1; i < n-2; ++i) {
         printf("%s (%f, %f) -> (distance : %f) ", stations[path[i]].name, stations[path[i]].coord->longitude, stations[path[i]].coord->latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
         totalDistance += distance(stations[path[i]].coord, stations[path[i+1]].coord);
     }
-    printf("%s (%f, %f)\n", stations[path[n-1]].name, stations[path[n-1]].coord->longitude, stations[path[n-1]].coord->latitude);
+    printf("%s (%f, %f)\n", "Fin", dest->longitude, dest->latitude);
     printf("Distance totale : %f km\n", totalDistance);
     printf("FIN\n");
 }
