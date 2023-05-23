@@ -11,7 +11,7 @@
 #include "person.h"
 
 // Fonction pour calculer la distance entre deux coordonnées géographiques en km
-float distance(Coordinate* coord1, Coordinate* coord2) {
+int distance(Coordinate* coord1, Coordinate* coord2) {
     // Conversion des coordonnées en radians
     double lat1 = coord1->latitude * M_PI / 180;
     double lon1 = coord1->longitude * M_PI / 180;
@@ -23,25 +23,23 @@ float distance(Coordinate* coord1, Coordinate* coord2) {
     double dlat = lat2 - lat1;
     double a = pow(sin(dlat / 2), 2) + cos(lat1) * cos(lat2) * pow(sin(dlon / 2), 2);
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return (float)(EARTH_RADIUS * c);
+    return (int) round(EARTH_RADIUS * c);
 }
 
-
 // Fonction qui calcule la position après un déplacement de distance sur un chemin
-Coordinate* pos_after_step(Coordinate* coord1, Coordinate* coord2, float temps, float* remainingTime, int* pathSize) {
+Coordinate* pos_after_step(Coordinate* coord1, Coordinate* coord2, int step, int* remainingTime, int* pathSize) {
 
-    float dist = temps * VITESSE / 3600;
+    int step_dist = step * VITESSE;
 
-    float d = distance(coord1, coord2);
+    int d_max = distance(coord1, coord2);
 
-    if (dist >= d) {
+    if (step_dist >= d_max) {
         printf("dist >= d\n");
-        float distance_res = dist-d;
-        float temps_res = distance_res*3600/VITESSE;
         Coordinate* coord = malloc(sizeof(Coordinate));
         coord->latitude = coord2->latitude;
         coord->longitude = coord2->longitude;
-        *remainingTime = temps_res;
+        *remainingTime = (step_dist - d_max)/VITESSE;
+
         if (*pathSize == 2) {
             *pathSize = 1;
         }
@@ -61,8 +59,8 @@ Coordinate* pos_after_step(Coordinate* coord1, Coordinate* coord2, float temps, 
     double c = 2 * atan2(sqrt(a), sqrt(1 - a));
 
     // Calcul de la position après un déplacement de distance sur le chemin
-    double A = sin((1 - dist / d) * c) / sin(c);
-    double B = sin(dist / d * c) / sin(c);
+    double A = sin((double) (d_max - step_dist) / d_max * c) / sin(c);
+    double B = sin((double)step_dist / d_max * c) / sin(c);
     double x = A * cos(lat1) * cos(lon1) + B * cos(lat2) * cos(lon2);
     double y = A * cos(lat1) * sin(lon1) + B * cos(lat2) * sin(lon2);
     double z = A * sin(lat1) + B * sin(lat2);

@@ -14,12 +14,12 @@ typedef struct Person {
     Coordinate* coordinate;
     int* path;
     int pathSize;
-    float remainingTime;
-    float autonomy;
+    int remainingTime;
+    int remainingAutonomy;
     Coordinate* end;
 } Person;
 
 Person* createPerson(Vehicle* vehicle, Coordinate* coordinate, int* path, int pathSize, Coordinate* end);
-float timeToFastCharge(Person* person, float distance);
+int timeToFastCharge(Person* person, int distance);
 
 #endif //PPII2_GRP_30_PERSON_H

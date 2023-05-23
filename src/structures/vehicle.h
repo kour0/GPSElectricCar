@@ -8,7 +8,7 @@
 typedef struct Vehicle {
     char* name; // Nom du véhicule
     int fastCharge; // Capacité de charge rapide en km/h
-    float range; // Autonomie
+    int range; // Autonomie
 } Vehicle;
 
 Vehicle* readJSONvehicles(char* filename, int* n);

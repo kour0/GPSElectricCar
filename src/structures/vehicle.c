@@ -3,12 +3,11 @@
 //
 
 #include "vehicle.h"
-#include "../constants.h"
 #include <stdio.h>
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include "../include/cJSON.h"
-#include "../constants.h"
 
 Vehicle* readJSONvehicles(char* filename, int* n) {
     // Ouverture du fichier
@@ -50,8 +49,8 @@ Vehicle* readJSONvehicles(char* filename, int* n) {
 
         tab_vehicles[i].name = malloc((strlen(name->valuestring) + 1) * sizeof(char));
         strcpy(tab_vehicles[i].name, name->valuestring);
-        tab_vehicles[i].range = atof(range->valuestring);
-        tab_vehicles[i].fastCharge = atoi(fastCharge->valuestring);
+        tab_vehicles[i].range = atoi(range->valuestring)*1000;
+        tab_vehicles[i].fastCharge =  (int) round(atoi(fastCharge->valuestring) / 3.6);
     }
 
     // Libération de la mémoire

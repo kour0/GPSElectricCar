@@ -88,9 +88,9 @@ void printGraph(Graph* graph) {
             if (i == j) {
                 printf("0 ");
             } else if (i < j) {
-                printf("%f ", graph->adjMat[i*(graph->V-1) - ((i-1)*i)/2 + j - (i+1)]);
+                printf("%d ", graph->adjMat[i*(graph->V-1) - ((i-1)*i)/2 + j - (i+1)]);
             } else {
-                printf("%f ", graph->adjMat[j*(graph->V-1) - ((j-1)*j)/2 + i - (j+1)]);
+                printf("%d ", graph->adjMat[j*(graph->V-1) - ((j-1)*j)/2 + i - (j+1)]);
             }
         }
         printf("\n");
@@ -98,7 +98,7 @@ void printGraph(Graph* graph) {
 }
 
 // Algorithme de Dijkstra pour trouver le plus court chemin entre deux stations
-int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float range, Coordinate* src, Coordinate* dest, int* n) {
+int* dijkstra(Graph* graph, ChargingStation* stations, int autonomy, int range, Coordinate* src, Coordinate* dest, int* n) {
 
     // Initialisation temps
     clock_t start, end;
@@ -120,13 +120,13 @@ int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float ran
     }
 
     // Initialisation des tableaux
-    double* dist = malloc((graph->V+2) * sizeof(double));
+    int* dist = malloc((graph->V+2) * sizeof(int));
     int* prev = malloc((graph->V+2) * sizeof(int));
     bool* visited = calloc((graph->V+2), sizeof(bool));
 
     // Initialisation des distances
     for (int i = 0; i < graph->V+2; ++i) {
-        dist[i] = FLOAT_MAX;
+        dist[i] = INT_MAX;
         prev[i] = -1;
     }
     dist[graph->V] = 0;
@@ -135,7 +135,7 @@ int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float ran
     for (int i = 0; i < graph->V+2; ++i) {
 
         // Recherche du sommet non visité le plus proche
-        double min = FLOAT_MAX;
+        int min = INT_MAX;
         int u = -1;
         for (int j = 0; j < graph->V+2; ++j) {
             if (!visited[j] && dist[j] < min) {
@@ -161,7 +161,7 @@ int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float ran
         // On met à jour les distances
         for (int v = 0; v < graph->V+2; ++v) {
             if (!visited[v]) {
-                double w = 0;
+                int w = 0;
                 if (v == graph->V) {
                     w=distance(src, stations[u].coord);
                 } else {
@@ -186,7 +186,7 @@ int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float ran
                 if (w >= autonomy) {
                     continue;
                 }
-                double new_dist = dist[u] + w;
+                int new_dist = dist[u] + w;
                 if (new_dist < dist[v]) {
                     dist[v] = new_dist;
                     prev[v] = u;
@@ -207,19 +207,15 @@ int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float ran
     path[pathLength++] = u;
     u = prev[u];
     while (u != -1) {
-        printf("u : %d\n", u);
         if (u == graph->V) {
             path[pathLength++] = u;
             u = prev[u];
             continue;
         }
         if (stations[u].coord->longitude == src->longitude && stations[u].coord->latitude == src->latitude) {
-            printf("%d\n", u);
             u = graph->V;
             path[pathLength++] = u;
             u = prev[u];
-            printf("%d\n", u);
-            printf("Fin test\n");
         } else {
             path[pathLength++] = u;
             u = prev[u];
@@ -252,32 +248,37 @@ int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float ran
 
 // Fonction pour afficher le chemin
 void printPath(ChargingStation* stations, int* path, int n, Coordinate* src, Coordinate* dest) {
-    float totalDistance = 0;
+
+    int totalDistance = 0;
+    if (n== 1) {
+        printf("Arrivée\n");
+        return;
+    }
     printf("DEBUT\n");
     if (n == 2) {
-        printf("%s (%f, %f) -> (distance : %f) ", "Début", src->longitude, src->latitude, distance(src, dest));
+        printf("Début (%f, %f) -> (distance : %d) ", src->longitude, src->latitude, distance(src, dest));
         printf("%s (%f, %f)\n", "Fin", dest->longitude, dest->latitude);
-        printf("Distance totale : %f km\n", distance(src, dest));
+        printf("Distance totale : %d km\n", distance(src, dest));
         printf("FIN\n");
         return;
     }
-    printf("%s (%f, %f) -> (distance : %f) ", "Début", src->longitude, src->latitude, distance(src, stations[path[1]].coord));
+    printf("Début (%f, %f) -> (distance : %d) ", src->longitude, src->latitude, distance(src, stations[path[1]].coord));
     totalDistance += distance(src, stations[path[1]].coord);
     for (int i = 1; i < n-2; ++i) {
-        printf("%s (%f, %f) -> (distance : %f) ", stations[path[i]].name, stations[path[i]].coord->longitude, stations[path[i]].coord->latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
+        printf("%s (%f, %f) -> (distance : %d) ", stations[path[i]].name, stations[path[i]].coord->longitude, stations[path[i]].coord->latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
         totalDistance += distance(stations[path[i]].coord, stations[path[i+1]].coord);
     }
-    printf("%s (%f, %f) -> (distance : %f) ", stations[path[n-2]].name, stations[path[n-2]].coord->longitude, stations[path[n-2]].coord->latitude, distance(stations[path[n-2]].coord, dest));
+    printf("%s (%f, %f) -> (distance : %d) ", stations[path[n-2]].name, stations[path[n-2]].coord->longitude, stations[path[n-2]].coord->latitude, distance(stations[path[n-2]].coord, dest));
     totalDistance += distance(stations[path[n-2]].coord, dest);
     printf("%s (%f, %f)\n", "Fin", dest->longitude, dest->latitude);
-    printf("Distance totale : %f km\n", totalDistance);
+    printf("Distance totale : %d km\n", totalDistance);
     printf("FIN\n");
 }
 
 // Fonction pour stocker la matrice d'adjacence en binaire
 void serializeGraph(Graph* graph, char* filename) {
     FILE* file = fopen(filename, "wb");
-    fwrite(graph->adjMat, sizeof(double), graph->V*(graph->V-1)/2, file);
+    fwrite(graph->adjMat, sizeof(int), graph->V*(graph->V-1)/2, file);
     fclose(file);
 }
 
@@ -286,9 +287,9 @@ Graph* deserializeGraph(char* filename, int V) {
     FILE* file = fopen(filename, "rb");
     Graph* graph = malloc(sizeof(Graph));
     graph->V = V;
-    graph->adjMat = malloc(graph->V*(graph->V-1)/2 * sizeof(double));
+    graph->adjMat = malloc(graph->V*(graph->V-1)/2 * sizeof(int));
     fseek(file, 0, SEEK_SET);
-    fread(graph->adjMat, sizeof(double), graph->V*(graph->V-1)/2, file);
+    fread(graph->adjMat, sizeof(int), graph->V*(graph->V-1)/2, file);
     fclose(file);
     return graph;
 }

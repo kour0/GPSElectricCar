@@ -21,7 +21,7 @@ void nextStep(Person* person, Coordinate* next_station, ChargingStation* station
     // On est sur un chemin
     if (person->remainingTime == 0) {
         Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP, &(person->remainingTime), &person->pathSize);
-        person->autonomy -= distance(person->coordinate, new_coord);
+        person->remainingAutonomy -= distance(person->coordinate, new_coord);
         if (person->end->longitude == new_coord->longitude && person->end->latitude == new_coord->latitude) {
             // On est arrivé
             person->pathSize = 1;
@@ -37,13 +37,13 @@ void nextStep(Person* person, Coordinate* next_station, ChargingStation* station
         // On est dans une station
         if (person->remainingTime - STEP >= 0) {
             person->remainingTime -= STEP;
-            person->autonomy += STEP/3600.0 * person->vehicle->fastCharge;
+            person->remainingAutonomy += STEP * person->vehicle->fastCharge;
         }
         else {
             // On sort de la station avec une distance en plus
-            person->autonomy += person->remainingTime/3600.0 * person->vehicle->fastCharge;
+            person->remainingAutonomy += person->remainingTime * person->vehicle->fastCharge;
             Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP - person->remainingTime, &(person->remainingTime), &person->pathSize);
-            person->autonomy -= distance(person->coordinate, new_coord);
+            person->remainingTime -= distance(person->coordinate, new_coord);
             free(person->coordinate);
             person->coordinate = new_coord;
             person->remainingTime = 0;
@@ -109,7 +109,7 @@ int main(int argc, char** argv) {
     }
 
     printf("Véhicule choisi : %s\n", vehicles[i].name);
-    printf("Autonomie : %f\n", vehicles[i].range);
+    printf("Autonomie : %d\n", vehicles[i].range);
     printf("Temps de recharge : %d\n", vehicles[i].fastCharge);
 
     // On crée les coordonnées du point de départ et d'arrivée
@@ -150,10 +150,8 @@ int main(int argc, char** argv) {
         graph = deserializeGraph("../data/graph.bin", n);
     }
 
-
-
     // Afficher la distance entre le point de départ et d'arrivée
-    printf("Distance entre le point de départ et d'arrivée : %f\n", distance(start, end));
+    printf("Distance entre le point de départ et d'arrivée : %d\n", distance(start, end));
 
     // Affichage des stations de recharge
     // printStations(stations, n);
@@ -163,6 +161,7 @@ int main(int argc, char** argv) {
 
     // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
     int* pathLength = malloc(sizeof(int));
+
     int* res = dijkstra(graph, stations, vehicles[i].range, vehicles[i].range,start, end, pathLength);
 
     // Affichage du chemin le plus court
@@ -183,18 +182,18 @@ int main(int argc, char** argv) {
         if (person->pathSize == 2) {
             nextStep(person, person->end, stations);
             free(person->path);
-            person->path = dijkstra(graph, stations, person->autonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
+            person->path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
         } else {
             nextStep(person, stations[person->path[1]].coord, stations);
-            int* new_path = dijkstra(graph, stations, person->autonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
+            int* new_path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
             free(person->path);
             person->path = new_path;
         }
         printf("Position : %f %f\n", person->coordinate->latitude, person->coordinate->longitude);
-        printf("Autonomie : %f\n", person->autonomy);
+        printf("Autonomie restante : %d\n", person->remainingAutonomy);
         printf("Distance restante : %d\n", person->pathSize);
         printf("Temps de recharge : %d\n", person->vehicle->fastCharge);
-        printf("Temps restant : %f\n", person->remainingTime);
+        printf("Temps restant : %d\n", person->remainingTime);
         printPath(stations, person->path, person->pathSize, person->coordinate, person->end);
         ++step;
         // Attendre un input dans la console
