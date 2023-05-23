@@ -206,16 +206,25 @@ int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float ran
     }
     path[pathLength++] = u;
     u = prev[u];
-    while (u != -1 && u != graph->V) {
-        printf("%d\n", u);
-        if (stations[u].coord->longitude != src->longitude || stations[u].coord->latitude != src->latitude) {
+    while (u != -1) {
+        printf("u : %d\n", u);
+        if (u == graph->V) {
             path[pathLength++] = u;
             u = prev[u];
+            continue;
+        }
+        if (stations[u].coord->longitude == src->longitude && stations[u].coord->latitude == src->latitude) {
+            printf("%d\n", u);
+            u = graph->V;
+            path[pathLength++] = u;
+            u = prev[u];
+            printf("%d\n", u);
+            printf("Fin test\n");
         } else {
-            u = -1;
+            path[pathLength++] = u;
+            u = prev[u];
         }
     }
-    path[pathLength++] = graph->V;
 
     // On libère la mémoire
     free(dist);
@@ -234,7 +243,10 @@ int* dijkstra(Graph* graph, ChargingStation* stations, float autonomy, float ran
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("Temps dijsktra : %f\n", cpu_time_used);
-
+    printf("Liste dijkstra : ");
+    for (int i = 0; i < pathLength; ++i) {
+        printf("%d ", result[i]);
+    }
     return result;
 }
 
@@ -250,10 +262,13 @@ void printPath(ChargingStation* stations, int* path, int n, Coordinate* src, Coo
         return;
     }
     printf("%s (%f, %f) -> (distance : %f) ", "Début", src->longitude, src->latitude, distance(src, stations[path[1]].coord));
+    totalDistance += distance(src, stations[path[1]].coord);
     for (int i = 1; i < n-2; ++i) {
         printf("%s (%f, %f) -> (distance : %f) ", stations[path[i]].name, stations[path[i]].coord->longitude, stations[path[i]].coord->latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
         totalDistance += distance(stations[path[i]].coord, stations[path[i+1]].coord);
     }
+    printf("%s (%f, %f) -> (distance : %f) ", stations[path[n-2]].name, stations[path[n-2]].coord->longitude, stations[path[n-2]].coord->latitude, distance(stations[path[n-2]].coord, dest));
+    totalDistance += distance(stations[path[n-2]].coord, dest);
     printf("%s (%f, %f)\n", "Fin", dest->longitude, dest->latitude);
     printf("Distance totale : %f km\n", totalDistance);
     printf("FIN\n");

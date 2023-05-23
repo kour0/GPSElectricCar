@@ -168,7 +168,8 @@ void addPersonToStation(ChargingStation* stations, Person* person, int stationIn
     printf("Je rentre dans une station %s avec %d places disponibles\n", station->name, station->nbAvailableChargingPoints);
     if (station->nbAvailableChargingPoints != 0) {
         station->nbAvailableChargingPoints--;
-        person->remainingTime = timeToFastCharge(person, dist) - person->remainingTime;
+        person->autonomy += person->remainingTime * ((float)person->vehicle->fastCharge/3600);
+        person->remainingTime = timeToFastCharge(person, dist);
     } else {
         person->remainingTime = timeToFastCharge(person, dist) + index_of_from(station->queue, station->nbAvailableChargingPoints)->remainingTime - person->remainingTime;
     }

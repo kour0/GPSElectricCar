@@ -13,8 +13,43 @@
 #include <unistd.h>
 #include <time.h>
 
-
-void nextStep(Person *pPerson, Coordinate *pCoordinate, ChargingStation *pStation);
+void nextStep(Person* person, Coordinate* next_station, ChargingStation* stations) {
+    // On est arrivé à destination
+    if (person->pathSize == 1) {
+        return;
+    }
+    // On est sur un chemin
+    if (person->remainingTime == 0) {
+        Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP, &(person->remainingTime), &person->pathSize);
+        person->autonomy -= distance(person->coordinate, new_coord);
+        if (person->end->longitude == new_coord->longitude && person->end->latitude == new_coord->latitude) {
+            // On est arrivé
+            person->pathSize = 1;
+        } else {
+            if (next_station->longitude == new_coord->longitude && next_station->latitude == new_coord->latitude) {
+                printf("On rentre dans une station\n");
+                addPersonToStation(stations, person, person->path[1]);
+            }
+        }
+        free(person->coordinate);
+        person->coordinate = new_coord;  // (3.606275, 50.393383)
+    } else {
+        // On est dans une station
+        if (person->remainingTime - STEP >= 0) {
+            person->remainingTime -= STEP;
+            person->autonomy += STEP/3600.0 * person->vehicle->fastCharge;
+        }
+        else {
+            // On sort de la station avec une distance en plus
+            person->autonomy += person->remainingTime/3600.0 * person->vehicle->fastCharge;
+            Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP - person->remainingTime, &(person->remainingTime), &person->pathSize);
+            person->autonomy -= distance(person->coordinate, new_coord);
+            free(person->coordinate);
+            person->coordinate = new_coord;
+            person->remainingTime = 0;
+        }
+    }
+}
 
 int main(int argc, char** argv) {
 
@@ -160,6 +195,7 @@ int main(int argc, char** argv) {
         printf("Distance restante : %d\n", person->pathSize);
         printf("Temps de recharge : %d\n", person->vehicle->fastCharge);
         printf("Temps restant : %f\n", person->remainingTime);
+        printPath(stations, person->path, person->pathSize, person->coordinate, person->end);
         ++step;
         // Attendre un input dans la console
         getchar();
@@ -189,41 +225,4 @@ int main(int argc, char** argv) {
     printf("Temps d'exécution : %f\n", time_spent);
 
     return 0;
-}
-
-void nextStep(Person* person, Coordinate* next_station, ChargingStation* stations) {
-    // On est arrivé à destination
-    if (person->pathSize == 1) {
-        return;
-    }
-    // On est sur un chemin
-    if (person->remainingTime == 0) {
-        Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP, &(person->remainingTime), &person->pathSize);
-        person->autonomy -= distance(person->coordinate, new_coord);
-        if (person->end->longitude == new_coord->longitude && person->end->latitude == new_coord->latitude) {
-            // On est arrivé
-            person->pathSize = 1;
-        } else {
-            if (next_station->longitude == new_coord->longitude && next_station->latitude == new_coord->latitude) {
-                printf("On rentre dans une station\n");
-                addPersonToStation(stations, person, person->path[1]);
-            }
-        }
-        free(person->coordinate);
-        person->coordinate = new_coord;  // (3.606275, 50.393383)
-    } else {
-        // On est dans une station
-        if (person->remainingTime - STEP >= 0) {
-            person->remainingTime -= STEP;
-            person->autonomy += STEP/3600.0 * person->vehicle->fastCharge;
-        }
-        else {
-            // On sort de la station avec une distance en plus
-            person->autonomy += person->remainingTime/3600 * person->vehicle->fastCharge;
-            Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP - person->remainingTime, &(person->remainingTime), &person->pathSize);
-            free(person->coordinate);
-            person->coordinate = new_coord;
-            person->remainingTime = 0;
-        }
-    }
 }
