@@ -6,7 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../include/cJSON.h"
-#include "../constants.h"
 #include "queue.h"
 
 ChargingStation* readJSONstations(char* filename, int* n) {
@@ -57,6 +56,8 @@ ChargingStation* readJSONstations(char* filename, int* n) {
         stations[i].coord->latitude = (float)latitude->valuedouble;
         stations[i].nbChargingPoints = atoi(nbre_places->valuestring);
         stations[i].nbAvailableChargingPoints = atoi(nbre_places->valuestring);
+
+        stations[i].queues = malloc(sizeof(Queue*) * stations[i].nbChargingPoints);
 
         for (int j = 0; j < stations[i].nbChargingPoints; ++j) {
             stations[i].queues[j] = createQueue();
@@ -152,6 +153,12 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 
         // Lecture de la latitude
         fread(&(stations[i].coord->latitude), sizeof(float), 1, file);
+
+        stations[i].queues = malloc(stations[i].nbChargingPoints * sizeof(Queue*));
+
+        for (int j = 0; j < stations[i].nbChargingPoints; ++j) {
+            stations[i].queues[j] = createQueue();
+        }
     }
 
     // Fermeture du fichier
@@ -176,12 +183,13 @@ void addPersonToStation(ChargingStation* station, Person* person, int timeOffset
         push(bestQueue, person, timeOffset);
     }
     person->chargingTime = timeToFastCharge(person, dist_to_next_station);
-
 }
 
 // Fonction qui retire une personne d'une station
 void removePersonFromStation(ChargingStation* station, Person* person) {
     printf("Je sors de la station %s\n", station->name);
+
+    person->chargingTime = 0;
 
     for (int i = 0; i < station->nbAvailableChargingPoints; ++i) {
         if (first(station->queues[i]) == person) {

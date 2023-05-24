@@ -47,7 +47,24 @@ person.o: structures/person.c
 queue.o: structures/queue.c
 	$(CC) $(CFLAGS) -c -o $@ $<
 
+#TESTS :
 
+test : test_queue test_stations
+
+test_queue: test_queue.o charging_station.o test_utils.o queue.o cJSON.o person.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+test_utils.o: ../test/test_utils.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+test_queue.o: ../test/test_queue.c
+	$(CC) $(CFLAGS) -c -o $@ $<
+
+test_stations : test_stations.o charging_station.o test_utils.o cJSON.o person.o queue.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+test_stations.o: ../test/test_stations.c
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 clean:
 	rm -f *.o ${ALL_EXECUTABLES}

@@ -381,7 +381,7 @@ int main(int argc, char** argv) {
     for (int k = 0; k < n; ++k) {
         free(stations[k].name);
         free(stations[k].coord);
-        free(stations[k].queue);
+        free(stations[k].queues);
     }
     for (int j = 0; j < m; ++j) {
         free(vehicles[j].name);

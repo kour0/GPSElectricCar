@@ -5,6 +5,7 @@
 #include "person.h"
 #include "coordinate.h"
 #include <stdlib.h>
+#include <stdio.h>
 
 Person* createPerson(Vehicle* vehicle, Coordinate* coordinate, int* path, int pathSize, Coordinate* end) {
 
@@ -23,6 +24,10 @@ Person* createPerson(Vehicle* vehicle, Coordinate* coordinate, int* path, int pa
 int timeToFastCharge(Person* person, int distance){
     int fastCharge = person->vehicle->fastCharge;
     int autonomy = person->remainingAutonomy;
+
+    if (distance < autonomy){
+        return 0;
+    }
     int temps = ((distance-autonomy) / fastCharge);
     return temps;
 
