@@ -109,7 +109,7 @@ différentes options. Notre objectif était de trouver une structure de données
 efficacement les connexions entre les différentes stations, tout en facilitant les calculs d'itinéraires optimaux.
 
 Nous avons commencé par étudier les structures de données vues en cours tels que les listes, les arbres et les graphes. Nous avons d'abord envisagé 
-les arbres. Cependant, nous avons réalisé que cette structures ne convenait pas à notre cas d'utilisation, car elles 
+les arbres. Cependant, nous avons réalisé que cette structure ne convenait pas à notre cas d'utilisation, car elles 
 ne permettaient pas de représenter efficacement toutes les connexions entre toutes les stations. 
 
 Nous avons donc choisi de représenter le réseau de stations de recharge à l'aide d'un graphe, une structure de données couramment utilisée pour 
@@ -138,9 +138,9 @@ est de 5, entre B et C de 3, entre C et D de 4 et entre D et A de 7 :
 \end{center}
 
 Dans notre approche, chaque nœud du graphe représente ainsi une station spécifique, ou une borne de recharge et les arêtes du graphe représentent 
-les connexions entre ces positions, et donc les routes même si nous avons supposé que nous travaillions en vol d'oiseau pour simplifier le probleme.
+les connexions entre ces positions, et donc les routes même si nous avons supposé que nous travaillions en vol d'oiseau pour simplifier le problème.
 
-L'utilisation des graphes nous permet de bénéficier d'algorithmes de recherche de chemin bien établis, tels que l'algorithme de Dijkstra que nous avons
+L'utilisation des graphes nous permet de bénéficier d'algorithmes de recherche de chemins bien établis, tels que l'algorithme de Dijkstra que nous avons
 étudié en cours de MSED ou l'algorithme A*, plus efficace mais aussi plus difficile à mettre en oeuvre. 
 
 \subsubsection{Implémentation}
@@ -170,7 +170,7 @@ typedef struct Graph {
 
 \subsubsection{Parallélisation}
 
-Afin de faciliter l'instanciation du graph, nous avons également mis en place une solution pour la création des arêtes du graph. En effet, la création des arêtes du graph est une opération coûteuse en temps, et nous avons donc décidé de la parraléliser. Pour cela, nous avons réalisé ces 2 structures additionnelles :
+Afin de faciliter l'instanciation du graph, nous avons également mis en place une solution pour la création des arêtes du graph. En effet, la création des arêtes du graph est une opération coûteuse en temps, et nous avons donc décidé de la paraléliser. Pour cela, nous avons réalisé ces 2 structures additionnelles :
 
 \begin{center}
     \begin{lstlisting}[caption=Structure Annexes à Graph]
@@ -309,15 +309,15 @@ en retirant un grand nombre de sommets du graphe pour réduire le temps d'exécu
 
 \subsubsection{Analyse de compléxité}
 
-La complexité de l'algorithme de Dijkstra est en général de $O(V^2)$, où V est le nombre de sommets du graphe. Cependant, si le graphe est implémenté à l'aide d'une liste d'adjacence et d'une file de priorité, la complexité peut être réduite à O((V+E) log V), où E est le nombre d'arêtes. Dans notre cas, nous avons utilisé une matrice d'adjacence pour représenter le graphe, donc la complexité est de $O(V^2)$. Cependant, nous avons également utilisé une version parallèle de l'algorithme, qui réduit considérablement le temps d'exécution. En effet, l'algorithme de Dijkstra est composé de deux boucles imbriquées, et la boucle interne peut être parallélisée, ce qui permet d'obtenir une complexité de $O(V^2/p)$, où p est le nombre de threads utilisés. En outre, nous avons également réduit le nombre de sommets du graphe, ce qui réduit encore le temps d'exécution.
+La complexité de l'algorithme de Dijkstra est en général de $O(V^2)$, où $V$ est le nombre de sommets du graphe. Cependant, si le graphe est implémenté à l'aide d'une liste d'adjacence et d'une file de priorité, la complexité peut être réduite à $O((V+E) log V)$, où E est le nombre d'arêtes. Dans notre cas, nous avons utilisé une matrice d'adjacence pour représenter le graphe, donc la complexité est de $O(V^2)$. Cependant, nous avons également utilisé une version parallèle de l'algorithme, qui réduit considérablement le temps d'exécution. En effet, l'algorithme de Dijkstra est composé de deux boucles imbriquées, et la boucle interne peut être parallélisée, ce qui permet d'obtenir une complexité de $O(V^2/p)$, où $p$ est le nombre de threads utilisés. En outre, nous avons également réduit le nombre de sommets du graphe, ce qui réduit encore le temps d'exécution.
 
 \subsection{Instanciation du Graph}
 
 \subsubsection{Load des stations}
-Pour instancier le graphe, nous avons besoin de charger les stations de charge depuis un fichier JSON. Pour cela, nous avons utilisé la bibliothèque cJSON, qui permet de lire et d'écrire des fichiers JSON en C. Nous avons créé une fonction readJSONstations qui prend en paramètre le nom du fichier JSON et le nombre de stations à charger, et qui renvoie un tableau de stations de charge. Cette fonction utilise la bibliothèque cJSON pour lire le fichier JSON et créer un tableau de stations de charge à partir des données du fichier. Elle renvoie ensuite ce tableau.
+Pour instancier le graphe, nous avons besoin de charger les stations de charge depuis un fichier JSON. Pour cela, nous avons utilisé la bibliothèque cJSON, qui permet de lire et d'écrire des fichiers JSON en C. Nous avons créé une fonction readJSONstations qui prend en paramètre le nom du fichier JSON et le nombre de stations à load, et qui renvoie un tableau de stations de charge. Cette fonction utilise la bibliothèque cJSON pour lire le fichier JSON et créer un tableau de stations de charge à partir des données du fichier. Elle renvoie ensuite ce tableau.
 
 \subsubsection{Instanciation de la matrice d'adjacence}
-Une fois les stations de charge chargées, nous pouvons instancier la matrice d'adjacence. Pour cela, nous avons créé une fonction createGraphFromStations qui prend en paramètre un tableau de stations de charge et le nombre de stations, et qui renvoie un graphe. Cette fonction crée un graphe vide, puis crée les arêtes du graphe en utilisant la fonction createGraphFromStations. Enfin, elle renvoie le graphe.
+Une fois les stations de charge instanciées, nous pouvons instancier la matrice d'adjacence. Pour cela, nous avons créé une fonction createGraphFromStations qui prend en paramètre un tableau de stations de charge et le nombre de stations, et qui renvoie un graphe. Cette fonction crée un graphe vide, puis crée les arêtes du graphe en utilisant la fonction createGraphFromStations. Enfin, elle renvoie le graphe.
 
 \subsubsection{Analyse de compléxité}
 La fonctionnalité d'instanciation du graphe est composée de deux fonctions majeures : createGraphFromStations et createGraphFromStationsThread.
@@ -326,7 +326,7 @@ createGraphFromStationsThread est une fonction qui remplit une partie de la matr
 
 Cependant, l'aspect important de la parallélisation est que les threads s'exécutent simultanément. Par conséquent, bien que chaque thread individuel puisse avoir une complexité de $O((n / numThreads)^2)$, l'ensemble de l'opération createGraphFromStations a une complexité approximative de $O((n / numThreads)^2)$.
 
-Il est à noter que l'efficacité de la parallélisation dépend de nombreux facteurs, dont la disponibilité des ressources du système, la gestion des threads par le système d'exploitation et la concurrence d'accès aux ressources partagées. Par conséquent, dans la pratique, le gain de performance peut ne pas être aussi important que suggéré par cette analyse.
+Il est à noter que l'efficacité de la parallélisation dépend de nombreux facteurs, dont la disponibilité des ressources du système, la gestion des threads par le système d'exploitation et la concurrence d'accès aux ressources partagées. Par conséquent, dans la pratique, le gain de performances peut ne pas être aussi important que suggéré par cette analyse.
 
 En ce qui concerne la complexité spatiale, chaque thread n'utilise que très peu de mémoire supplémentaire (juste quelques variables locales). Ainsi, la complexité spatiale globale est dominée par la taille du graphe, qui est $O(n^2)$, où n est le nombre de sommets (stations) dans le graphe, car nous utilisons une matrice d'adjacence pour représenter le graphe.
 
@@ -388,7 +388,7 @@ application pour que nous puissions tous modifier le code en même temps, ce qui
 Ensuite, nous avons utilisé GitLab pour gérer les différentes versions du développement de notre application, ainsi que les différentes 
 branches nous permettant de travailler simultanément sans conflit.
 
-Enfin, la rédaction des differents comptes rendu de réunion et des rapports ont été rédigé en \LaTeX.
+Enfin, la rédaction des differents comptes rendus de réunion et des rapports ont été rédigé en \LaTeX.
 
 \subsection{Objectifs SMART}
 La méthode SMART que l'on rappelle ci-dessous nous a permis de définir nos différents objectifs :
