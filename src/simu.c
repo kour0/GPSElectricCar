@@ -21,17 +21,16 @@ typedef struct {
     ChargingStation* stations;
 } ThreadParamsSimu;
 
+void* emptyThread(void* arg) {
+    return NULL;
+}
 
-void* nextStep(void* param) {
 
-    ThreadParamsSimu* params = (ThreadParamsSimu*) param;
-    Person* person = params->person;
-    Coordinate* next_station = params->next_station;
-    ChargingStation* stations = params->stations;
+void nextStep(Person* person, Coordinate* next_station, ChargingStation* stations) {
 
     // On est arrivé à destination
     if (person->pathSize == 1) {
-        pthread_exit(NULL);
+        return;
     }
     // On est sur un chemin
     if (person->chargingTime == 0) {
@@ -43,7 +42,7 @@ void* nextStep(void* param) {
             if(pos_equals(person->end, next_station)) {
                 // On est arrivé
                 person->pathSize = 1;
-                pthread_exit(NULL);
+                return;
             }else{
                 int timeOffset = (step_dist - dist_to_next_station) / VITESSE;
                 int dist_next_station = distance(next_station, stations[person->path[2]].coord);
@@ -86,7 +85,6 @@ void* nextStep(void* param) {
         }
     }
 
-    pthread_exit(NULL);
 }
 
 /*void nextStep_old(Graph* graph, Person* person, Coordinate* next_station, ChargingStation* stations) {
@@ -298,7 +296,7 @@ int main(int argc, char** argv) {
     while (!finished) {
         printf("Step %d\n", step); //(3.606275, 50.393383)
 
-        pthread_t threads[numThreads];
+        /*pthread_t threads[numThreads];
         ThreadParamsSimu params[numThreads];
 
         for (int i = 0; i < numThreads; ++i) {
@@ -317,7 +315,21 @@ int main(int argc, char** argv) {
 
         for (int i = 0; i < numThreads; ++i) {
             pthread_join(threads[i], NULL);
+        }*/
+
+        for (int l = 0; l < numThreads; ++l) {
+
+            if (persons[l]->pathSize == 2) {
+                nextStep(persons[l], persons[l]->end, stations);
+            } else {
+                nextStep(persons[l], stations[persons[l]->path[1]].coord, stations);
+            }
+
         }
+
+        printf("Next step appliqué\n");
+
+        // Attendre un input dans la console
 
         pthread_t threadsDijkstra[numThreads];
         ThreadParamsDijkstra paramsDijkstra[numThreads];
@@ -342,7 +354,6 @@ int main(int argc, char** argv) {
 
             } else {
                 // On crée un thread vide si la personne n'a pas besoin de recharger
-                void *(*emptyThread)(void *) = NULL;
                 pthread_create(&threadsDijkstra[i], NULL, emptyThread, NULL);
             }
         }
