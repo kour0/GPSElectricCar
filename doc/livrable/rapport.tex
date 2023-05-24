@@ -303,11 +303,25 @@ En ce qui concerne la complexité spatiale, chaque thread n'utilise que très pe
 
 Afin de visualiser le parcours trouvé lors de l'exécution de l'algorithme de Dijkstra, nous avons fait appel à une fonctionnalité de Google Maps, permettant de relier des coordonnées entre elles. Ainsi, nous générons une URL Google Maps, qui prend en paramètre chaque étape du parcours. Celle-ci est ensuite ouverte dans le navigateur par défaut de l'utilisateur et affiche le parcours.
 
+\subsection{Mode simulation}
+\subsubsection{Présentation}
+Le mode simulation permet de simuler le comportement de plusieurs véhicules électriques en circulation. Ce mode permet d'instancier un grand nombre de $Person$, qui correspondent aux "automobilistes". Le mode simulation permet de leur attribuer des destinations et de les faire circuler dans le réseau. Le mode simulation permet également de simuler le temps de recharge des véhicules, en fonction de leur autonomie et de leur niveau de charge actuel. Nous avons également implémenté un système de queue pour gérer les véhicules en attente de recharge.
+
 
 \section{Tests}
 
 \subsection{Introduction}
 Nous avons effectué des tests sur chacune de nos fonctions pour nous assurer qu'elles fonctionnent correctement. Ces tests comprenaient des cas de test simples ainsi que des tests de stress pour évaluer la performance et l'efficacité des fonctions. En outre, nous avons utilisé des outils d'analyse dynamique pour détecter les fuites de mémoire et autres problèmes liés à la gestion de la mémoire.
+
+\subsubsection{Exemple}
+
+\begin{center}
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.75\textwidth]{img/TEST.png}
+        \caption{Sortie Console}
+    \end{figure}
+\end{center}
 
 \section{Conclusion}
 
