@@ -9,6 +9,25 @@
 #include "../constants.h"
 #include <time.h>
 #include <stdbool.h>
+#include <pthread.h>
+
+// Fonction pour calculer la distance entre deux points en m
+void* createGraphFromStationsThread(void* param) {
+    ThreadParamsGraph * params = (ThreadParamsGraph *)param;
+    ChargingStation* stations = params->stations;
+    int start = params->start;
+    int end = params->end;
+    Graph* graph = params->graph;
+
+    for (int i = start; i < end - 1; ++i) {
+        for (int j = i + 1; j < end; ++j) {
+            graph->adjMat[i * (end - 1) - ((i - 1) * i) / 2 + j - (i + 1)] = distance(stations[i].coord, stations[j].coord);
+        }
+    }
+
+    pthread_exit(NULL);
+}
+
 
 Graph* createGraph(int V) {
 
@@ -19,12 +38,59 @@ Graph* createGraph(int V) {
 
     Graph* graph = malloc(sizeof(Graph));
     graph->V = V;
-    graph->adjMat = calloc(((V_double * (V_double+1))/2-V_double), sizeof(double));
+    graph->adjMat = calloc(((V_double * (V_double+1))/2-V_double), sizeof(int));
     return graph;
 }
 
 // Fonction pour créer le graphe pondéré
 Graph* createGraphFromStations(ChargingStation* stations, int n) {
+    Graph* graph = createGraph(n);
+
+    // Initialisation temps pour mesurer le temps d'exécution
+    clock_t start, end;
+    double cpu_time_used;
+    start = clock();
+
+    int numThreads = 16;  // Nombre de threads à utiliser
+    pthread_t threads[numThreads];
+    ThreadParamsGraph params[numThreads];
+
+    int chunkSize = (n - 1) / numThreads;
+    int remainder = (n - 1) % numThreads;
+    int startIndex = 0;
+
+    for (int i = 0; i < numThreads; ++i) {
+        int endIndex = startIndex + chunkSize;
+
+        if (remainder > 0) {
+            endIndex++;
+            remainder--;
+        }
+
+        params[i].stations = stations;
+        params[i].start = startIndex;
+        params[i].end = endIndex;
+        params[i].graph = graph;
+
+        pthread_create(&threads[i], NULL, createGraphFromStationsThread, (void*)&params[i]);
+
+        startIndex = endIndex;
+    }
+
+    for (int i = 0; i < numThreads; ++i) {
+        pthread_join(threads[i], NULL);
+    }
+
+    // Fin du temps d'exécution
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("Temps d'exécution construction graph avec %d threads : %f\n", numThreads, cpu_time_used);
+
+    return graph;
+}
+
+
+Graph* createGraphFromStations_old(ChargingStation* stations, int n) {
     Graph* graph = createGraph(n);
 
     // Calcul des distances entre les stations
@@ -248,20 +314,23 @@ int* dijkstra(Graph* graph, ChargingStation* stations, int autonomy, int range, 
 
 // Fonction pour afficher le chemin
 void printPath(ChargingStation* stations, int* path, int n, Coordinate* src, Coordinate* dest) {
-
     int totalDistance = 0;
+
+    printf("DEBUT\n");
+
     if (n== 1) {
         printf("Arrivée\n");
-        return;
-    }
-    printf("DEBUT\n");
-    if (n == 2) {
-        printf("Début (%f, %f) -> (distance : %d) ", src->longitude, src->latitude, distance(src, dest));
-        printf("%s (%f, %f)\n", "Fin", dest->longitude, dest->latitude);
-        printf("Distance totale : %d km\n", distance(src, dest));
         printf("FIN\n");
         return;
     }
+    if (n == 2) {
+        printf("Début (%f, %f) -> (distance : %d) ", src->longitude, src->latitude, distance(src, dest));
+        printf("%s (%f, %f)\n", "Fin", dest->longitude, dest->latitude);
+        printf("Distance totale : %d m\n", distance(src, dest));
+        printf("FIN\n");
+        return;
+    }
+
     printf("Début (%f, %f) -> (distance : %d) ", src->longitude, src->latitude, distance(src, stations[path[1]].coord));
     totalDistance += distance(src, stations[path[1]].coord);
     for (int i = 1; i < n-2; ++i) {
@@ -271,8 +340,9 @@ void printPath(ChargingStation* stations, int* path, int n, Coordinate* src, Coo
     printf("%s (%f, %f) -> (distance : %d) ", stations[path[n-2]].name, stations[path[n-2]].coord->longitude, stations[path[n-2]].coord->latitude, distance(stations[path[n-2]].coord, dest));
     totalDistance += distance(stations[path[n-2]].coord, dest);
     printf("%s (%f, %f)\n", "Fin", dest->longitude, dest->latitude);
-    printf("Distance totale : %d km\n", totalDistance);
+    printf("Distance totale : %d m\n", totalDistance);
     printf("FIN\n");
+
 }
 
 // Fonction pour stocker la matrice d'adjacence en binaire

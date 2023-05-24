@@ -13,6 +13,13 @@ typedef struct Graph {
     int* adjMat; // Matrice d'adjacence de taille V*(V+1)/2-V et de dimension 1
 } Graph; // Structure de graphe pondéré à l'aide d'une liste contigue à une dimension
 
+typedef struct {
+    ChargingStation* stations;
+    int start;
+    int end;
+    Graph* graph;
+} ThreadParamsGraph;
+
 Graph* createGraph(int V);
 void printGraph(Graph* graph);
 Graph* createGraphFromStations(ChargingStation* stations, int n);

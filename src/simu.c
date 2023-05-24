@@ -12,8 +12,68 @@
 #include "constants.h"
 #include <unistd.h>
 #include <time.h>
+#include <pthread.h>
+#include <stdbool.h>
 
-void nextStep(Person* person, Coordinate* next_station, ChargingStation* stations) {
+typedef struct {
+    Graph* graph;
+    Person* person;
+    Coordinate* next_station;
+    ChargingStation* stations;
+} ThreadParamsSimu;
+
+
+void* nextStep(void* param) {
+
+    ThreadParamsSimu* params = (ThreadParamsSimu*) param;
+    Graph* graph = params->graph;
+    Person* person = params->person;
+    Coordinate* next_station = params->next_station;
+    ChargingStation* stations = params->stations;
+
+    // On est arrivé à destination
+    if (person->pathSize == 1) {
+        pthread_exit(NULL);
+    }
+    // On est sur un chemin
+    if (person->remainingTime == 0) {
+        Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP, &(person->remainingTime), &person->pathSize);
+        person->remainingAutonomy -= distance(person->coordinate, new_coord);
+        if (person->end->longitude == new_coord->longitude && person->end->latitude == new_coord->latitude) {
+            // On est arrivé
+            person->pathSize = 1;
+        } else {
+            if (next_station->longitude == new_coord->longitude && next_station->latitude == new_coord->latitude) {
+                printf("On rentre dans une station\n");
+                addPersonToStation(stations, person, person->path[1]);
+            }
+        }
+        free(person->coordinate);
+        person->coordinate = new_coord;  // (3.606275, 50.393383)
+    } else {
+        // On est dans une station
+        if (person->remainingTime - STEP >= 0) {
+            person->remainingTime -= STEP;
+            person->remainingAutonomy += STEP * person->vehicle->fastCharge;
+        }
+        else {
+            // On sort de la station avec une distance en plus
+            person->remainingAutonomy += person->remainingTime * person->vehicle->fastCharge;
+            Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP - person->remainingTime, &(person->remainingTime), &person->pathSize);
+            person->remainingTime -= distance(person->coordinate, new_coord);
+            free(person->coordinate);
+            person->coordinate = new_coord;
+            person->remainingTime = 0;
+        }
+    }
+    int* new_path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
+    free(person->path);
+    person->path = new_path;
+
+    pthread_exit(NULL);
+}
+
+void nextStep_old(Graph* graph, Person* person, Coordinate* next_station, ChargingStation* stations) {
     // On est arrivé à destination
     if (person->pathSize == 1) {
         return;
@@ -49,6 +109,9 @@ void nextStep(Person* person, Coordinate* next_station, ChargingStation* station
             person->remainingTime = 0;
         }
     }
+    int* new_path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
+    free(person->path);
+    person->path = new_path;
 }
 
 int main(int argc, char** argv) {
@@ -79,24 +142,14 @@ int main(int argc, char** argv) {
     // printf("Nombre de stations de recharge : %d\n", n);
     printf("Nombre de véhicules : %d\n", m);
 
-    // On récupère en argument les coordonnées du point de départ et d'arrivée
-    if (argc != 6) {
-        printf("Usage : %s <latitude depart> <longitude depart> <latitude arrivee> <longitude arrivee>\n", argv[0]);
-        return 1;
-    }
-    float lat1 = atof(argv[1]);
-    float lon1 = atof(argv[2]);
-    float lat2 = atof(argv[3]);
-    float lon2 = atof(argv[4]);
-
     // On récupère le véhicule choisi par l'utilisateur en argument qui est le nom du véhicule
     int i = 0;
-    if (argc == 6) {
-        while (i < m && strcmp(vehicles[i].name, argv[5]) != 0) {
+    if (argc == 2) {
+        while (i < m && strcmp(vehicles[i].name, argv[1]) != 0) {
             ++i;
         }
         if (i == m) {
-            printf("Véhicule %s non trouvé\n", argv[5]);
+            printf("Véhicule %s non trouvé\n", argv[1]);
             return 1;
         }
     }
@@ -112,13 +165,28 @@ int main(int argc, char** argv) {
     printf("Autonomie : %d\n", vehicles[i].range);
     printf("Temps de recharge : %d\n", vehicles[i].fastCharge);
 
-    // On crée les coordonnées du point de départ et d'arrivée
-    Coordinate* start = malloc(sizeof (Coordinate));
-    start->latitude = lat1;
-    start->longitude = lon1;
-    Coordinate* end = malloc(sizeof (Coordinate));
-    end->latitude = lat2;
-    end->longitude = lon2;
+    // On récupère les coordonnées des points de départs et d'arrivées que l'on recupère dans un fichier texte appelé input.txt où chaque ligne correspond à une lattitude et une longitude
+    FILE* file = fopen("../data/input.txt", "r");
+    if (file == NULL) {
+        printf("Erreur lors de l'ouverture du fichier\n");
+        return 1;
+    }
+    int nb_coords = 0;
+    while (!feof(file)) {
+        float lat, lon;
+        fscanf(file, "%f %f\n", &lat, &lon);
+        ++nb_coords;
+    }
+    rewind(file);
+    printf("Nombre de coordonnées : %d\n", nb_coords);
+    // On stocke les coordonnées dans un tableau
+    Coordinate** coords = malloc(nb_coords * sizeof (Coordinate*));
+    for (int j = 0; j < nb_coords; ++j) {
+        coords[j] = malloc(sizeof (Coordinate));
+        fscanf(file, "%f %f\n", &(coords[j]->latitude), &(coords[j]->longitude));
+        printf("%f %f\n", coords[j]->latitude, coords[j]->longitude);
+    }
+    fclose(file);
 
     ChargingStation* stations;
 
@@ -151,7 +219,7 @@ int main(int argc, char** argv) {
     }
 
     // Afficher la distance entre le point de départ et d'arrivée
-    printf("Distance entre le point de départ et d'arrivée : %d\n", distance(start, end));
+    // printf("Distance entre le point de départ et d'arrivée : %d\n", distance(start, end));
 
     // Affichage des stations de recharge
     // printStations(stations, n);
@@ -159,49 +227,88 @@ int main(int argc, char** argv) {
     // Affichage de la matrice d'adjacence
     // printAdjMat(graph->adjMat, n);
 
-    // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
-    int* pathLength = malloc(sizeof(int));
+    Person** persons = malloc(nb_coords/2 * sizeof(Person*));
 
-    int* res = dijkstra(graph, stations, vehicles[i].range, vehicles[i].range,start, end, pathLength);
+    for (int z=0 ; z<nb_coords ; z+=2) {
 
-    // Affichage du chemin le plus court
-    printf("Chemin le plus court est de longueur %d : \n", *pathLength);
-    printPath(stations, res, *pathLength, start, end);
+        // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
+        int *pathLength = malloc(sizeof(int));
 
-    // On crée la person
+        int *res = dijkstra(graph, stations, vehicles[i].range, vehicles[i].range, coords[z], coords[z+1], pathLength);
 
-    Person* person = createPerson(vehicles+i, start, res, *pathLength, end);
+        // Affichage du chemin le plus court
+        printf("Chemin le plus court est de longueur %d : \n", *pathLength);
+        printPath(stations, res, *pathLength, coords[z], coords[z+1]);
 
-    // Fork pour lancer le simulateur
+        // On crée la person
+
+        Person *person = createPerson(vehicles + i, coords[z], res, *pathLength, coords[z+1]);
+
+        persons[z/2] = person;
+
+        free(pathLength);
+
+    }
+
     // commande à chaque step : person->path = dijkstra(graph, stations, person->vehicle, person->coordinate, stations[person->path[person->pathSize]].coord, &(person->pathSize));
 
     int step = 0;
+    bool finished = false;
 
-    while (person->pathSize != 1) {
+    while (!finished) {
         printf("Step %d\n", step); //(3.606275, 50.393383)
-        if (person->pathSize == 2) {
-            nextStep(person, person->end, stations);
-            free(person->path);
-            person->path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
-        } else {
-            nextStep(person, stations[person->path[1]].coord, stations);
-            int* new_path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
-            free(person->path);
-            person->path = new_path;
+
+        int numThreads = nb_coords/2;  // Nombre de threads à utiliser
+        pthread_t threads[numThreads];
+        ThreadParamsSimu params[numThreads];
+
+        for (int i = 0; i < numThreads; ++i) {
+
+            params[i].graph = graph;
+            params[i].person = persons[i];
+            params[i].stations = stations;
+            if (persons[i]->pathSize == 2) {
+                params[i].next_station = persons[i]->end;
+            } else {
+                params[i].next_station = stations[persons[i]->path[1]].coord;
+            }
+
+            pthread_create(&threads[i], NULL, nextStep, (void *) &params[i]);
+
         }
-        printf("Position : %f %f\n", person->coordinate->latitude, person->coordinate->longitude);
-        printf("Autonomie restante : %d\n", person->remainingAutonomy);
-        printf("Distance restante : %d\n", person->pathSize);
-        printf("Temps de recharge : %d\n", person->vehicle->fastCharge);
-        printf("Temps restant : %d\n", person->remainingTime);
-        printPath(stations, person->path, person->pathSize, person->coordinate, person->end);
+
+        for (int i = 0; i < numThreads; ++i) {
+            pthread_join(threads[i], NULL);
+        }
+
+        //if (person->pathSize == 2) {
+        //    nextStep(graph, person, person->end, stations);
+        //} else {
+        //    nextStep(graph, person, stations[person->path[1]].coord, stations);
+        //}
+        for (int i = 0; i < numThreads; ++i) {
+            if (persons[i]->pathSize == 1) {
+                finished = true;
+            } else {
+                finished = false;
+                break;
+            }
+        }
+        // Affichage des informations de la personne
+        for (int i = 0; i < numThreads; ++i) {
+            printf("Position : %f %f\n", persons[i]->coordinate->latitude, persons[i]->coordinate->longitude);
+            printf("Autonomie restante : %d\n", persons[i]->remainingAutonomy);
+            printf("Distance restante : %d\n", persons[i]->pathSize);
+            printf("Temps de recharge : %d\n", persons[i]->vehicle->fastCharge);
+            printf("Temps restant : %d\n", persons[i]->remainingTime);
+            printPath(stations, persons[i]->path, persons[i]->pathSize, persons[i]->coordinate, persons[i]->end);
+        }
         ++step;
         // Attendre un input dans la console
         getchar();
     }
 
     // On libère la mémoire
-    free(pathLength);
     for (int k = 0; k < n; ++k) {
         free(stations[k].name);
         free(stations[k].coord);
@@ -213,10 +320,14 @@ int main(int argc, char** argv) {
     free(stations);
     free(vehicles);
     freeGraph(graph);
-    free(person->coordinate); // (5.531192, 49.150017)
-    free(person->path);
-    free(person->end);
-    free(person);
+    free(coords);
+    for (int l = 0; l < nb_coords/2; ++l) {
+        free(persons[i]->coordinate); // (5.531192, 49.150017)
+        free(persons[i]->path);
+        free(persons[i]->end);
+        free(persons[i]);
+    }
+    free(persons);
 
     // Calcul du temps d'exécution
     clock_t end_time = clock();
