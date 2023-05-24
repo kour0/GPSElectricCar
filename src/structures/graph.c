@@ -15,9 +15,9 @@ void* createGraphFromStationsThread(void* param) {
     int end = params->end;
     Graph* graph = params->graph;
 
-    for (int i = start; i < end - 1; ++i) {
-        for (int j = i + 1; j < end; ++j) {
-            graph->adjMat[i * (end - 1) - ((i - 1) * i) / 2 + j - (i + 1)] = distance(stations[i].coord, stations[j].coord);
+    for (int i = start; i < end; ++i) {
+        for (int j = i + 1; j < graph->V; ++j) {
+            graph->adjMat[i*(graph->V-1)-((i-1)*i)/2+j-(i+1)] = distance(stations[i].coord, stations[j].coord);
         }
     }
 
@@ -39,7 +39,7 @@ Graph* createGraph(int V) {
 }
 
 // Fonction pour créer le graphe pondéré
-Graph* createGraphFromStations_old(ChargingStation* stations, int n) {
+Graph* createGraphFromStations(ChargingStation* stations, int n) {
     Graph* graph = createGraph(n);
 
     // Initialisation temps pour mesurer le temps d'exécution
@@ -51,11 +51,12 @@ Graph* createGraphFromStations_old(ChargingStation* stations, int n) {
     pthread_t threads[numThreads];
     ThreadParamsGraph params[numThreads];
 
-    int chunkSize = (n - 1) / numThreads;
-    int remainder = (n - 1) % numThreads;
+    int chunkSize = n / numThreads;
+    int remainder = n % numThreads;
     int startIndex = 0;
 
     for (int i = 0; i < numThreads; ++i) {
+
         int endIndex = startIndex + chunkSize;
 
         if (remainder > 0) {
@@ -86,7 +87,7 @@ Graph* createGraphFromStations_old(ChargingStation* stations, int n) {
 }
 
 
-Graph* createGraphFromStations(ChargingStation* stations, int n) {
+Graph* createGraphFromStations_old(ChargingStation* stations, int n) {
     Graph* graph = createGraph(n);
 
     // Calcul des distances entre les stations
