@@ -5,6 +5,14 @@
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{pdfpages}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{babel}
+\usepackage{tikz}
+\usepackage{listings}
+\usepackage{xcolor}
+
+\usetikzlibrary{graphs,graphs.standard,arrows,shapes.multipart,chains,positioning,quotes}
 \renewcommand{\contentsname}{Table des matières}
 \newcommand{\tabitem}{\textbullet~~}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
@@ -16,7 +24,27 @@
 \usepackage{amsmath}
 \setcounter{MaxMatrixCols}{20}
 \author{Noé Steiner - Alexis Marcel - Lucas Laurent - Mathias Aurand-Augier}
-\date{Janvier 2023}
+\date{24 Mai 2023}
+\lstset{
+  language=C,                % choose the language of the code
+  numbers=left,              % where to put the line-numbers
+  stepnumber=1,              % the step between two line-numbers.        
+  numbersep=10pt,            % how far the line-numbers are from the code
+  tabsize=2,                 % tab size
+  showspaces=false,          % show spaces adding particular underscores
+  showstringspaces=false,    % underline spaces within strings
+  breaklines=true,           % sets automatic line breaking
+  frame=single,              % adds a frame around the code
+  rulecolor=\color{black},
+  basicstyle=\ttfamily\small,
+  keywordstyle=\color{blue},
+  stringstyle=\color{red},
+  commentstyle=\color{green},
+  morecomment=[l][\color{magenta}]{\#},
+  extendedchars=true,        % lets you use non-ASCII characters; for 8-bits encodings only, does not work with UTF-8
+  captionpos=b,              % sets the caption-position to bottom
+}
+
 \begin{document}
 
 %\maketitle
@@ -51,7 +79,7 @@
 
         \vfill
 
-        {\large 6 Janvier 2023}
+        {\large 24 Mai 2023}
 
     \end{center}
 \end{titlepage}
@@ -63,45 +91,227 @@ Ce rapport rend compte du Projet Pluridisciplinaire d’Informatique Intégrativ
 L’objectif de ce projet est de concevoir, en groupe,  une application en C dédiée à la simulation d’un réseau de recharge de véhicules électriques. Ce projet est encadré par M. Olivier Festor et M. Gérald Oster.
 \section{Introduction}
 Ce rapport présente notre projet de développement d'un réseau de recharge de véhicules électriques, en réponse à l'interdiction récente de la Commission européenne de mettre sur le marché des véhicules à moteur thermique à partir de 2023. Notre objectif est de fournir un ensemble de fonctions utiles aux usagers, aux autorités de régulation et aux acteurs économiques pour faciliter le déploiement et le dimensionnement d'un réseau de recharge adapté aux besoins.
-\section{Choix des Structures de Données et Algorithmes}
-\subsection{Structures de Données}
-\subsubsection{Graph}
+\section{Structures de Données}
+\subsection{Graph}
+\subsubsection{Présentation}
 Nous avons choisi de représenter le réseau de stations de recharge à l'aide d'un graphe, une structure de données couramment utilisée pour modéliser des systèmes de points connectés. Chaque sommet représente une station de recharge et chaque arête représente un chemin direct entre deux stations. La pondération de chaque arête est la distance entre les deux stations correspondantes.
+Ainsi, la représentation ci-dessous, est une représentation graphique simplifiée de la structuration de notre graph. A, B, C et D sont des stations, la valuation des arcs correspond au nombre de kilomètres à vol d'oiseau entre les stations. Ainsi, la valuation de l'arc entre A et B est de 5, entre B et C de 3, entre C et D de 4 et entre D et A de 7 :
 
-\subsubsection{ChargingStation}
+\begin{center}
+    \begin{tikzpicture}[-,=stealth',shorten >=1pt,auto,node distance=3cm,
+            thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
 
-La structure ChargingStation représente une station de recharge, avec des informations telles que le nom de la station, les coordonnées géographiques, le nombre de points de charge et le nombre de points de charge disponibles. Elle contient également une file d'attente pour gérer les véhicules en attente de recharge.
+        \node[main node] (A) {A};
+        \node[main node] (B) [below left of=A] {B};
+        \node[main node] (C) [below right of=B] {C};
+        \node[main node] (D) [below right of=A] {D};
+
+        \path[every node/.style={font=\sffamily\small}]
+        (A) edge node [left] {5} (B)
+        (B) edge node [below] {3} (C)
+        (C) edge node [right] {4} (D)
+        (D) edge node [above] {7} (A);
+
+    \end{tikzpicture}
+\end{center}
+
+\subsubsection{Implémentation}
+La structure Graph est composée de deux champs : V, qui représente le nombre de sommets du graphe, et adjMat, qui est une matrice d'adjacence représentant les arêtes du graphe. La matrice d'adjacence est un tableau à deux dimensions de taille V*(V+1)/2-V, où chaque élément est un entier représentant la pondération de l'arête correspondante. Si deux sommets ne sont pas connectés, la valeur de l'élément correspondant est -1 : \\
+
+\begin{center}
+    \begin{lstlisting}[caption=Structure du Graph]
+typedef struct Graph {
+    int V; 
+    int* adjMat;
+} Graph;
+        \end{lstlisting}
+\end{center}
+
+\subsubsection{Spécification algébrique}
+
+\begin{itemize}
+    \item $createGraph : {Z} \rightarrow Graph^*$
+    \item $printGraph : Graph^* \rightarrow void$
+    \item $createGraphFromStations : ChargingStation^* \times {Z} \rightarrow Graph^*$
+    \item $freeGraph : Graph^* \rightarrow void$
+    \item $dijkstra : void^* \rightarrow void^*$
+    \item $printPath : ChargingStation^* \times {Z}^* \times {Z} \times Coordinate^* \times Coordinate^* \rightarrow void$
+    \item $serializeGraph : Graph^* \times char^* \rightarrow void$
+    \item $deserializeGraph : char^* \times {Z} \rightarrow Graph^*$
+\end{itemize}
+
+\subsubsection{Parallélisation}
+
+Afin de faciliter l'instanciation du graph, nous avons également mis en place une solution pour la création des arêtes du graph. En effet, la création des arêtes du graph est une opération coûteuse en temps, et nous avons donc décidé de la parraléliser. Pour cela, nous avons réalisé ces 2 structures additionnelles :
+
+\begin{center}
+    \begin{lstlisting}[caption=Structure Annexes à Graph]
+typedef struct {
+    ChargingStation* stations;
+    int start;
+    int end;
+    Graph* graph;
+} ThreadParamsGraph;
+
+typedef struct {
+    Graph* graph;
+    ChargingStation* stations;
+    int autonomy;
+    int range;
+    Coordinate* src;
+    Coordinate* dest;
+    int* n;
+} ThreadParamsDijkstra;
+\end{lstlisting}
+\end{center}
+
+La structure ThreadParamsGraph est conçue pour permettre le partage des paramètres nécessaires pour la création parallèle des arêtes du graphe. Elle contient un pointeur vers un tableau de stations de charge, des indices start et end définissant la plage de stations pour lesquelles le thread doit créer des arêtes, ainsi qu'un pointeur vers le graphe dans lequel les arêtes seront créées.
+
+D'autre part, la structure ThreadParamsDijkstra est utilisée pour le partage des paramètres nécessaires à l'exécution parallèle de l'algorithme de Dijkstra. Elle contient un pointeur vers le graphe sur lequel l'algorithme doit être exécuté, un pointeur vers un tableau de stations de charge, ainsi que les paramètres autonomy et range utilisés dans l'algorithme. De plus, elle contient des pointeurs vers les coordonnées source et destination pour le chemin à trouver par l'algorithme de Dijkstra, ainsi qu'un pointeur vers un entier n qui stockera la longueur du chemin trouvé.
+
+Ces structures permettent une modularité et une flexibilité accrue lors de la mise en place de la parallélisation dans le traitement du graphe, ce qui peut conduire à une amélioration significative des performances, en particulier pour les grands graphes.
 
 
-\subsubsection{Queue}
-La structure Queue est utilisée pour gérer la liste des véhicules en attente de recharge à une station donnée. Elle est basée sur une liste doublement chaînée, qui permet des opérations d'ajout et de suppression efficaces à la fois en tête et en queue de liste.
 
-\subsection{Algorithmes}
-\subsubsection{Dijkstra}
+\subsection{ChargingStation}
 
-Pour déterminer le parcours optimal d'une station à une autre, nous avons utilisé l'algorithme de Dijkstra. C'est un choix naturel pour ce problème, car il trouve le chemin le plus court entre deux sommets d'un graphe pondéré, ce qui est exactement ce dont nous avons besoin pour minimiser la distance de conduite et donc la consommation d'énergie.
+\subsubsection{Présentation}
+La structure ChargingStation représente une station de recharge, avec des informations telles que le nom de la station, les coordonnées géographiques, le nombre de points de charge et le nombre de points de charge disponibles. Elle contient également une file d'attente pour gérer les véhicules en attente de recharge. Les ChargingStation sont utilisés comme noeuds du graphe :
 
-\section{Fonctions Réalisées et Analyse}
-\subsection{Fonctions Réalisées}
-Nous avons réalisé plusieurs fonctions pour créer et manipuler les structures de données décrites ci-dessus, et pour résoudre le problème du parcours optimal. Voici quelques-unes des plus importantes :
+\begin{center}
+    \begin{tikzpicture}[-,=stealth',shorten >=1pt,auto,node distance=3cm,
+            thick,main node/.style={circle,draw,font=\sffamily\Large\bfseries}]
 
-- `createGraph` et `createGraphFromStations` : Ces fonctions sont utilisées pour créer une nouvelle instance de la structure Graph, à partir de zéro ou à partir d'un tableau de stations de recharge.
+        \node[main node] (A) {A};
+        \node[main node] (B) [below left of=A] {B};
 
-- `dijkstra` : Cette fonction applique l'algorithme de Dijkstra pour trouver le chemin le plus court entre deux stations de recharge.
+        \path[every node/.style={font=\sffamily\small}]
+        (A) edge node [left] {5} (B);
 
-- `addPersonToStation` : Cette fonction est utilisée pour ajouter un véhicule à la file d'attente d'une station de recharge.
+    \end{tikzpicture}
+\end{center}
 
-\subsection{Analyse de Complexité}
+\subsubsection{Implémentation}
+La structure ChargingStation est composée de cinq champs : name, qui est un pointeur vers une chaîne de caractères contenant le nom de la station, coord, qui est un pointeur vers une structure Coordinate contenant les coordonnées géographiques de la station, nbChargingPoints, qui est un entier représentant le nombre de points de charge de la station, nbAvailableChargingPoints, qui est un entier représentant le nombre de points de charge disponibles, et queues, qui est un tableau de pointeurs vers des files d'attente, une pour chaque point de charge. \\
 
-La complexité de l'algorithme de Dijkstra est en général de $O(V^2)$, où V est le nombre de sommets du graphe. Cependant, si le graphe est implémenté à l'aide d'une liste d'adjacence et d'une file de priorité, la complexité peut être réduite à O((V+E) log V), où E est le nombre d'arêtes. Dans notre cas, nous avons utilisé une matrice d'adjacence pour représenter le graphe, donc la complexité est de $O(V^2)$.
+\begin{center}
+    \begin{lstlisting}[caption=Structure ChargingStation]
+typedef struct ChargingStation {
+    char* name;
+    Coordinate* coord;
+    int nbChargingPoints;
+    int nbAvailableChargingPoints;
+    Queue** queues ;
+} ChargingStation;
+        \end{lstlisting}
+\end{center}
+
+\subsubsection{Spécification algébrique}
+
+\begin{itemize}
+    \item $readJSONstations : char^* \times {Z} \rightarrow ChargingStation^*$
+    \item $serializeStations : char^* \times ChargingStation^* \times {Z} \rightarrow void$
+    \item $deserializeStations : char^* \times {Z} \rightarrow ChargingStation^*$
+    \item $addPersonToStation : ChargingStation^* \times Person^* \times {Z} \times {Z} \rightarrow void$
+    \item $removePersonFromStation : ChargingStation^* \times Person^* \rightarrow void$
+    \item $getBestQueue : ChargingStation^* \rightarrow Queue^*$
+\end{itemize}
+
+
+\subsection{Queue}
+
+\subsubsection{Présentation}
+La structure Queue est utilisée pour gérer la liste des véhicules en attente de recharge à une station donnée. Elle est basée sur une liste doublement chaînée, qui permet des opérations d'ajout et de suppression efficaces à la fois en tête et en queue de liste :
+
+\begin{center}
+    \begin{tikzpicture}[
+            list/.style={rectangle split, rectangle split parts=3,
+                    draw, rectangle split horizontal,minimum width=2cm,text width=2cm,
+                    text centered, font=\small},
+            >=stealth, start chain,
+            node distance=1.5cm,
+            every on chain/.style={join},
+            every join/.style={<->}]
+
+        \node[list,on chain] (A) {Person X};
+        \node[list,on chain] (B) {Person Y};
+        \node[list,on chain] (C) {Person Z};
+        \node[on chain,draw,inner sep=6pt] (D) {NULL};
+
+        \draw[<-] (A.one west) -- ++(-1cm,0);
+        \draw[->] (C.three east) -- (D);
+    \end{tikzpicture}
+\end{center}
+
+\subsubsection{Implémentation}
+La structure Queue est composée de trois champs : data, qui est un pointeur vers une structure Person contenant les informations sur le véhicule en attente, next, qui est un pointeur vers la file d'attente suivante, et prev, qui est un pointeur vers la file d'attente précédente. \\
+
+\begin{center}
+    \begin{lstlisting}[caption=Structure Queue]
+typedef struct Queue {
+    Person* data;
+    struct Queue* next;
+    struct Queue* prev;
+} Queue;
+    \end{lstlisting}
+\end{center}
+
+
+\subsubsection{Spécification algébrique}
+\begin{itemize}
+    \item $createQueue : void \rightarrow Queue^*$
+    \item $del\_person : Queue^* \rightarrow void$
+    \item $push : Queue^* \times Person^* \times {Z} \rightarrow void$
+    \item $last : Queue^* \rightarrow Person^*$
+    \item $index\_of\_from : Queue^* \times {Z} \rightarrow Person^*$
+    \item $timeToWait : Queue^* \rightarrow {Z}$
+    \item $first : Queue^* \rightarrow Person^*$
+    \item $pop : Queue^* \rightarrow void$
+\end{itemize}
+
+\section{Fonctionnalités et algorithmes}
+\subsection{Algorithme de Dijkstra}
+\subsubsection{Présentation}
+Pour déterminer le parcours optimal d'une station à une autre, nous avons utilisé l'algorithme de Dijkstra. C'est un choix naturel pour ce problème, car il trouve le chemin le plus court entre deux sommets d'un graphe pondéré, ce qui est exactement ce dont nous avons besoin pour minimiser la distance de conduite et donc la consommation d'énergie. Nous avons également exploré un potentiel choix alternatif, l'algorithme A*, mais nous avons finalement décidé de nous en tenir à Dijkstra, en implémentant une version parallèle pour améliorer les performances, mais également en retirant un grand nombre de sommets du graphe pour réduire le temps d'exécution.
+
+\subsubsection{Analyse de compléxité}
+
+La complexité de l'algorithme de Dijkstra est en général de $O(V^2)$, où V est le nombre de sommets du graphe. Cependant, si le graphe est implémenté à l'aide d'une liste d'adjacence et d'une file de priorité, la complexité peut être réduite à O((V+E) log V), où E est le nombre d'arêtes. Dans notre cas, nous avons utilisé une matrice d'adjacence pour représenter le graphe, donc la complexité est de $O(V^2)$. Cependant, nous avons également utilisé une version parallèle de l'algorithme, qui réduit considérablement le temps d'exécution. En effet, l'algorithme de Dijkstra est composé de deux boucles imbriquées, et la boucle interne peut être parallélisée, ce qui permet d'obtenir une complexité de $O(V^2/p)$, où p est le nombre de threads utilisés. En outre, nous avons également réduit le nombre de sommets du graphe, ce qui réduit encore le temps d'exécution.
+
+\subsection{Instanciation du Graph}
+
+\subsubsection{Load des stations}
+Pour instancier le graphe, nous avons besoin de charger les stations de charge depuis un fichier JSON. Pour cela, nous avons utilisé la bibliothèque cJSON, qui permet de lire et d'écrire des fichiers JSON en C. Nous avons créé une fonction readJSONstations qui prend en paramètre le nom du fichier JSON et le nombre de stations à charger, et qui renvoie un tableau de stations de charge. Cette fonction utilise la bibliothèque cJSON pour lire le fichier JSON et créer un tableau de stations de charge à partir des données du fichier. Elle renvoie ensuite ce tableau.
+
+\subsubsection{Instanciation de la matrice d'adjacence}
+Une fois les stations de charge chargées, nous pouvons instancier la matrice d'adjacence. Pour cela, nous avons créé une fonction createGraphFromStations qui prend en paramètre un tableau de stations de charge et le nombre de stations, et qui renvoie un graphe. Cette fonction crée un graphe vide, puis crée les arêtes du graphe en utilisant la fonction createGraphFromStations. Enfin, elle renvoie le graphe.
+
+\subsubsection{Analyse de compléxité}
+La fonctionnalité d'instanciation du graphe est composée de deux fonctions majeures : createGraphFromStations et createGraphFromStationsThread.
+
+createGraphFromStationsThread est une fonction qui remplit une partie de la matrice d'adjacence du graphe. En particulier, chaque thread exécute deux boucles imbriquées, où l'index i varie de start à end - 1 et l'index j varie de i + 1 à end. Par conséquent, cette partie a une complexité de $O((end-start)^2)$. Dans le cas le plus équilibré, chaque thread doit gérer $n / numThreads$ sommets, ce qui donnerait une complexité d'environ $O((n / numThreads)^2)$ pour chaque thread.
+
+Cependant, l'aspect important de la parallélisation est que les threads s'exécutent simultanément. Par conséquent, bien que chaque thread individuel puisse avoir une complexité de $O((n / numThreads)^2)$, l'ensemble de l'opération createGraphFromStations a une complexité approximative de $O((n / numThreads)^2)$.
+
+Il est à noter que l'efficacité de la parallélisation dépend de nombreux facteurs, dont la disponibilité des ressources du système, la gestion des threads par le système d'exploitation et la concurrence d'accès aux ressources partagées. Par conséquent, dans la pratique, le gain de performance peut ne pas être aussi important que suggéré par cette analyse.
+
+En ce qui concerne la complexité spatiale, chaque thread n'utilise que très peu de mémoire supplémentaire (juste quelques variables locales). Ainsi, la complexité spatiale globale est dominée par la taille du graphe, qui est $O(n^2)$, où n est le nombre de sommets (stations) dans le graphe, car nous utilisons une matrice d'adjacence pour représenter le graphe.
+
 
 \section{Tests}
 
+\subsection{Introduction}
 Nous avons effectué des tests sur chacune de nos fonctions pour nous assurer qu'elles fonctionnent correctement. Ces tests comprenaient des cas de test simples ainsi que des tests de stress pour évaluer la performance et l'efficacité des fonctions. En outre, nous avons utilisé des outils d'analyse dynamique pour détecter les fuites de mémoire et autres problèmes liés à la gestion de la mémoire.
 
 \section{Conclusion}
 
-En conclusion, ce projet nous a permis de développer des compétences en programmation en C, en structures de données et en algorithmes. Il nous a également donné l'occasion de travailler sur un problème réel et pertinent, avec des implications importantes pour l'avenir de la mobilité et de l'énergie durables.
+En conclusion, ce projet s'est révélé être une expérience d'apprentissage extrêmement précieuse, nous permettant d'affiner et de développer nos compétences en programmation en langage C. Nous avons approfondi notre compréhension des structures de données, notamment comment les utiliser efficacement pour manipuler, stocker et accéder aux informations. Ce projet nous a aussi donné l'opportunité d'appliquer des algorithmes complexes, comme celui de Dijkstra, dans un contexte réel, nous permettant d'apprécier l'importance de ces outils dans la résolution de problèmes concrets.
+\newline
+En travaillant sur un problème réel - l'optimisation du placement des stations de charge pour véhicules électriques - nous avons pu saisir l'importance des implications de notre travail. Cela a ajouté une dimension plus large à notre apprentissage, en nous faisant comprendre comment les compétences techniques que nous avons acquises peuvent avoir un impact sur des questions d'une grande pertinence sociétale, comme la transition vers une mobilité plus durable.
+\newline
+De plus, la mise en évidence des enjeux de l'énergie durable dans notre projet nous a permis de nous immerger dans un secteur d'une importance cruciale pour l'avenir de notre société. L'efficacité de la distribution de l'énergie, en particulier pour les véhicules électriques, est une question clé dans la lutte contre le changement climatique. En participant à la résolution de ce problème à travers notre projet, nous avons non seulement appliqué nos compétences techniques, mais également contribué à un domaine qui aura un impact durable et positif sur notre avenir.
+\newline
+En somme, ce projet nous a offert une occasion inestimable de croissance personnelle et professionnelle. Il nous a permis d'acquérir et de consolider des compétences techniques, tout en nous faisant prendre conscience de l'importance des implications de notre travail dans le monde réel, en particulier dans le domaine de la mobilité et de l'énergie durables.
 
 \section{Annexes}
 \includepdf[pages=1]{../cr_reu/reu1/cr_reu1.pdf}
