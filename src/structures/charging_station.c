@@ -57,7 +57,10 @@ ChargingStation* readJSONstations(char* filename, int* n) {
         stations[i].coord->latitude = (float)latitude->valuedouble;
         stations[i].nbChargingPoints = atoi(nbre_places->valuestring);
         stations[i].nbAvailableChargingPoints = atoi(nbre_places->valuestring);
-        stations[i].queue = create_queue();
+
+        for (int j = 0; j < stations[i].nbChargingPoints; ++j) {
+            stations[i].queues[j] = createQueue();
+        }
     }
 
     // Libération de la mémoire
@@ -128,8 +131,11 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 
         // Allocation du nom
         stations[i].name = malloc((size + 1) * sizeof(char));
-        stations[i].queue = create_queue();
         stations[i].coord = malloc(sizeof(Coordinate));
+
+        for (int j = 0; j < size; ++j) {
+            stations[i].name[j] = 0;
+        }
 
         // Lecture du nom
         fread(stations[i].name, sizeof(char), size, file);
@@ -157,22 +163,44 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 }
 
 // Fonction qui ajoute une personne à une station
-void addPersonToStation(ChargingStation* stations, Person* person, int stationIndex, int timeOffset) {
-    int dist;
-    ChargingStation* station = &stations[stationIndex];
-    if (person->path[2] == NB_STATIONS+1) {
-        dist = distance(station->coord, person->end);
-    } else {
-        dist = distance(station->coord, stations[person->path[2]].coord);
-    }
+void addPersonToStation(ChargingStation* station, Person* person, int timeOffset,int dist_to_next_station) {
+
     printf("Je rentre dans une station %s avec %d places disponibles\n", station->name, station->nbAvailableChargingPoints);
+
     if (station->nbAvailableChargingPoints != 0) {
+        push(station->queues[station->nbChargingPoints - station->nbAvailableChargingPoints], person, timeOffset);
         station->nbAvailableChargingPoints--;
         person->remainingAutonomy += timeOffset * (person->vehicle->fastCharge);
     } else {
-        person->waitingTime = index_of_from(station->queue, station->nbAvailableChargingPoints)->remainingTime - timeOffset;
+        Queue* bestQueue = getBestQueue(station);
+        push(bestQueue, person, timeOffset);
     }
-    person->chargingTime = timeToFastCharge(person, dist);
+    person->chargingTime = timeToFastCharge(person, dist_to_next_station);
 
-    push(station->queue, person);
+}
+
+// Fonction qui retire une personne d'une station
+void removePersonFromStation(ChargingStation* station, Person* person) {
+    printf("Je sors de la station %s\n", station->name);
+
+    for (int i = 0; i < station->nbAvailableChargingPoints; ++i) {
+        if (first(station->queues[i]) == person) {
+            pop(station->queues[i]);
+            if(station->queues[i]->data == NULL){
+                station->nbAvailableChargingPoints++;
+            }
+            return;
+        }
+    }
+
+}
+
+Queue* getBestQueue(ChargingStation* station) {
+    Queue* bestQueue = station->queues[0];
+    for (int i = 1; i < station->nbChargingPoints - station->nbAvailableChargingPoints; ++i) {
+        if (timeToWait(station->queues[i]) < timeToWait(bestQueue)) {
+            bestQueue = station->queues[i];
+        }
+    }
+    return bestQueue;
 }

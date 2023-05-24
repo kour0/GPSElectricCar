@@ -47,8 +47,10 @@ void* nextStep(void* param) {
                 person->pathSize = 1;
                 pthread_exit(NULL);
             }else{
+                int timeOffset = (step_dist - dist_to_next_station) / VITESSE;
+                int dist_next_station = distance(next_station, stations[person->path[2]].coord);
                 new_coord = next_station;
-                addPersonToStation(stations, person, person->path[1], (step_dist - dist_to_next_station) / VITESSE);
+                addPersonToStation(&stations[person->path[1]], person, timeOffset, dist_next_station);
                 person->remainingAutonomy -= dist_to_next_station;
             }
 
@@ -75,9 +77,10 @@ void* nextStep(void* param) {
                 person->chargingTime -= STEP;
                 person->remainingAutonomy += STEP * person->vehicle->fastCharge;
             } else {
+                // On a fini de charger
                 int timeOffset = STEP - person->chargingTime;
                 person->remainingAutonomy += person->chargingTime * person->vehicle->fastCharge;
-                person->chargingTime = 0;
+                removePersonFromStation(&stations[person->path[1]], person);
                 Coordinate* new_coord = pos_after_step(person->coordinate, next_station, timeOffset * VITESSE);
                 free(person->coordinate);
                 person->coordinate = new_coord;

@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-Queue* create_queue(void) {
+Queue* createQueue(void) {
     Queue* queue = (Queue*) malloc(sizeof(Queue));
     queue->data = NULL;
     queue->next = NULL;
@@ -18,7 +18,7 @@ void del_person(Queue* queue) {
     queue->prev->next = queue->next;
 }
 
-void push(Queue* queue, Person* data) {
+/*void push(Queue* queue, Person* data) {
 
     float time = data->remainingTime;
 
@@ -42,6 +42,25 @@ void push(Queue* queue, Person* data) {
     }
     queue->next = new_queue;
     new_queue->prev = queue;
+}*/
+
+void push(Queue* queue, Person* person, int timeOffset) {
+    if (queue->data == NULL) {
+        queue->data = person;
+        return;
+    }
+
+    Queue* new_queue = createQueue();
+    new_queue->data = person;
+
+    while (queue->next != NULL) {
+        queue = queue->next;
+    }
+    queue->next = new_queue;
+    new_queue->prev = queue;
+
+    person->waitingTime = queue->data->waitingTime + queue->data->chargingTime - timeOffset;
+
 }
 
 Person* last(Queue* queue) {
@@ -56,4 +75,28 @@ Person* index_of_from(Queue* queue, int index) {
         queue = queue->prev;
     }
     return queue->data;
+}
+
+int timeToWait(Queue* queue) {
+    while (queue->next != NULL) {
+        queue = queue->next;
+    }
+    return queue->data->waitingTime + queue->data->chargingTime;
+}
+
+Person* first(Queue* queue) {
+    return queue->data;
+}
+
+void pop(Queue* queue) {
+    if (queue->next == NULL) {
+        queue->data = NULL;
+        return;
+    }
+
+    Queue* next = queue->next;
+    queue->data = next->data;
+    queue->next = next->next;
+    next->next->prev = queue;
+    free(next);
 }
