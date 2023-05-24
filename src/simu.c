@@ -361,6 +361,7 @@ int main(int argc, char** argv) {
                 break;
             }
         }
+
         // Affichage des informations de la personne
         for (int i = 0; i < numThreads; ++i) {
             printf("Position : %f %f\n", persons[i]->coordinate->latitude, persons[i]->coordinate->longitude);
@@ -371,6 +372,27 @@ int main(int argc, char** argv) {
             printf("Temps de recharge : %d\n", persons[i]->remainingAutonomy);
             printf("Chemin : \n");
             printPath(stations, persons[i]->path, persons[i]->pathSize, persons[i]->coordinate, persons[i]->end);
+
+            // Url base carte maps without api
+            char url[1000] = "https://www.google.com/maps/dir/";
+
+            // Ajout du chemin de la personne à l'url
+            for (int j = 0; j < persons[i]->pathSize; ++j) {
+                char coord[50];
+                int numberPath = persons[i]->path[j];
+                if (j == 0) {
+                    sprintf(coord, "%f,%f/", persons[i]->coordinate->latitude, persons[i]->coordinate->longitude);
+                } else {
+                    if (j == persons[i]->pathSize - 1) {
+                        sprintf(coord, "%f,%f", persons[i]->end->latitude, persons[i]->end->longitude);
+                    } else {
+                        sprintf(coord, "%f,%f/", stations[persons[i]->path[j]].coord->latitude,
+                                stations[persons[i]->path[j]].coord->longitude);
+                    }
+                }
+                strcat(url, coord);
+            }
+            printf("\n");
         }
         ++step;
         // Attendre un input dans la console
@@ -381,7 +403,7 @@ int main(int argc, char** argv) {
     for (int k = 0; k < n; ++k) {
         free(stations[k].name);
         free(stations[k].coord);
-        free(stations[k].queue);
+        free(stations[k].queues);
     }
     for (int j = 0; j < m; ++j) {
         free(vehicles[j].name);
