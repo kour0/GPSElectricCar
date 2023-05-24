@@ -297,6 +297,12 @@ Il est à noter que l'efficacité de la parallélisation dépend de nombreux fac
 
 En ce qui concerne la complexité spatiale, chaque thread n'utilise que très peu de mémoire supplémentaire (juste quelques variables locales). Ainsi, la complexité spatiale globale est dominée par la taille du graphe, qui est $O(n^2)$, où n est le nombre de sommets (stations) dans le graphe, car nous utilisons une matrice d'adjacence pour représenter le graphe.
 
+\subsection{Visualisation d'itinéraires}
+
+\subsubsection{Présentation}
+
+Afin de visualiser le parcours trouvé lors de l'exécution de l'algorithme de Dijkstra, nous avons fait appel à une fonctionnalité de Google Maps, permettant de relier des coordonnées entre elles. Ainsi, nous générons une URL Google Maps, qui prend en paramètre chaque étape du parcours. Celle-ci est ensuite ouverte dans le navigateur par défaut de l'utilisateur et affiche le parcours.
+
 
 \section{Tests}
 
