@@ -312,7 +312,8 @@ void* dijkstra(void* param) {
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("Temps dijsktra : %f\n", cpu_time_used);
 
-    return result;
+    pthread_exit(result);
+
 }
 
 // Fonction pour afficher le chemin

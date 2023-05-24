@@ -16,7 +16,6 @@
 #include <stdbool.h>
 
 typedef struct {
-    Graph* graph;
     Person* person;
     Coordinate* next_station;
     ChargingStation* stations;
@@ -26,7 +25,6 @@ typedef struct {
 void* nextStep(void* param) {
 
     ThreadParamsSimu* params = (ThreadParamsSimu*) param;
-    Graph* graph = params->graph;
     Person* person = params->person;
     Coordinate* next_station = params->next_station;
     ChargingStation* stations = params->stations;
@@ -274,7 +272,7 @@ int main(int argc, char** argv) {
     for (int z=0 ; z<nb_coords ; z+=2) {
 
         int* new_path = NULL;
-        pthread_join(threadsDijkstraStart[i], (void**)&new_path);
+        pthread_join(threadsDijkstraStart[z/2], (void**)&new_path);
 
         // Affichage du chemin le plus court
         printf("Chemin le plus court est de longueur %d : \n", *paramsDijkstraStart[z / 2].n);
@@ -303,7 +301,6 @@ int main(int argc, char** argv) {
 
         for (int i = 0; i < numThreads; ++i) {
 
-            params[i].graph = graph;
             params[i].person = persons[i];
             params[i].stations = stations;
             if (persons[i]->pathSize == 2) {
@@ -325,27 +322,36 @@ int main(int argc, char** argv) {
 
         for (int i = 0; i < numThreads; ++i) {
 
-            paramsDijkstra[i].graph = graph;
-            paramsDijkstra[i].stations = stations;
-            paramsDijkstra[i].autonomy = persons[i]->remainingAutonomy;
-            paramsDijkstra[i].range = persons[i]->vehicle->range;
-            paramsDijkstra[i].src = persons[i]->coordinate;
-            paramsDijkstra[i].dest = persons[i]->end;
-            paramsDijkstra[i].n = &(persons[i]->pathSize);
+            if (persons[i]->chargingTime != 0) {
 
-            /*int* new_path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
-            free(person->path);
-            person->path = new_path;*/
+                paramsDijkstra[i].graph = graph;
+                paramsDijkstra[i].stations = stations;
+                paramsDijkstra[i].autonomy = persons[i]->remainingAutonomy;
+                paramsDijkstra[i].range = persons[i]->vehicle->range;
+                paramsDijkstra[i].src = persons[i]->coordinate;
+                paramsDijkstra[i].dest = persons[i]->end;
+                paramsDijkstra[i].n = &(persons[i]->pathSize);
 
-            pthread_create(&threadsDijkstra[i], NULL, dijkstra, (void *) &paramsDijkstra[i]);
+                /*int* new_path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
+                free(person->path);
+                person->path = new_path;*/
 
+                pthread_create(&threadsDijkstra[i], NULL, dijkstra, (void *) &paramsDijkstra[i]);
+
+            } else {
+                // On crée un thread vide si la personne n'a pas besoin de recharger
+                void *(*emptyThread)(void *) = NULL;
+                pthread_create(&threadsDijkstra[i], NULL, emptyThread, NULL);
+            }
         }
 
         for (int i = 0; i < numThreads; ++i) {
             int* new_path;
             pthread_join(threadsDijkstra[i], (void**)&new_path);
-            free(persons[i]->path);
-            persons[i]->path = new_path;
+            if (new_path != NULL) {
+                free(persons[i]->path);
+                persons[i]->path = new_path;
+            }
         }
 
         //if (person->pathSize == 2) {
@@ -361,6 +367,7 @@ int main(int argc, char** argv) {
                 break;
             }
         }
+
         // Affichage des informations de la personne
         for (int i = 0; i < numThreads; ++i) {
             printf("Position : %f %f\n", persons[i]->coordinate->latitude, persons[i]->coordinate->longitude);
@@ -371,6 +378,26 @@ int main(int argc, char** argv) {
             printf("Temps de recharge : %d\n", persons[i]->remainingAutonomy);
             printf("Chemin : \n");
             printPath(stations, persons[i]->path, persons[i]->pathSize, persons[i]->coordinate, persons[i]->end);
+
+            // Url base carte maps without api
+            char url[1000] = "https://www.google.com/maps/dir/";
+
+            // Ajout du chemin de la personne à l'url
+            for (int j = 0; j < persons[i]->pathSize; ++j) {
+                char coord[50];
+                if (j == 0) {
+                    sprintf(coord, "%f,%f/", persons[i]->coordinate->latitude, persons[i]->coordinate->longitude);
+                } else {
+                    if (j == persons[i]->pathSize - 1) {
+                        sprintf(coord, "%f,%f", persons[i]->end->latitude, persons[i]->end->longitude);
+                    } else {
+                        sprintf(coord, "%f,%f/", stations[persons[i]->path[j]].coord->latitude,
+                                stations[persons[i]->path[j]].coord->longitude);
+                    }
+                }
+                strcat(url, coord);
+            }
+            printf("\n");
         }
         ++step;
         // Attendre un input dans la console
