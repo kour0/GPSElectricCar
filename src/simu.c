@@ -255,6 +255,8 @@ int main(int argc, char** argv) {
         // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
         int *pathLength = malloc(sizeof(int));
 
+        printf("Autonomie test : %d\n", vehicles[i].range);
+
         paramsDijkstraStart[z / 2].graph = graph;
         paramsDijkstraStart[z / 2].stations = stations;
         paramsDijkstraStart[z / 2].range = vehicles[i].range;
@@ -263,7 +265,7 @@ int main(int argc, char** argv) {
         paramsDijkstraStart[z / 2].dest = coords[z + 1];
         paramsDijkstraStart[z / 2].n = pathLength;
 
-        pthread_create(&threadsDijkstraStart[i], NULL, dijkstra, (void *) &paramsDijkstraStart[i]);
+        pthread_create(&threadsDijkstraStart[z/2], NULL, dijkstra, (void *) &paramsDijkstraStart[z/2]);
 
 //        int *res = dijkstra(graph, stations, vehicles[i].range, vehicles[i].range, coords[z], coords[z+1], pathLength);
 

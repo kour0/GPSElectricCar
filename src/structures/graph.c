@@ -188,7 +188,7 @@ void* dijkstra(void* param) {
         cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
         printf("Temps dijsktra : %f\n", cpu_time_used);
 
-        return path;
+        pthread_exit(path);
     }
 
     // Initialisation des tableaux
@@ -259,7 +259,7 @@ void* dijkstra(void* param) {
                     continue;
                 }
                 int new_dist = dist[u] + w;
-                if (new_dist < dist[v] && new_dist <= autonomy) {
+                if (new_dist < dist[v]) {
                     dist[v] = new_dist;
                     prev[v] = u;
                 }
@@ -311,6 +311,11 @@ void* dijkstra(void* param) {
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("Temps dijsktra : %f\n", cpu_time_used);
+    printf("Path :");
+    for (int i = 0; i < pathLength; ++i) {
+        printf(" %d", result[i]);
+    }
+    printf("\n");
 
     pthread_exit(result);
 
