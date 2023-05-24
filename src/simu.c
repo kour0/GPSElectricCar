@@ -22,7 +22,6 @@ typedef struct {
     ChargingStation* stations;
 } ThreadParamsSimu;
 
-
 void* nextStep(void* param) {
 
     ThreadParamsSimu* params = (ThreadParamsSimu*) param;
@@ -78,20 +77,17 @@ void* nextStep(void* param) {
                 int timeOffset = STEP - person->chargingTime;
                 person->remainingAutonomy += person->chargingTime * person->vehicle->fastCharge;
                 person->chargingTime = 0;
-                Coordinate* new_coord = pos_after_step(person->coordinate, next_station, timeOffset * VITESSE);
+                Coordinate *new_coord = pos_after_step(person->coordinate, next_station, timeOffset * VITESSE);
                 free(person->coordinate);
                 person->coordinate = new_coord;
             }
         }
     }
-    int* new_path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
-    free(person->path);
-    person->path = new_path;
 
     pthread_exit(NULL);
 }
 
-void nextStep_old(Graph* graph, Person* person, Coordinate* next_station, ChargingStation* stations) {
+/*void nextStep_old(Graph* graph, Person* person, Coordinate* next_station, ChargingStation* stations) {
     // On est arrivé à destination
     if (person->pathSize == 1) {
         return;
@@ -130,7 +126,7 @@ void nextStep_old(Graph* graph, Person* person, Coordinate* next_station, Chargi
     int* new_path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
     free(person->path);
     person->path = new_path;
-}
+}*/
 
 int main(int argc, char** argv) {
 
@@ -247,24 +243,46 @@ int main(int argc, char** argv) {
 
     Person** persons = malloc(nb_coords/2 * sizeof(Person*));
 
+    // On crée les threads
+    int numThreads = nb_coords/2;
+    pthread_t threadsDijkstraStart[numThreads];
+    ThreadParamsDijkstra paramsDijkstraStart[numThreads];
+
     for (int z=0 ; z<nb_coords ; z+=2) {
 
         // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
         int *pathLength = malloc(sizeof(int));
 
-        int *res = dijkstra(graph, stations, vehicles[i].range, vehicles[i].range, coords[z], coords[z+1], pathLength);
+        paramsDijkstraStart[z / 2].graph = graph;
+        paramsDijkstraStart[z / 2].stations = stations;
+        paramsDijkstraStart[z / 2].range = vehicles[i].range;
+        paramsDijkstraStart[z / 2].autonomy = vehicles[i].range;
+        paramsDijkstraStart[z / 2].src = coords[z];
+        paramsDijkstraStart[z / 2].dest = coords[z + 1];
+        paramsDijkstraStart[z / 2].n = pathLength;
+
+        pthread_create(&threadsDijkstraStart[i], NULL, dijkstra, (void *) &paramsDijkstraStart[i]);
+
+//        int *res = dijkstra(graph, stations, vehicles[i].range, vehicles[i].range, coords[z], coords[z+1], pathLength);
+
+    }
+
+    for (int z=0 ; z<nb_coords ; z+=2) {
+
+        int* new_path = NULL;
+        pthread_join(threadsDijkstraStart[i], (void**)&new_path);
 
         // Affichage du chemin le plus court
-        printf("Chemin le plus court est de longueur %d : \n", *pathLength);
-        printPath(stations, res, *pathLength, coords[z], coords[z+1]);
+        printf("Chemin le plus court est de longueur %d : \n", *paramsDijkstraStart[z / 2].n);
+        printPath(stations, new_path, *paramsDijkstraStart[z / 2].n, coords[z], coords[z+1]);
 
         // On crée la person
 
-        Person *person = createPerson(vehicles + i, coords[z], res, *pathLength, coords[z+1]);
+        Person *person = createPerson(vehicles + i, coords[z], new_path, *paramsDijkstraStart[z / 2].n, coords[z+1]);
 
         persons[z/2] = person;
 
-        free(pathLength);
+        free(paramsDijkstraStart[z / 2].n);
 
     }
 
@@ -276,7 +294,6 @@ int main(int argc, char** argv) {
     while (!finished) {
         printf("Step %d\n", step); //(3.606275, 50.393383)
 
-        int numThreads = nb_coords/2;  // Nombre de threads à utiliser
         pthread_t threads[numThreads];
         ThreadParamsSimu params[numThreads];
 
@@ -299,6 +316,34 @@ int main(int argc, char** argv) {
             pthread_join(threads[i], NULL);
         }
 
+        pthread_t threadsDijkstra[numThreads];
+        ThreadParamsDijkstra paramsDijkstra[numThreads];
+
+        for (int i = 0; i < numThreads; ++i) {
+
+            paramsDijkstra[i].graph = graph;
+            paramsDijkstra[i].stations = stations;
+            paramsDijkstra[i].autonomy = persons[i]->remainingAutonomy;
+            paramsDijkstra[i].range = persons[i]->vehicle->range;
+            paramsDijkstra[i].src = persons[i]->coordinate;
+            paramsDijkstra[i].dest = persons[i]->end;
+            paramsDijkstra[i].n = &(persons[i]->pathSize);
+
+            /*int* new_path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));
+            free(person->path);
+            person->path = new_path;*/
+
+            pthread_create(&threadsDijkstra[i], NULL, dijkstra, (void *) &paramsDijkstra[i]);
+
+        }
+
+        for (int i = 0; i < numThreads; ++i) {
+            int* new_path;
+            pthread_join(threadsDijkstra[i], (void**)&new_path);
+            free(persons[i]->path);
+            persons[i]->path = new_path;
+        }
+
         //if (person->pathSize == 2) {
         //    nextStep(graph, person, person->end, stations);
         //} else {
@@ -317,8 +362,10 @@ int main(int argc, char** argv) {
             printf("Position : %f %f\n", persons[i]->coordinate->latitude, persons[i]->coordinate->longitude);
             printf("Autonomie restante : %d\n", persons[i]->remainingAutonomy);
             printf("Distance restante : %d\n", persons[i]->pathSize);
-            printf("Temps de recharge : %d\n", persons[i]->vehicle->fastCharge);
-            printf("Temps restant : %d\n", persons[i]->remainingTime);
+            printf("Taux de recharge : %d\n", persons[i]->vehicle->fastCharge);
+            printf("Temps d'attente : %d\n", persons[i]->waitingTime);
+            printf("Temps de recharge : %d\n", persons[i]->remainingAutonomy);
+            printf("Chemin : \n");
             printPath(stations, persons[i]->path, persons[i]->pathSize, persons[i]->coordinate, persons[i]->end);
         }
         ++step;
