@@ -19,6 +19,7 @@ typedef struct ChargingStation {
 ChargingStation* readJSONstations(char* filename, int* n);
 void serializeStations(char* filename, ChargingStation* stations, int n);
 ChargingStation* deserializeStations(char* filename, int* n);
-void addPersonToStation(ChargingStation* stations, Person* person, int stationIndex);
+void addPersonToStation(ChargingStation* stations, Person* person, int stationIndex, int timeOffset);
+
 
 #endif //PPII2_GRP_30_CHARGING_STATION_H

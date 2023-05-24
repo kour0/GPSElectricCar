@@ -36,34 +36,52 @@ void* nextStep(void* param) {
         pthread_exit(NULL);
     }
     // On est sur un chemin
-    if (person->remainingTime == 0) {
-        Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP, &(person->remainingTime), &person->pathSize);
-        person->remainingAutonomy -= distance(person->coordinate, new_coord);
-        if (person->end->longitude == new_coord->longitude && person->end->latitude == new_coord->latitude) {
-            // On est arrivé
-            person->pathSize = 1;
-        } else {
-            if (next_station->longitude == new_coord->longitude && next_station->latitude == new_coord->latitude) {
-                printf("On rentre dans une station\n");
-                addPersonToStation(stations, person, person->path[1]);
+    if (person->chargingTime == 0) {
+        int step_dist = STEP * VITESSE;
+        int dist_to_next_station = distance(person->coordinate, next_station);
+        Coordinate* new_coord = NULL;
+        if(dist_to_next_station < step_dist) {
+            // On arrive à la station
+            if(pos_equals(person->end, next_station)) {
+                // On est arrivé
+                person->pathSize = 1;
+                pthread_exit(NULL);
+            }else{
+                new_coord = next_station;
+                addPersonToStation(stations, person, person->path[1], (step_dist - dist_to_next_station) / VITESSE);
+                person->remainingAutonomy -= dist_to_next_station;
             }
+
+        }else {
+             new_coord = pos_after_step(person->coordinate, next_station, step_dist);
+             person->remainingAutonomy -= step_dist;
         }
         free(person->coordinate);
         person->coordinate = new_coord;  // (3.606275, 50.393383)
     } else {
         // On est dans une station
-        if (person->remainingTime - STEP >= 0) {
-            person->remainingTime -= STEP;
-            person->remainingAutonomy += STEP * person->vehicle->fastCharge;
-        }
-        else {
-            // On sort de la station avec une distance en plus
-            person->remainingAutonomy += person->remainingTime * person->vehicle->fastCharge;
-            Coordinate* new_coord = pos_after_step(person->coordinate, next_station, STEP - person->remainingTime, &(person->remainingTime), &person->pathSize);
-            person->remainingTime -= distance(person->coordinate, new_coord);
-            free(person->coordinate);
-            person->coordinate = new_coord;
-            person->remainingTime = 0;
+        if (person->waitingTime > 0) {
+            // On attend
+            if (person->waitingTime > STEP) {
+                person->waitingTime -= STEP;
+            } else {
+                int timeOffset = STEP - person->waitingTime;
+                person->waitingTime = 0;
+                person->chargingTime -= timeOffset;
+            }
+        } else {
+            // On charge
+            if (person->chargingTime > STEP) {
+                person->chargingTime -= STEP;
+                person->remainingAutonomy += STEP * person->vehicle->fastCharge;
+            } else {
+                int timeOffset = STEP - person->chargingTime;
+                person->remainingAutonomy += person->chargingTime * person->vehicle->fastCharge;
+                person->chargingTime = 0;
+                Coordinate* new_coord = pos_after_step(person->coordinate, next_station, timeOffset * VITESSE);
+                free(person->coordinate);
+                person->coordinate = new_coord;
+            }
         }
     }
     int* new_path = dijkstra(graph, stations, person->remainingAutonomy, person->vehicle->range, person->coordinate, person->end, &(person->pathSize));

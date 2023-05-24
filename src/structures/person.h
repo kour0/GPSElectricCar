@@ -14,7 +14,8 @@ typedef struct Person {
     Coordinate* coordinate;
     int* path;
     int pathSize;
-    int remainingTime;
+    int waitingTime;
+    int chargingTime;
     int remainingAutonomy;
     Coordinate* end;
 } Person;

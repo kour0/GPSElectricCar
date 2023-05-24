@@ -157,7 +157,7 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 }
 
 // Fonction qui ajoute une personne à une station
-void addPersonToStation(ChargingStation* stations, Person* person, int stationIndex) {
+void addPersonToStation(ChargingStation* stations, Person* person, int stationIndex, int timeOffset) {
     int dist;
     ChargingStation* station = &stations[stationIndex];
     if (person->path[2] == NB_STATIONS+1) {
@@ -168,10 +168,11 @@ void addPersonToStation(ChargingStation* stations, Person* person, int stationIn
     printf("Je rentre dans une station %s avec %d places disponibles\n", station->name, station->nbAvailableChargingPoints);
     if (station->nbAvailableChargingPoints != 0) {
         station->nbAvailableChargingPoints--;
-        person->remainingAutonomy += person->remainingTime * (person->vehicle->fastCharge);
-        person->remainingTime = timeToFastCharge(person, dist);
+        person->remainingAutonomy += timeOffset * (person->vehicle->fastCharge);
     } else {
-        person->remainingTime = timeToFastCharge(person, dist) + index_of_from(station->queue, station->nbAvailableChargingPoints)->remainingTime - person->remainingTime;
+        person->waitingTime = index_of_from(station->queue, station->nbAvailableChargingPoints)->remainingTime - timeOffset;
     }
+    person->chargingTime = timeToFastCharge(person, dist);
+
     push(station->queue, person);
 }

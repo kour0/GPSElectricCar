@@ -14,7 +14,8 @@ Person* createPerson(Vehicle* vehicle, Coordinate* coordinate, int* path, int pa
     person->path = path;
     person->pathSize = pathSize;
     person->remainingAutonomy = vehicle->range;
-    person->remainingTime = 0;
+    person->waitingTime = 0;
+    person->chargingTime = 0;
     person->end = end;
     return person;
 }
