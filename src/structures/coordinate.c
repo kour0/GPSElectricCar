@@ -64,9 +64,10 @@ Coordinate* pos_after_step(Coordinate* coord1, Coordinate* coord2, int step_dist
     double lat = atan2(z, sqrt(pow(x, 2) + pow(y, 2)));
     double lon = atan2(y, x);*/
 
+   int d_max = distance(coord1, coord2);
 
-    double A = sin((1 - step_dist / EARTH_RADIUS) * c) / sin(c);
-    double B = sin(step_dist / EARTH_RADIUS * c) / sin(c);
+    double A = sin((1 - step_dist / (float) d_max) * c) / sin(c);
+    double B = sin(step_dist / (float) d_max * c) / sin(c);
     double x = A * cos(lat1) * cos(lon1) + B * cos(lat2) * cos(lon2);
     double y = A * cos(lat1) * sin(lon1) + B * cos(lat2) * sin(lon2);
     double z = A * sin(lat1) + B * sin(lat2);

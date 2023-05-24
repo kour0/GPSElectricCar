@@ -10,7 +10,7 @@ CFLAGS=-Wall -Wextra -pedantic -O0 -g3 -fsanitize=address
 LDFLAGS+=-L$lib -fsanitize=address
 CPPFLAGS=-I$include -Iinclude
 
-ALL_EXECUTABLES=main simu
+ALL_EXECUTABLES=main simu test_queue test_stations
 
 all: $(ALL_EXECUTABLES)
 

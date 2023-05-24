@@ -187,6 +187,7 @@ void addPersonToStation(ChargingStation* station, Person* person, int timeOffset
 
 // Fonction qui retire une personne d'une station
 void removePersonFromStation(ChargingStation* station, Person* person) {
+
     printf("Je sors de la station %s\n", station->name);
 
     person->chargingTime = 0;

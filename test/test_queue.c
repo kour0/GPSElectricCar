@@ -84,6 +84,4 @@ int main(void) {
 
     assert_true(person4->waitingTime == 200, "La personne doit attendre 200 secondes");
 
-
-
 }
