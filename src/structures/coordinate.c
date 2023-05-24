@@ -6,9 +6,6 @@
 #include <math.h>
 #include "../constants.h"
 #include <stdlib.h>
-#include <stdio.h>
-#include "charging_station.h"
-#include "person.h"
 
 // Fonction pour calculer la distance entre deux coordonnées géographiques en km
 int distance(Coordinate* coord1, Coordinate* coord2) {

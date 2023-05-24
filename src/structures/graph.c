@@ -1,7 +1,3 @@
-//
-// Created by Noe Steiner on 22/04/2023.
-//
-
 #include "graph.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -164,7 +160,17 @@ void printGraph(Graph* graph) {
 }
 
 // Algorithme de Dijkstra pour trouver le plus court chemin entre deux stations
-int* dijkstra(Graph* graph, ChargingStation* stations, int autonomy, int range, Coordinate* src, Coordinate* dest, int* n) {
+void* dijkstra(void* param) {
+
+    // Récupération des paramètres
+    ThreadParamsDijkstra* params = (ThreadParamsDijkstra*) param;
+    Graph* graph = params->graph;
+    Coordinate* src = params->src;
+    Coordinate* dest = params->dest;
+    int* n = params->n;
+    ChargingStation* stations = params->stations;
+    int autonomy = params->autonomy;
+    int range = params->range;
 
     // Initialisation temps
     clock_t start, end;
@@ -253,7 +259,7 @@ int* dijkstra(Graph* graph, ChargingStation* stations, int autonomy, int range, 
                     continue;
                 }
                 int new_dist = dist[u] + w;
-                if (new_dist < dist[v]) {
+                if (new_dist < dist[v] && new_dist <= autonomy) {
                     dist[v] = new_dist;
                     prev[v] = u;
                 }
@@ -305,10 +311,7 @@ int* dijkstra(Graph* graph, ChargingStation* stations, int autonomy, int range, 
     end = clock();
     cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
     printf("Temps dijsktra : %f\n", cpu_time_used);
-    printf("Liste dijkstra : ");
-    for (int i = 0; i < pathLength; ++i) {
-        printf("%d ", result[i]);
-    }
+
     return result;
 }
 

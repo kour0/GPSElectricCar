@@ -20,11 +20,21 @@ typedef struct {
     Graph* graph;
 } ThreadParamsGraph;
 
+typedef struct {
+    Graph* graph;
+    ChargingStation* stations;
+    int autonomy;
+    int range;
+    Coordinate* src;
+    Coordinate* dest;
+    int* n;
+} ThreadParamsDijkstra;
+
 Graph* createGraph(int V);
 void printGraph(Graph* graph);
 Graph* createGraphFromStations(ChargingStation* stations, int n);
 void freeGraph(Graph* graph);
-int* dijkstra(Graph* graph, ChargingStation* stations, int autonomy, int range, Coordinate* src, Coordinate* dest, int* n);
+void* dijkstra(void* param);
 void printPath(ChargingStation* stations, int* path, int n, Coordinate* src, Coordinate* dest);
 void serializeGraph(Graph* graph, char* filename);
 Graph* deserializeGraph(char* filename, int V);
