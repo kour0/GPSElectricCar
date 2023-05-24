@@ -39,7 +39,7 @@ Graph* createGraph(int V) {
 }
 
 // Fonction pour créer le graphe pondéré
-Graph* createGraphFromStations(ChargingStation* stations, int n) {
+Graph* createGraphFromStations_old(ChargingStation* stations, int n) {
     Graph* graph = createGraph(n);
 
     // Initialisation temps pour mesurer le temps d'exécution
@@ -86,7 +86,7 @@ Graph* createGraphFromStations(ChargingStation* stations, int n) {
 }
 
 
-Graph* createGraphFromStations_old(ChargingStation* stations, int n) {
+Graph* createGraphFromStations(ChargingStation* stations, int n) {
     Graph* graph = createGraph(n);
 
     // Calcul des distances entre les stations
