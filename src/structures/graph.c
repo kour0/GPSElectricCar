@@ -17,7 +17,7 @@ void* createGraphFromStationsThread(void* param) {
 
     for (int i = start; i < end; ++i) {
         for (int j = i + 1; j < graph->V; ++j) {
-            graph->adjMat[i*(graph->V-1)-((i-1)*i)/2+j-(i+1)] = distance(stations[i].coord, stations[j].coord) / VITESSE;
+            graph->adjMat[i*(graph->V-1)-((i-1)*i)/2+j-(i+1)] = distance(stations[i].coord, stations[j].coord);
         }
     }
 
@@ -27,14 +27,14 @@ void* createGraphFromStationsThread(void* param) {
 
 Graph* createGraph(int V) {
 
-    long V_long = (long) V;
+    long V_double = (long) V;
 
     // Allocation de la mémoire pour le graphe
-    //printf("Allocation de la mémoire pour le graphe de taille : %ld\n", ((V_long * (V_long+1))/2-V_long));
+    printf("Allocation de la mémoire pour le graphe de taille : %ld\n", ((V_double * (V_double+1))/2-V_double));
 
     Graph* graph = malloc(sizeof(Graph));
     graph->V = V;
-    graph->adjMat = calloc((((V_long * (V_long+1))/2)-V_long), sizeof(int));
+    graph->adjMat = calloc(((V_double * (V_double+1))/2-V_double), sizeof(int));
     return graph;
 }
 
@@ -43,9 +43,9 @@ Graph* createGraphFromStations(ChargingStation* stations, int n) {
     Graph* graph = createGraph(n);
 
     // Initialisation temps pour mesurer le temps d'exécution
-    //clock_t start, end;
-    //double cpu_time_used;
-    //start = clock();
+    clock_t start, end;
+    double cpu_time_used;
+    start = clock();
 
     int numThreads = 16;  // Nombre de threads à utiliser
     pthread_t threads[numThreads];
@@ -79,9 +79,9 @@ Graph* createGraphFromStations(ChargingStation* stations, int n) {
     }
 
     // Fin du temps d'exécution
-    //end = clock();
-    //cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
-    //printf("Temps d'exécution construction graph avec %d threads : %f\n", numThreads, cpu_time_used);
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("Temps d'exécution construction graph avec %d threads : %f\n", numThreads, cpu_time_used);
 
     return graph;
 }
@@ -173,12 +173,21 @@ void* dijkstra(void* param) {
     int autonomy = params->autonomy;
     int range = params->range;
 
+    // Initialisation temps
+    clock_t start, end;
+    double cpu_time_used;
+    start = clock();
+
     // Si le départ est la destination
-    if ((src->longitude == dest->longitude && src->latitude == dest->latitude) || *n == 1) {
+    if (src->longitude == dest->longitude && src->latitude == dest->latitude) {
         *n = 1;
-        int* path = malloc(2*sizeof(int));
+        int* path = malloc(sizeof(int));
         path[0] = graph->V;
-        path[1] = graph->V+1;
+
+        // Fin temps
+        end = clock();
+        cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+        printf("Temps dijsktra : %f\n", cpu_time_used);
 
         pthread_exit(path);
     }
@@ -227,27 +236,27 @@ void* dijkstra(void* param) {
             if (!visited[v]) {
                 int w = 0;
                 if (v == graph->V) {
-                    w=distance(src, stations[u].coord) / VITESSE;
+                    w=distance(src, stations[u].coord);
                 } else {
                     if (v == graph->V+1) {
                         if (u == graph->V) {
-                            w=distance(src, dest) / VITESSE;
+                            w=distance(src, dest);
                         } else {
-                            w=distance(stations[u].coord, dest) / VITESSE;
+                            w=distance(stations[u].coord, dest);
                         }
                     } else {
                         if (u == graph->V) {
-                            w = distance(src, stations[v].coord) / VITESSE + timeToWait(getBestQueue(stations+v));
+                            w = distance(src, stations[v].coord);
                         } else {
                             if (u < v) {
-                                w = graph->adjMat[u * (graph->V - 1) - ((u - 1) * u) / 2 + v - (u + 1)] + timeToWait(getBestQueue(stations+v));
+                                w = graph->adjMat[u * (graph->V - 1) - ((u - 1) * u) / 2 + v - (u + 1)];
                             } else {
-                                w = graph->adjMat[v * (graph->V - 1) - ((v - 1) * v) / 2 + u - (v + 1)] + timeToWait(getBestQueue(stations+v));
+                                w = graph->adjMat[v * (graph->V - 1) - ((v - 1) * v) / 2 + u - (v + 1)];
                             }
                         }
                     }
                 }
-                if (w >= autonomy/VITESSE) {
+                if (w >= autonomy) {
                     continue;
                 }
                 int new_dist = dist[u] + w;
@@ -299,6 +308,16 @@ void* dijkstra(void* param) {
     free(path);
     *n = pathLength;
 
+    // Fin temps
+    end = clock();
+    cpu_time_used = ((double) (end - start)) / CLOCKS_PER_SEC;
+    printf("Temps dijsktra : %f\n", cpu_time_used);
+    printf("Path :");
+    for (int i = 0; i < pathLength; ++i) {
+        printf(" %d", result[i]);
+    }
+    printf("\n");
+
     pthread_exit(result);
 
 }
@@ -307,35 +326,39 @@ void* dijkstra(void* param) {
 void printPath(ChargingStation* stations, int* path, int n, Coordinate* src, Coordinate* dest) {
     int totalDistance = 0;
 
+    printf("DEBUT\n");
+
     if (n== 1) {
         printf("Arrivée\n");
+        printf("FIN\n");
         return;
     }
     if (n == 2) {
-        printf("Début (lon %f, lat %f) -> (distance : %d m) ", src->longitude, src->latitude, distance(src, dest));
-        printf("%s (lon %f, lat %f)\n", "Fin", dest->longitude, dest->latitude);
+        printf("Début (%f, %f) -> (distance : %d) ", src->longitude, src->latitude, distance(src, dest));
+        printf("%s (%f, %f)\n", "Fin", dest->longitude, dest->latitude);
         printf("Distance totale : %d m\n", distance(src, dest));
+        printf("FIN\n");
         return;
     }
 
-    printf("Début (lon %f, lat %f) -> (distance : %d m) ", src->longitude, src->latitude, distance(src, stations[path[1]].coord));
+    printf("Début (%f, %f) -> (distance : %d) ", src->longitude, src->latitude, distance(src, stations[path[1]].coord));
     totalDistance += distance(src, stations[path[1]].coord);
     for (int i = 1; i < n-2; ++i) {
-        printf("%s (lon %f, lat %f) -> (distance : %d m) ", stations[path[i]].name, stations[path[i]].coord->longitude, stations[path[i]].coord->latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
+        printf("%s (%f, %f) -> (distance : %d) ", stations[path[i]].name, stations[path[i]].coord->longitude, stations[path[i]].coord->latitude, distance(stations[path[i]].coord, stations[path[i+1]].coord));
         totalDistance += distance(stations[path[i]].coord, stations[path[i+1]].coord);
     }
-    printf("%s (lon %f, lat %f) -> (distance : %d m) ", stations[path[n-2]].name, stations[path[n-2]].coord->longitude, stations[path[n-2]].coord->latitude, distance(stations[path[n-2]].coord, dest));
+    printf("%s (%f, %f) -> (distance : %d) ", stations[path[n-2]].name, stations[path[n-2]].coord->longitude, stations[path[n-2]].coord->latitude, distance(stations[path[n-2]].coord, dest));
     totalDistance += distance(stations[path[n-2]].coord, dest);
-    printf("%s (lon %f, lat %f)\n", "Fin", dest->longitude, dest->latitude);
+    printf("%s (%f, %f)\n", "Fin", dest->longitude, dest->latitude);
     printf("Distance totale : %d m\n", totalDistance);
+    printf("FIN\n");
 
 }
 
 // Fonction pour stocker la matrice d'adjacence en binaire
 void serializeGraph(Graph* graph, char* filename) {
     FILE* file = fopen(filename, "wb");
-    long V_long = (long) graph->V;
-    fwrite(graph->adjMat, sizeof(int), (((V_long * (V_long+1))/2)-V_long), file);
+    fwrite(graph->adjMat, sizeof(int), graph->V*(graph->V-1)/2, file);
     fclose(file);
 }
 
@@ -344,10 +367,9 @@ Graph* deserializeGraph(char* filename, int V) {
     FILE* file = fopen(filename, "rb");
     Graph* graph = malloc(sizeof(Graph));
     graph->V = V;
-    long V_long = (long) V;
-    graph->adjMat = calloc((((V_long * (V_long+1))/2)-V_long), sizeof(int));
+    graph->adjMat = malloc(graph->V*(graph->V-1)/2 * sizeof(int));
     fseek(file, 0, SEEK_SET);
-    fread(graph->adjMat, sizeof(int), (((V_long * (V_long+1))/2)-V_long), file);
+    fread(graph->adjMat, sizeof(int), graph->V*(graph->V-1)/2, file);
     fclose(file);
     return graph;
 }

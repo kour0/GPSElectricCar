@@ -5,6 +5,7 @@
 !/**/
 !*.*
 !makefile
+*.txt
 *.bin
 
 ### C ###

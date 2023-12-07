@@ -1,9 +1,13 @@
+//
+// Created by Noe Steiner on 22/04/2023.
+//
+
 #ifndef PPII2_GRP_30_CONSTANTS_H
 #define PPII2_GRP_30_CONSTANTS_H
 
 //#define M_PI 3.14159265358979323846 // Valeur de pi
 #define EARTH_RADIUS 6378137 // Rayon de la Terre en m
-#define INT_MAX 300000000 // Valeur maximale d'un int
+#define INT_MAX 3000000 // Valeur maximale d'un int
 #define WIDTH 100
 #define STEP 600 // Pas de temps en s
 #define VITESSE 14 // Vitesse en m/s soit 50 km/h

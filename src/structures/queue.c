@@ -1,3 +1,7 @@
+//
+// Created by kour0 on 5/10/23.
+//
+
 #include "queue.h"
 #include <stdlib.h>
 #include <stdio.h>
@@ -77,9 +81,6 @@ int timeToWait(Queue* queue) {
     while (queue->next != NULL) {
         queue = queue->next;
     }
-    if (queue->data == NULL) {
-        return 0;
-    }
     return queue->data->waitingTime + queue->data->chargingTime;
 }
 
@@ -93,9 +94,9 @@ void pop(Queue* queue) {
         return;
     }
 
-    Queue next = *queue->next;
-    free(queue->next);
-    queue->data = next.data;
-    queue->next = next.next;
-    next.next->prev = queue;
+    Queue* next = queue->next;
+    queue->data = next->data;
+    queue->next = next->next;
+    next->next->prev = queue;
+    free(next);
 }

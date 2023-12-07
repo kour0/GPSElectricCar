@@ -1,3 +1,6 @@
+//
+// Created by Noe Steiner on 22/04/2023.
+//
 #include "charging_station.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -169,6 +172,8 @@ ChargingStation* deserializeStations(char* filename, int* n) {
 // Fonction qui ajoute une personne à une station
 void addPersonToStation(ChargingStation* station, Person* person, int timeOffset,int dist_to_next_station) {
 
+    printf("Je rentre dans une station %s avec %d places disponibles\n", station->name, station->nbAvailableChargingPoints);
+
     if (station->nbAvailableChargingPoints != 0) {
         push(station->queues[station->nbChargingPoints - station->nbAvailableChargingPoints], person, timeOffset);
         station->nbAvailableChargingPoints--;
@@ -182,6 +187,8 @@ void addPersonToStation(ChargingStation* station, Person* person, int timeOffset
 
 // Fonction qui retire une personne d'une station
 void removePersonFromStation(ChargingStation* station, Person* person) {
+
+    printf("Je sors de la station %s\n", station->name);
 
     person->chargingTime = 0;
 

@@ -10,7 +10,7 @@
             "Brand": "Tesla"
         },
         {
-            "Name": "Tesla Model 3",
+            "Name": "Tesla Model 3 ",
             "Range": "100",
             "Acceleration": "6.1",
             "Top Speed": "225",
@@ -19,7 +19,7 @@
             "Brand": "Tesla"
         },
         {
-            "Name": "Tesla Model Y",
+            "Name": "Tesla Model Y ",
             "Range": "345",
             "Acceleration": "6.9",
             "Top Speed": "217",
@@ -37,7 +37,7 @@
             "Brand": "Tesla"
         },
         {
-            "Name": "BYD ATTO 3",
+            "Name": "BYD ATTO 3 ",
             "Range": "320",
             "Acceleration": "7.3",
             "Top Speed": "160",

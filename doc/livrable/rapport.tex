@@ -109,13 +109,13 @@ différentes options. Notre objectif était de trouver une structure de données
 efficacement les connexions entre les différentes stations, tout en facilitant les calculs d'itinéraires optimaux.
 
 Nous avons commencé par étudier les structures de données vues en cours tels que les listes, les arbres et les graphes. Nous avons d'abord envisagé 
-les arbres. Cependant, nous avons réalisé que cette structure ne convenait pas à notre cas d'utilisation, car elle 
-ne permettait pas de représenter efficacement toutes les connexions entre toutes les stations. 
+les arbres. Cependant, nous avons réalisé que cette structure ne convenait pas à notre cas d'utilisation, car elles 
+ne permettaient pas de représenter efficacement toutes les connexions entre toutes les stations. 
 
 Nous avons donc choisi de représenter le réseau de stations de recharge à l'aide d'un graphe, une structure de données couramment utilisée pour 
 modéliser des systèmes de points connectés. Chaque sommet représente une station de recharge et chaque arête représente un chemin direct 
 entre deux stations. La pondération de chaque arête est la distance entre les deux stations correspondantes.
-Ainsi, la représentation ci-dessous, est une représentation graphique simplifiée de la structuration de notre graphe. A, B, C et D sont des 
+Ainsi, la représentation ci-dessous, est une représentation graphique simplifiée de la structuration de notre graph. A, B, C et D sont des 
 stations, la valuation des arcs correspond au nombre de kilomètres à vol d'oiseau entre les stations. Ainsi, la valuation de l'arc entre A et B 
 est de 5, entre B et C de 3, entre C et D de 4 et entre D et A de 7 :
 
@@ -170,7 +170,7 @@ typedef struct Graph {
 
 \subsubsection{Parallélisation}
 
-Afin de faciliter l'instanciation du graphe, nous avons également mis en place une solution pour la création des arêtes du graph. En effet, la création des arêtes du graph est une opération coûteuse en temps, et nous avons donc décidé de la paralléliser. Pour cela, nous avons réalisé ces 2 structures additionnelles :
+Afin de faciliter l'instanciation du graph, nous avons également mis en place une solution pour la création des arêtes du graph. En effet, la création des arêtes du graph est une opération coûteuse en temps, et nous avons donc décidé de la paraléliser. Pour cela, nous avons réalisé ces 2 structures additionnelles :
 
 \begin{center}
     \begin{lstlisting}[caption=Structure Annexes à Graph]
@@ -314,7 +314,7 @@ La complexité de l'algorithme de Dijkstra est en général de $O(V^2)$, où $V$
 \subsection{Instanciation du Graph}
 
 \subsubsection{Load des stations}
-Pour instancier le graphe, nous avons besoin de charger les stations de charge depuis un fichier JSON. Pour cela, nous avons utilisé la bibliothèque cJSON, qui permet de lire et d'écrire des fichiers JSON en C. Nous avons créé une fonction readJSONstations qui prend en paramètre le nom du fichier JSON et le pointeur vers le nombre de stations que la fonction va actualiser avec le nombre de stations trouvé dans le fichier JSON, et qui renvoie un tableau de stations de charge. Cette fonction utilise la bibliothèque cJSON pour lire le fichier JSON et créer un tableau de stations de charge à partir des données du fichier. Elle renvoie ensuite ce tableau.
+Pour instancier le graphe, nous avons besoin de charger les stations de charge depuis un fichier JSON. Pour cela, nous avons utilisé la bibliothèque cJSON, qui permet de lire et d'écrire des fichiers JSON en C. Nous avons créé une fonction readJSONstations qui prend en paramètre le nom du fichier JSON et le nombre de stations à load, et qui renvoie un tableau de stations de charge. Cette fonction utilise la bibliothèque cJSON pour lire le fichier JSON et créer un tableau de stations de charge à partir des données du fichier. Elle renvoie ensuite ce tableau.
 
 \subsubsection{Instanciation de la matrice d'adjacence}
 Une fois les stations de charge instanciées, nous pouvons instancier la matrice d'adjacence. Pour cela, nous avons créé une fonction createGraphFromStations qui prend en paramètre un tableau de stations de charge et le nombre de stations, et qui renvoie un graphe. Cette fonction crée un graphe vide, puis crée les arêtes du graphe en utilisant la fonction createGraphFromStations. Enfin, elle renvoie le graphe.
@@ -344,7 +344,7 @@ Le mode simulation permet de simuler le comportement de plusieurs véhicules él
 \section{Tests}
 
 \subsection{Introduction}
-Nous avons effectué des tests sur chacune de nos fonctions pour nous assurer qu'elles fonctionnent correctement. Ces tests comprenaient des cas de tests simples ainsi que des tests de stress pour évaluer la performance et l'efficacité des fonctions. En outre, nous avons utilisé des outils d'analyse dynamique pour détecter les fuites de mémoire et autres problèmes liés à la gestion de la mémoire.
+Nous avons effectué des tests sur chacune de nos fonctions pour nous assurer qu'elles fonctionnent correctement. Ces tests comprenaient des cas de test simples ainsi que des tests de stress pour évaluer la performance et l'efficacité des fonctions. En outre, nous avons utilisé des outils d'analyse dynamique pour détecter les fuites de mémoire et autres problèmes liés à la gestion de la mémoire.
 
 \subsubsection{Exemple}
 
@@ -367,10 +367,11 @@ Ce projet est un projet local réalisé en groupe de 4 personnes~:
 \end{itemize}
 Le comité de pilotage est constitué de~:
 \begin{itemize}
+    \item Anne-Claire HEURTEL
     \item Olivier FESTOR
     \item Gérald OSTER
 \end{itemize}
-Ces personnes constituent les parties prenantes de notre projet ainsi que les acteurs influents sur le livrable.
+Ces personnes constituent les parties prenantes de notre projet ainsi que les acteurs influents sur le livrables.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.75\textwidth]{img/parties_prenantes.png}
@@ -387,7 +388,7 @@ application pour que nous puissions tous modifier le code en même temps, ce qui
 Ensuite, nous avons utilisé GitLab pour gérer les différentes versions du développement de notre application, ainsi que les différentes 
 branches nous permettant de travailler simultanément sans conflit.
 
-Enfin, la rédaction des différents comptes rendus de réunion et des rapports a été faite en \LaTeX.
+Enfin, la rédaction des differents comptes rendus de réunion et des rapports ont été rédigé en \LaTeX.
 
 \subsection{Objectifs SMART}
 La méthode SMART que l'on rappelle ci-dessous nous a permis de définir nos différents objectifs :
@@ -407,14 +408,14 @@ Nous avons conçu, à l'aide de la méthode SMART, la matrice des objectifs suiv
     \caption{Matrice des objectifs}
 \end{figure}
 
-En ce qui concerne le livrable, il sera difficile compte tenu des délais d'atteindre tous les objectifs du projet.
-\subsection{Triangle délai-qualité-coût}
+En ce qui concerne, le livrable, il sera difficile, compte tenu des délais d'attendre tous les objectifs du projet.
+\subsection{Triangle qualité-cout-délai}
 Afin d’établir des objectifs cohérents, et réalisables dans les délais, nous avons réalisé le triangle qualité-coût-délai. On remarque ainsi, les délais étant courts, que nous avons tout intérêt à ne pas se fixer des objectifs trop ambitieux sous peine de devoir renoncer à certaines fonctionnalités et de ne pas rendre le livrable annoncé initialement.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\textwidth]{img/triangle_QCD.png}
-    \caption{Triangle QCD}
+    \caption{Triangle DQC}
 \end{figure}
 
 \subsection{Matrice SWOT}
@@ -426,9 +427,10 @@ Afin d’avoir une vision plus globale de nos ressources et des facteurs interne
     \caption{Matrice SWOT}
 \end{figure}
 
-On peut ainsi remarquer que notre projet présente de nombreux points forts notamment grâce aux connaissances acquises lors des cours de Télécom Nancy. Cependant, plusieurs facteurs internes constituent nos faiblesses
+On peut ainsi remarquer que notre projet présente de nombreux points forts notamment grâce aux connaissances acquises lors des cours de Télécom Nancy 
+mais également de par l’expérience forte de deux des membres de l’équipe projet.  Cependant, plusieurs facteurs internes constituent nos faiblesses
  notamment les courts délais qui nous obligent à être concis et efficaces dans notre travail. Cependant, nous avons également des opportunités notamment 
- celle de pouvoir demander de l'aide aux professeurs, ou encore le fait que les salles soient ouvertes et à notre disposition pour
+ celle de pouvoir demander de l'aide aux autres élèves et aux professeurs, ou encore le fait que les salles soient ouvertes et à notre disposition pour
  les réunions de groupe.
 
 De plus, nous devons anticiper les charges de travail dans le cadre de notre formation à Télécom Nancy qui s'avèrent être plus élevées au mois de mai 
@@ -436,7 +438,7 @@ pour les partiels de fin d'année. Nous allons donc devoir prendre cela en compt
 
 \subsection{Profil de projet}
 
-Afin d’avoir une vision plus globale sur notre projet, nous avons également réalisé le profil du projet (le budget étant égal à 0, nous avons choisi de ne pas le représenter dans notre profil). On remarque que, du fait des nombreuses fonctionnalités que nous avons l’intention d’implémenter dans notre application, notre projet est de taille moyenne mais de complexité élevée.
+Afin d’avoir une vision plus globale sur notre projet, nous avons également réalisé le profil du projet (le budget étant égal à 0, nous avons choisi de ne pas le représenter dans notre profil). On remarque que, du fait des nombreuses fonctionnalités que nous avons l’intention d’implémenter dans notre application, que notre projet est de taille moyenne mais de complexité élevée.
 
 Cependant, les enjeux du projet ne sont pas très importants (en dehors de la note finale qui compte dans notre moyenne) car l'échec du projet n'engendrera pas la chute d'une organisation et le budget est négligeable.
 
@@ -457,7 +459,7 @@ Ceci étant fait, nous avons maintenant choisi de détailler les lots de travail
 \end{figure}
 
 \subsection{Diagramme de Gantt~: planification}
-Maintenant que nous avons vu en détail les lots de travail qui constituent notre application, il faut les mettre en relation pour créer un planning efficace où chaque tâche est effectuée dans l’ordre.
+Maintenant que nous avons un détail des lots de travail qui constituent notre application, il faut maintenant les mettre en relation pour créer un planning efficace où chaque tâche est effectuée dans l’ordre.
 \begin{figure}[H]
     \centering
     \includegraphics[width=1\textwidth]{img/gantt.png}
@@ -487,7 +489,7 @@ En travaillant sur un problème réel - l'optimisation du placement des stations
 \newline
 De plus, la mise en évidence des enjeux de l'énergie durable dans notre projet nous a permis de nous immerger dans un secteur d'une importance cruciale pour l'avenir de notre société. L'efficacité de la distribution de l'énergie, en particulier pour les véhicules électriques, est une question clé dans la lutte contre les changements climatiques. En participant à la résolution de ce problème à travers notre projet, nous avons non seulement appliqué nos compétences techniques, mais également contribué à un domaine qui aura un impact durable et positif sur notre avenir.
 \newline
-En somme, ce projet nous a offert une occasion inestimable de croissance personnelle et professionnelle. Il nous a permis d'acquérir et de consolider des compétences techniques, tout en nous faisant prendre conscience de l'importance des implications de notre travail dans le monde réel, en particulier dans le domaine de la mobilité et de l'énergie durable.
+En somme, ce projet nous a offert une occasion inestimable de croissance personnelle et professionnelle. Il nous a permis d'acquérir et de consolider des compétences techniques, tout en nous faisant prendre conscience de l'importance des implications de notre travail dans le monde réel, en particulier dans le domaine de la mobilité et de l'énergie durables.
 
 \section{Annexes}
 \includepdf[pages=1]{../cr_reu/reu1/cr_reu1.pdf}

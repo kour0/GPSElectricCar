@@ -14,10 +14,10 @@ ALL_EXECUTABLES=main simu test_queue test_stations
 
 all: $(ALL_EXECUTABLES)
 
-main: main.o cJSON.o vehicle.o graph.o coordinate.o charging_station.o queue.o person.o
+main: main.o cJSON.o vehicle.o graph.o coordinate.o charging_station.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
-main.o: main.c constants.h structures/vehicle.h structures/graph.h structures/coordinate.h structures/charging_station.h structures/queue.h structures/person.h
+main.o: main.c constants.h structures/vehicle.h structures/graph.h structures/coordinate.h structures/charging_station.h
 	$(CC) $(CFLAGS) -c -o $@ $<
 
 simu: simu.o cJSON.o vehicle.o graph.o coordinate.o charging_station.o person.o queue.o

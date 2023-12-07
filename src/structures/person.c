@@ -1,3 +1,7 @@
+//
+// Created by kour0 on 5/10/23.
+//
+
 #include "person.h"
 #include "coordinate.h"
 #include <stdlib.h>

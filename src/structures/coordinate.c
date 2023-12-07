@@ -1,3 +1,7 @@
+//
+// Created by Noe Steiner on 22/04/2023.
+//
+
 #include "coordinate.h"
 #include <math.h>
 #include "../constants.h"

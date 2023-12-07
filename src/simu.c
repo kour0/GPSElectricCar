@@ -1,3 +1,7 @@
+//
+// Created by kour0 on 5/12/23.
+//
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,13 +22,14 @@ typedef struct {
 } ThreadParamsSimu;
 
 void* emptyThread(void* arg) {
-    // On supprime le warning
-    (void) arg;
     return NULL;
 }
 
 
 void nextStep(Person* person, Coordinate* next_station, ChargingStation* stations) {
+
+    printf("chargingTime : %d\n", person->chargingTime);
+    printf("next_station : %f, %f\n", next_station->longitude, next_station->latitude);
     // On est arrivé à destination
     if (person->pathSize == 1) {
         return;
@@ -39,16 +44,20 @@ void nextStep(Person* person, Coordinate* next_station, ChargingStation* station
             if(pos_equals(person->end, next_station)) {
                 // On est arrivé
                 person->pathSize = 1;
+                printf("On est FJFGJHREFGJHEFCGJHSDCVJHSarrivé\n");
                 return;
             }else{
                 int timeOffset = (step_dist - dist_to_next_station) / VITESSE;
                 Coordinate* nextNextStation;
                 if(person->pathSize == 3) {
+                    printf("On est dans le cas gGGGGGGGGGpathSize == 3\n");
                     nextNextStation = person->end;
                 }else{
                     nextNextStation = stations[person->path[2]].coord;
                 }
+                printf("nextNextStation : %f, %f\n", nextNextStation->longitude, nextNextStation->latitude);
                 int dist_nextNext_station = distance(next_station, nextNextStation);
+                printf("dist_nextNext_station : %d\n", dist_nextNext_station);
                 new_coord = malloc(sizeof(Coordinate));
                 new_coord->longitude = next_station->longitude;
                 new_coord->latitude = next_station->latitude;
@@ -57,6 +66,7 @@ void nextStep(Person* person, Coordinate* next_station, ChargingStation* station
             }
 
         }else {
+            printf("On avance\n");
              new_coord = pos_after_step(person->coordinate, next_station, step_dist);
              person->remainingAutonomy -= step_dist;
         }
@@ -72,7 +82,6 @@ void nextStep(Person* person, Coordinate* next_station, ChargingStation* station
                 int timeOffset = STEP - person->waitingTime;
                 person->waitingTime = 0;
                 person->chargingTime -= timeOffset;
-                person->remainingAutonomy += timeOffset * person->vehicle->fastCharge;
             }
         } else {
             // On charge
@@ -86,6 +95,7 @@ void nextStep(Person* person, Coordinate* next_station, ChargingStation* station
                 removePersonFromStation(&stations[person->path[1]], person);
                 Coordinate* new_coord = NULL;
                 if(person->pathSize == 3) {
+                    printf("On est dans le cas pathSize == 3\n");
                     new_coord = pos_after_step(person->coordinate, person->end, timeOffset * VITESSE);
 
                 }
@@ -160,7 +170,11 @@ Person* generateRandomPerson(ChargingStation* stations, Vehicle* vehicles,int nb
     return createPerson()
 }*/
 
-int main() {
+int main(int argc, char** argv) {
+
+    // Initialisation du temps d'exécution
+    double time_spent = 0.0;
+    clock_t begin = clock();
 
     // Lecture du fichier JSON
     int n; // Nombre de stations de recharge
@@ -182,7 +196,30 @@ int main() {
 
     // Affichage du nombre de stations de recharge
     // printf("Nombre de stations de recharge : %d\n", n);
-    //printf("Nombre de véhicules : %d\n", m);
+    printf("Nombre de véhicules : %d\n", m);
+
+    // On récupère le véhicule choisi par l'utilisateur en argument qui est le nom du véhicule
+    int i = 0;
+    if (argc == 2) {
+        while (i < m && strcmp(vehicles[i].name, argv[1]) != 0) {
+            ++i;
+        }
+        if (i == m) {
+            printf("Véhicule %s non trouvé\n", argv[1]);
+            return 1;
+        }
+    }
+    else {
+        printf("Veuillez choisir un véhicule parmi la liste suivante :\n");
+        for (int j = 0; j < m; ++j) {
+            printf("%s\n", vehicles[j].name);
+        }
+        return 1;
+    }
+
+    printf("Véhicule choisi : %s\n", vehicles[i].name);
+    printf("Autonomie : %d\n", vehicles[i].range);
+    printf("Temps de recharge : %d\n", vehicles[i].fastCharge);
 
     // On récupère les coordonnées des points de départs et d'arrivées que l'on recupère dans un fichier texte appelé input.txt où chaque ligne correspond à une lattitude et une longitude
     FILE* file = fopen("../data/input.txt", "r");
@@ -190,45 +227,22 @@ int main() {
         printf("Erreur lors de l'ouverture du fichier\n");
         return 1;
     }
-    int nb_persons = 0;
+    int nb_coords = 0;
     while (!feof(file)) {
-        char c = fgetc(file);
-        if (c == '\n') {
-            nb_persons++;
-        }
+        float lat, lon;
+        fscanf(file, "%f %f\n", &lat, &lon);
+        ++nb_coords;
     }
-    nb_persons++;
     rewind(file);
-    printf("Nombre de personnes : %d\n", nb_persons);
+    printf("Nombre de coordonnées : %d\n", nb_coords);
     // On stocke les coordonnées dans un tableau
-    Coordinate** coords = malloc(nb_persons * 2 * sizeof (Coordinate*));
-    char **vehicules_input = malloc(nb_persons * sizeof(char*));
-    for (int j = 0; j < nb_persons*2; j += 2) {
+    Coordinate** coords = malloc(nb_coords * sizeof (Coordinate*));
+    for (int j = 0; j < nb_coords; ++j) {
         coords[j] = malloc(sizeof (Coordinate));
-        coords[j+1] = malloc(sizeof (Coordinate));
-        char *line = malloc(255 * sizeof (char));
-        fscanf(file, "%s %f %f %f %f\n", line, &(coords[j]->latitude), &(coords[j]->longitude), &(coords[j+1]->latitude), &(coords[j+1]->longitude));
-        // On supprime les tirets "_" dans le nom des véhicules
-        for (int i = 0; i < (int)strlen(line); ++i) {
-            if (line[i] == '_') {
-                line[i] = ' ';
-            }
-        }
-        vehicules_input[j/2] = line;
-        printf("%s %f %f %f %f\n", line, coords[j]->latitude, coords[j]->longitude, coords[j+1]->latitude, coords[j+1]->longitude);
+        fscanf(file, "%f %f\n", &(coords[j]->latitude), &(coords[j]->longitude));
+        printf("%f %f\n", coords[j]->latitude, coords[j]->longitude);
     }
-    
     fclose(file);
-
-    // On récupère les véhicules des personnes qui sont dans line
-    Vehicle** vehicles_persons = malloc(nb_persons * sizeof (Vehicle*));
-    for (int i = 0; i < nb_persons; ++i) {
-        for (int j = 0; j < m; ++j) {
-            if (strcmp(vehicules_input[i], vehicles[j].name) == 0) {
-                vehicles_persons[i] = &(vehicles[j]);
-            }
-        }
-    }
 
     ChargingStation* stations;
 
@@ -244,7 +258,7 @@ int main() {
         stations = deserializeStations("../data/data_mod.bin", &n);
     }
 
-    //printf("Nombre de stations de recharge : %d\n", n);
+    printf("Nombre de stations de recharge : %d\n", n);
 
     Graph* graph;
 
@@ -269,22 +283,24 @@ int main() {
     // Affichage de la matrice d'adjacence
     // printAdjMat(graph->adjMat, n);
 
-    Person** persons = malloc(nb_persons * sizeof(Person*));
+    Person** persons = malloc(nb_coords/2 * sizeof(Person*));
 
     // On crée les threads
-    int numThreads = nb_persons;
+    int numThreads = nb_coords/2;
     pthread_t threadsDijkstraStart[numThreads];
     ThreadParamsDijkstra paramsDijkstraStart[numThreads];
 
-    for (int z=0 ; z<nb_persons*2 ; z+=2) {
+    for (int z=0 ; z<nb_coords ; z+=2) {
 
         // Appel de l'algorithme de Dijkstra pour trouver le chemin le plus court
         int *pathLength = malloc(sizeof(int));
 
+        printf("Autonomie test : %d\n", vehicles[i].range);
+
         paramsDijkstraStart[z / 2].graph = graph;
         paramsDijkstraStart[z / 2].stations = stations;
-        paramsDijkstraStart[z / 2].range = vehicles_persons[z/2]->range;
-        paramsDijkstraStart[z / 2].autonomy = vehicles_persons[z/2]->range;
+        paramsDijkstraStart[z / 2].range = vehicles[i].range;
+        paramsDijkstraStart[z / 2].autonomy = vehicles[i].range;
         paramsDijkstraStart[z / 2].src = coords[z];
         paramsDijkstraStart[z / 2].dest = coords[z + 1];
         paramsDijkstraStart[z / 2].n = pathLength;
@@ -295,14 +311,18 @@ int main() {
 
     }
 
-    for (int z=0 ; z<nb_persons*2 ; z+=2) {
+    for (int z=0 ; z<nb_coords ; z+=2) {
 
         int* new_path = NULL;
         pthread_join(threadsDijkstraStart[z/2], (void**)&new_path);
 
+        // Affichage du chemin le plus court
+        printf("Chemin le plus court est de longueur %d : \n", *paramsDijkstraStart[z / 2].n);
+        printPath(stations, new_path, *paramsDijkstraStart[z / 2].n, coords[z], coords[z+1]);
+
         // On crée la person
 
-        Person *person = createPerson(vehicles_persons[z/2], coords[z], new_path, *paramsDijkstraStart[z / 2].n, coords[z+1]);
+        Person *person = createPerson(vehicles + i, coords[z], new_path, *paramsDijkstraStart[z / 2].n, coords[z+1]);
 
         persons[z/2] = person;
 
@@ -314,8 +334,6 @@ int main() {
 
     int step = 0;
     bool finished = false;
-
-    printf("\n");
 
     while (!finished) {
         printf("Step %d\n", step); //(3.606275, 50.393383)
@@ -343,7 +361,7 @@ int main() {
 
         for (int l = 0; l < numThreads; ++l) {
 
-            if (persons[l]->pathSize <= 2) {
+            if (persons[l]->pathSize == 2) {
                 nextStep(persons[l], persons[l]->end, stations);
             } else {
                 nextStep(persons[l], stations[persons[l]->path[1]].coord, stations);
@@ -351,8 +369,11 @@ int main() {
 
         }
 
+        printf("Next step appliqué\n");
+
         for (int i = 0; i < numThreads; ++i) {
             if (persons[i]->pathSize == 1) {
+                printf("Personne %d arrivée à destination\n", i);
                 finished = true;
             } else {
                 finished = false;
@@ -407,80 +428,45 @@ int main() {
 
         // Affichage des informations de la personne
         for (int i = 0; i < numThreads; ++i) {
-            
-            // On regarde si la personne est dans une station
-            bool inStation = false;
-            if (persons[i]->chargingTime > 0) {
-                inStation = true;
-            } else {
-                inStation = false;
-            }
-            if (persons[i]->pathSize != 1) {
-                printf("Personne %d\n", i);
-                printf("Véhicule : %s\n", persons[i]->vehicle->name);
-                if (inStation) {
-                    printf("Dans une station : Oui\n");
+            printf("Position : %f %f\n", persons[i]->coordinate->latitude, persons[i]->coordinate->longitude);
+            printf("Autonomie restante : %d\n", persons[i]->remainingAutonomy);
+            printf("Distance restante : %d\n", persons[i]->pathSize);
+            printf("Taux de recharge : %d\n", persons[i]->vehicle->fastCharge);
+            printf("Temps d'attente : %d\n", persons[i]->waitingTime);
+            printf("Temps de recharge : %d\n", persons[i]->chargingTime);
+            printf("Chemin : \n");
+            printPath(stations, persons[i]->path, persons[i]->pathSize, persons[i]->coordinate, persons[i]->end);
+
+            // Url base carte maps without api
+            char url[1000] = "https://www.google.com/maps/dir/";
+
+            // Ajout du chemin de la personne à l'url
+            for (int j = 0; j < persons[i]->pathSize; ++j) {
+                char coord[50];
+                if (j == 0) {
+                    sprintf(coord, "%f,%f/", persons[i]->coordinate->latitude, persons[i]->coordinate->longitude);
                 } else {
-                    printf("Dans une station : Non\n");
-                }
-                printf("Position : %f %f\n", persons[i]->coordinate->latitude, persons[i]->coordinate->longitude);
-                printf("Autonomie restante : %d m\n", persons[i]->remainingAutonomy);
-                printf("Etapes restantes : %d\n", persons[i]->pathSize);
-                if (persons[i]->chargingTime > 0) {
-                    printf("Temps de recharge restant : %d s\n", persons[i]->chargingTime);
-                }
-                if (persons[i]->waitingTime > 0) {
-                    printf("Temps d'attente restant : %d s\n", persons[i]->waitingTime);
-                }
-                printf("Chemin : \n");
-                printf("\n");
-                printPath(stations, persons[i]->path, persons[i]->pathSize, persons[i]->coordinate, persons[i]->end);
-            
-
-                // Url base carte maps without api
-                char url[1000] = "https://www.google.com/maps/dir/";
-
-                // Ajout du chemin de la personne à l'url
-                for (int j = 0; j < persons[i]->pathSize; ++j) {
-                    char coord[50];
-                    if (j == 0) {
-                        sprintf(coord, "%f,%f/", persons[i]->coordinate->latitude, persons[i]->coordinate->longitude);
+                    if (j == persons[i]->pathSize - 1) {
+                        sprintf(coord, "%f,%f", persons[i]->end->latitude, persons[i]->end->longitude);
                     } else {
-                        if (j == persons[i]->pathSize - 1) {
-                            sprintf(coord, "%f,%f", persons[i]->end->latitude, persons[i]->end->longitude);
-                        } else {
-                            sprintf(coord, "%f,%f/", stations[persons[i]->path[j]].coord->latitude,
-                                    stations[persons[i]->path[j]].coord->longitude);
-                        }
+                        sprintf(coord, "%f,%f/", stations[persons[i]->path[j]].coord->latitude,
+                                stations[persons[i]->path[j]].coord->longitude);
                     }
-                    strcat(url, coord);
                 }
-                printf("\n");
-                printf("Url : %s\n", url);
-                printf("\n");
-                // On ouvre l'url dans le navigateur par défaut du système d'exploitation avec la commande "open"
-                //char command[1000] = "start ";
-                //strcat(command, url);
-                //system(command);
-                //printf("\n");
-                } else {
-                printf("Personne %d est arrivée à destination\n", i);
-                printf("\n");
+                strcat(url, coord);
             }
+            printf("Url : %s\n", url);
+            printf("\n");
         }
         ++step;
         // Attendre un input dans la console
-        //getchar();
+        getchar();
     }
 
     // On libère la mémoire
     for (int k = 0; k < n; ++k) {
         free(stations[k].name);
         free(stations[k].coord);
-        for (int i = 0; i < stations[k].nbChargingPoints; ++i) {
-            //free(stations[k].queues[i]->next);
-            free(stations[k].queues[i]);
-        }
         free(stations[k].queues);
     }
     for (int j = 0; j < m; ++j) {
@@ -490,14 +476,18 @@ int main() {
     free(vehicles);
     freeGraph(graph);
     free(coords);
-    for (int l = 0; l < nb_persons; ++l) {
+    for (int l = 0; l < nb_coords/2; ++l) {
         free(persons[l]->coordinate); // (5.531192, 49.150017)
         free(persons[l]->path);
         free(persons[l]->end);
         free(persons[l]);
     }
     free(persons);
-    free(vehicles_persons);
+
+    // Calcul du temps d'exécution
+    clock_t end_time = clock();
+    time_spent = (double)(end_time - begin) / CLOCKS_PER_SEC;
+    printf("Temps d'exécution : %f\n", time_spent);
 
     return 0;
 }
