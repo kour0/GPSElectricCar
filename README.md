@@ -71,7 +71,3 @@ Attention ! Les noms des véhicules ne doivent pas contenir d'espaces, tout espa
 - [Alexis Marcel](https://gitlab.telecomnancy.univ-lorraine.fr/Alexis.Marcel)
 - [Noé Steiner](https://gitlab.telecomnancy.univ-lorraine.fr/Noe.Steiner)
 - [Matthias Aurand-Augier](https://gitlab.telecomnancy.univ-lorraine.fr/Mathias.Aurand-Augier)
-
-## License
-
-[MIT License](https://opensource.org/licenses/MIT).
